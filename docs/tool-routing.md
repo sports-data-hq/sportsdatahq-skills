@@ -2,7 +2,7 @@
 
 When you need data, use this guide to pick the right source.
 
-## Default: PuckAPI MCP (`puckapi-tool`)
+## Default: PuckAPI MCP (`nhl-puckapi-tools`)
 
 Use for ALL NHL data needs unless the user specifically brings their own data.
 
@@ -33,14 +33,14 @@ When a user provides their own CSV, JSON, or database:
 
 ```
 Need NHL data?
-  Yes -> puckapi-tool (default)
+  Yes -> nhl-puckapi-tools (default)
   
 User has their own data file?
   Yes -> Work with file directly, no credits
 
 Need odds for backtesting?
-  Yes -> puckapi-tool get_odds (10 credits/query, 106K+ records available)
+  Yes -> nhl-puckapi-tools get_odds (10 credits/query, 106K+ records available)
 
 Need line movement?
-  Yes -> puckapi-tool get_line_movement (25 credits, most expensive)
+  Yes -> nhl-puckapi-tools get_line_movement (25 credits, most expensive)
 ```

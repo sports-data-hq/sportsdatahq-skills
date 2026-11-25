@@ -1,14 +1,122 @@
 {
-  "name": "puckapi",
+  "name": "sportsdatahq",
   "interface": {
-    "displayName": "PuckAPI Skills"
+    "displayName": "SportsDataHQ skills"
   },
   "plugins": [
     {
-      "name": "puckapi-skills",
+      "name": "sports-analytics-core",
       "source": {
         "source": "local",
-        "path": "./"
+        "path": "./plugins/sports-analytics-core"
+      },
+      "policy": {
+        "installation": "AVAILABLE",
+        "authentication": "ON_INSTALL"
+      },
+      "category": "Developer Tools"
+    },
+    {
+      "name": "nhl-data",
+      "source": {
+        "source": "local",
+        "path": "./plugins/nhl-data"
+      },
+      "policy": {
+        "installation": "AVAILABLE",
+        "authentication": "ON_INSTALL"
+      },
+      "category": "Developer Tools"
+    },
+    {
+      "name": "nfl-data",
+      "source": {
+        "source": "local",
+        "path": "./plugins/nfl-data"
+      },
+      "policy": {
+        "installation": "AVAILABLE",
+        "authentication": "ON_INSTALL"
+      },
+      "category": "Developer Tools"
+    },
+    {
+      "name": "nba-data",
+      "source": {
+        "source": "local",
+        "path": "./plugins/nba-data"
+      },
+      "policy": {
+        "installation": "AVAILABLE",
+        "authentication": "ON_INSTALL"
+      },
+      "category": "Developer Tools"
+    },
+    {
+      "name": "mlb-data",
+      "source": {
+        "source": "local",
+        "path": "./plugins/mlb-data"
+      },
+      "policy": {
+        "installation": "AVAILABLE",
+        "authentication": "ON_INSTALL"
+      },
+      "category": "Developer Tools"
+    },
+    {
+      "name": "soccer-data",
+      "source": {
+        "source": "local",
+        "path": "./plugins/soccer-data"
+      },
+      "policy": {
+        "installation": "AVAILABLE",
+        "authentication": "ON_INSTALL"
+      },
+      "category": "Developer Tools"
+    },
+    {
+      "name": "tennis-data",
+      "source": {
+        "source": "local",
+        "path": "./plugins/tennis-data"
+      },
+      "policy": {
+        "installation": "AVAILABLE",
+        "authentication": "ON_INSTALL"
+      },
+      "category": "Developer Tools"
+    },
+    {
+      "name": "golf-data",
+      "source": {
+        "source": "local",
+        "path": "./plugins/golf-data"
+      },
+      "policy": {
+        "installation": "AVAILABLE",
+        "authentication": "ON_INSTALL"
+      },
+      "category": "Developer Tools"
+    },
+    {
+      "name": "mma-data",
+      "source": {
+        "source": "local",
+        "path": "./plugins/mma-data"
+      },
+      "policy": {
+        "installation": "AVAILABLE",
+        "authentication": "ON_INSTALL"
+      },
+      "category": "Developer Tools"
+    },
+    {
+      "name": "cricket-data",
+      "source": {
+        "source": "local",
+        "path": "./plugins/cricket-data"
       },
       "policy": {
         "installation": "AVAILABLE",

@@ -21,14 +21,14 @@
 
 ```
 You:    "Build me an expected goals model from shot data"
-Claude: [loads xg-model-building skill → walks you through feature selection,
+Claude: [loads nhl-xg-model skill → walks you through feature selection,
          spatial coordinates, shot type encoding, logistic regression baseline,
          gradient boosting upgrade, calibration, and evaluation]
 ```
 
 ```
 You:    "What's the edge on tonight's Sabres game?"
-Claude: [loads odds-explorer + edge-detection → pulls live odds from the books PuckAPI tracks,
+Claude: [loads nhl-odds-explorer + market-vs-model → pulls live odds from the books PuckAPI tracks,
          compares to your model's probabilities, calculates EV, sizes the bet]
 ```
 
@@ -89,7 +89,7 @@ claude mcp add puckapi \
 "Backtest my betting strategy over the last 3 seasons"
 ```
 
-The `dispatch` skill routes your request to the right 2-3 skills automatically.
+The `sports-skill-router` skill routes your request to the right 2-3 skills automatically.
 
 ---
 
@@ -102,13 +102,13 @@ The `dispatch` skill routes your request to the right 2-3 skills automatically.
 
 | Skill | What It Does |
 |-------|-------------|
-| `game-lookup` | Find games by date, team, season. Scores, schedule, results. |
-| `team-analysis` | Standings, advanced stats, strength of schedule, power rankings. |
-| `player-scouting` | Player search, comparison, NHLe translation, career trajectory. |
-| `goalie-analysis` | GSAA, xSV%, high-danger save rate, workload tracking. |
-| `odds-explorer` | Multi-book odds comparison, best price, line movement detection. |
+| `nhl-game-lookup` | Find games by date, team, season. Scores, schedule, results. |
+| `nhl-team-analysis` | Standings, advanced stats, strength of schedule, power rankings. |
+| `nhl-player-scouting` | Player search, comparison, NHLe translation, career trajectory. |
+| `nhl-goalie-analysis` | GSAA, xSV%, high-danger save rate, workload tracking. |
+| `nhl-odds-explorer` | Multi-book odds comparison, best price, line movement detection. |
 | `nl-to-query` | Translates natural language questions into structured data queries. |
-| `game-preview` | Full pre-game breakdown: matchup, goalies, trends, odds, prediction. |
+| `nhl-game-preview` | Full pre-game breakdown: matchup, goalies, trends, odds, prediction. |
 
 </details>
 
@@ -119,8 +119,8 @@ The `dispatch` skill routes your request to the right 2-3 skills automatically.
 
 | Skill | What It Does |
 |-------|-------------|
-| `hockey-analytics` | Corsi, Fenwick, xG, PDO, RAPM, WAR — definitions, context, proper usage. |
-| `xg-model-building` | Build an expected goals model from scratch. Feature engineering through calibration. |
+| `nhl-advanced-stats` | Corsi, Fenwick, xG, PDO, RAPM, WAR — definitions, context, proper usage. |
+| `nhl-xg-model` | Build an expected goals model from scratch. Feature engineering through calibration. |
 
 </details>
 
@@ -136,7 +136,7 @@ The `dispatch` skill routes your request to the right 2-3 skills automatically.
 | `model-building` | LR → RF → XGBoost ladder. Hard-vote ensemble. Knows when to stop. |
 | `elo-engineering` | 5 Elo variants (standard, margin, venue, recency, surface) with tuning. |
 | `probability-calibration` | Platt scaling, isotonic regression, reliability diagrams, Brier decomposition. |
-| `odds-analysis` | 4 devigging methods: power, multiplicative, Shin, worst-case. |
+| `odds-market-analysis` | 4 devigging methods: power, multiplicative, Shin, worst-case. |
 | `data-pipeline` | GitHub Actions automation, SQLite schema design, credit budgeting. |
 
 </details>
@@ -148,10 +148,10 @@ The `dispatch` skill routes your request to the right 2-3 skills automatically.
 
 | Skill | What It Does |
 |-------|-------------|
-| `edge-detection` | Expected value, Kelly criterion sizing, closing line value tracking. |
+| `market-vs-model` | Expected value, Kelly criterion sizing, closing line value tracking. |
 | `backtesting` | Walk-forward historical strategy simulation with realistic constraints. |
-| `daily-card` | Full slate analysis with edge rankings. Requires your model's probabilities. |
-| `bet-tracker` | Log predictions, track P&L, CLV, and test for statistical significance. |
+| `nhl-daily-slate` | Full slate analysis with edge rankings. Requires your model's probabilities. |
+| `prediction-tracker` | Log predictions, track P&L, CLV, and test for statistical significance. |
 | `visualization` | Calibration plots, edge distributions, player cards, correlation matrices. |
 
 </details>
@@ -163,10 +163,10 @@ The `dispatch` skill routes your request to the right 2-3 skills automatically.
 
 | Skill | What It Does |
 |-------|-------------|
-| `totals-modeling` | Over/under prediction. Pace metrics, Poisson distribution, under bias. |
-| `prop-modeling` | Player prop projections. TOI-first architecture, same-game parlay correlation. |
-| `war-gar-decomposition` | RAPM ridge regression, component GAR, contract surplus valuation. |
-| `playoff-simulation` | Monte Carlo bracket simulation. Series pricing, path probabilities. |
+| `nhl-totals-model` | Over/under prediction. Pace metrics, Poisson distribution, under bias. |
+| `nhl-player-props-research` | Player prop projections. TOI-first architecture, same-game parlay correlation. |
+| `nhl-war-gar` | RAPM ridge regression, component GAR, contract surplus valuation. |
+| `nhl-playoff-simulation` | Monte Carlo bracket simulation. Series pricing, path probabilities. |
 
 </details>
 
@@ -177,9 +177,9 @@ The `dispatch` skill routes your request to the right 2-3 skills automatically.
 
 | Skill | What It Does |
 |-------|-------------|
-| `dispatch` | Routes your request to the right skills automatically. Start here. |
-| `ai-hockey-workflow` | 4 patterns for hypothesis testing: explore, model, validate, deploy. |
-| `puckapi-tool` | MCP tool router. 15 endpoints, credit tracking, BYOD data support. |
+| `sports-skill-router` | Routes your request to the right skills automatically. Start here. |
+| `nhl-research-workflow` | 4 patterns for hypothesis testing: explore, model, validate, deploy. |
+| `nhl-puckapi-tools` | MCP tool router. 15 endpoints, credit tracking, BYOD data support. |
 
 </details>
 

@@ -22,7 +22,7 @@ This is a public, open-source repository. Every commit, file, and message is vis
 - No "AI-powered", "intelligent", or similar buzzwords
 - No comments referencing internal conversations or decisions
 - Skill descriptions should be factual and specific to what the skill does
-- Credit costs must match the live PuckAPI pricing (see puckapi-tool/endpoints.md)
+- Credit costs must match the live PuckAPI pricing (see nhl-puckapi-tools/endpoints.md)
 
 ## Repo Structure
 
@@ -30,9 +30,9 @@ This is a public, open-source repository. Every commit, file, and message is vis
 claude-sports-analytics/
 ├── .claude-plugin/plugin.json   # Plugin manifest
 ├── skills/                      # 28 skill directories
-│   ├── puckapi-tool/            # MCP tool reference (endpoints + fields)
-│   ├── hockey-analytics/        # Core metrics and concepts
-│   ├── game-lookup/             # Finding and filtering games
+│   ├── nhl-puckapi-tools/            # MCP tool reference (endpoints + fields)
+│   ├── nhl-advanced-stats/        # Core metrics and concepts
+│   ├── nhl-game-lookup/             # Finding and filtering games
 │   └── ...                      # See README for full list
 └── docs/                        # Glossaries, routing, season logic
 ```
@@ -45,7 +45,7 @@ claude-sports-analytics/
 - 32 active NHL teams (includes Utah Hockey Club, not Arizona Coyotes)
 - Odds from the books PuckAPI tracks (DraftKings, FanDuel, BetMGM, ESPN BET and others). The
   count moves as books come and go, so do not publish a number.
-- 15 MCP tools with credit costs defined in puckapi-tool/endpoints.md
+- 15 MCP tools with credit costs defined in nhl-puckapi-tools/endpoints.md
 - Shot-quality metrics are returned by the API, not computed by the caller:
   `gsax`, `expectedGoalsAgainst`, `highDangerSavePct`, `rollingSavePct`,
   `rollingGsax`, `trend`, `restDays` on goalies; `corsiPct`, `fenwickPct`,
