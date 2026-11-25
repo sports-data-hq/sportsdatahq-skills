@@ -1,0 +1,55 @@
+{
+  "skill": "mlb-regression-candidates",
+  "tasks": [
+    {
+      "prompt": "Who are the regression candidates among hitters this season?",
+      "expect": [
+        "get_leaders and get_plate_appearances called",
+        "BABIP stated as computed with the formula",
+        "xwOBA not quoted"
+      ]
+    },
+    {
+      "prompt": "Is Corbin Burnes's ERA sustainable?",
+      "expect": [
+        "get_player and get_leaders for K/9 and BB/9",
+        "FIP not quoted, or computed from components and labelled",
+        "innings counted"
+      ]
+    },
+    {
+      "prompt": "What is his expected wOBA?",
+      "expect": [
+        "states xwOBA is not returned by the API",
+        "offers computed alternatives from plate appearances",
+        "no invented number"
+      ]
+    }
+  ],
+  "triggers": {
+    "should": [
+      "who is getting lucky",
+      "regression candidates",
+      "is his average sustainable",
+      "who is overperforming his strikeout rate",
+      "sell-high hitters",
+      "whose ERA is out of line with the peripherals",
+      "is this BABIP too high",
+      "who is unlucky this season",
+      "who is due for a bounce back",
+      "pitchers with ERA far below their strikeout and walk rates"
+    ],
+    "should_not": [
+      "preview the Dodgers game",
+      "did his fastball velocity drop",
+      "who to stream this week",
+      "Judge home run prop",
+      "MLB standings",
+      "NFL regression to the mean",
+      "how is BABIP defined",
+      "build a projection system",
+      "spray chart for Ohtani",
+      "pitch mix for Skubal"
+    ]
+  }
+}

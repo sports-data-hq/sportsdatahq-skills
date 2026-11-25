@@ -2,9 +2,49 @@
  "generated_from": "plugins/*/skills/*/SKILL.md",
  "skills": [
   {
+   "name": "cricket-chase-win-probability",
+   "plugin": "cricket-data",
+   "description": "Use when the user wants the win probability of a cricket run chase or how it swung: 'what are the chances of this chase', 'win probability at the 15th over', 'how did the match turn', 'was the chase ever in doubt', 'the biggest swing of the innings', 'what does the model give the chasing side'. Reports our win probability through the second innings (get_win_probability), the swings between overs, the required rate, and compares it with the market's view as information. Not for a pre-match preview (see cricket-match-preview), phase stats (see cricket-phase-analysis) or ground effects (see cricket-venue-effects).",
+   "reads_live_data": true,
+   "writes": false,
+   "moves_money": false
+  },
+  {
    "name": "cricket-match-preview",
    "plugin": "cricket-data",
-   "description": "Use when the user wants a preview of a cricket match in any format: 'preview India vs Australia ODI', 'IPL preview MI vs CSK', 'who's favored in the Big Bash tonight', 'how does this ground play', 'T20 World Cup match preview'. Produces a one-page report: team ratings in the format and our pregame win probability (T20 and international ODI), venue profile (par scores, toss and batting-first record), recent results, key players' form, and the market's prices. Not for ball-by-ball replays (call get_deliveries) or modeling (see model-building).",
+   "description": "Use when the user wants a cricket match preview in any format, or how a ground plays before a match: 'preview India vs Australia ODI', 'IPL preview MI vs CSK', 'PSL match breakdown', 'who's favored in the Big Bash tonight', 'how does this ground play', 'T20 World Cup match preview'. Produces a one-page report: format ratings and our pregame win probability (T20 and international ODI), venue profile, recent results, key players' form and the market's prices. Not for ball-by-ball replays (call get_deliveries) or modeling (see model-building).",
+   "reads_live_data": true,
+   "writes": false,
+   "moves_money": false
+  },
+  {
+   "name": "cricket-phase-analysis",
+   "plugin": "cricket-data",
+   "description": "Use when the user wants cricket numbers split by phase of an innings: 'how does he score in the powerplay', 'death-over bowling for Bumrah', 'middle overs strike rate', 'which team scores best in the last five overs', 'phase breakdown of that chase', 'who bowls well at the death in the IPL'. Splits runs, strike rate, economy, dot balls and wickets by powerplay, middle and death overs from ball-by-ball data, with balls counted. Not for a match preview (see cricket-match-preview), the win probability of a chase (see cricket-chase-win-probability) or ground effects (see cricket-venue-effects).",
+   "reads_live_data": true,
+   "writes": false,
+   "moves_money": false
+  },
+  {
+   "name": "cricket-venue-effects",
+   "plugin": "cricket-data",
+   "description": "Use when the user wants to know how a cricket ground plays or whether the venue changes a match: 'how does Wankhede play', 'par score at Chepauk', 'should teams bat first here', 'is the ground helping spin', 'chasing record at this venue', 'do big scores happen at Dubai', 'toss decisions at this ground'. Reports innings totals, batting-first and chasing results, toss choices and phase scoring for a ground and format, with match counts. Not for a match preview (see cricket-match-preview), a chase's probability curve (see cricket-chase-win-probability) or phase stats for a player (see cricket-phase-analysis).",
+   "reads_live_data": true,
+   "writes": false,
+   "moves_money": false
+  },
+  {
+   "name": "golf-course-history",
+   "plugin": "golf-data",
+   "description": "Use when the user asks how a golfer has done at a course or event before: 'how has Scheffler done at Augusta', 'does he play well at Pebble', 'course history for the Open', 'best record at Riviera', 'does he like this course', 'past finishes at the Players'. Reports finishes and strokes versus the field at the event or course across years, then sets them against current form, because course fit is small and recent form matters more. Not for a tournament preview (see golf-tournament-preview), general scoring form (see golf-strokes-vs-field) or modeling (see model-building).",
+   "reads_live_data": true,
+   "writes": false,
+   "moves_money": false
+  },
+  {
+   "name": "golf-strokes-vs-field",
+   "plugin": "golf-data",
+   "description": "Use when the user wants to know how a golfer is really playing or how golfers compare: 'who is playing best', 'strokes gained for Scheffler', 'is he good on par 5s', 'rank the field by scoring versus the field', 'is his form real', 'how does he score on par 3s'. Reports strokes versus the field per round (raw and field-strength adjusted), by hole type on the PGA Tour, with rounds counted. Not for a tournament preview (see golf-tournament-preview), a player's record at one course (see golf-course-history) or modeling (see model-building).",
    "reads_live_data": true,
    "writes": false,
    "moves_money": false
@@ -20,7 +60,39 @@
   {
    "name": "mlb-game-preview",
    "plugin": "mlb-data",
-   "description": "Use when the user wants a preview of one MLB or college baseball game: 'preview Yankees vs Red Sox', 'break down tonight's Dodgers game', 'how does this pitcher match up', 'what's the run line and total', 'who's hot for the Mets series'. Produces a one-page report: records and run differential, team offense and run prevention, our Elo ratings, the starters' arsenals when known, the line and what it implies. Not for regression screens or pitcher skill changes (other mlb- skills) or model building (see model-building).",
+   "description": "Use when the user wants an MLB game preview or a college baseball game breakdown: 'MLB game preview', 'preview Yankees vs Red Sox', 'break down tonight's Dodgers game', 'what's the line for the Astros game', 'how does Skubal match up tonight', 'who has the edge in pitching tonight', 'series preview'. Produces a one-page report: records and run differential, offense and run prevention, our Elo, the starters' arsenals when known, the line and what it implies. Not for regression screens (other mlb- skills) or model building (see model-building).",
+   "reads_live_data": true,
+   "writes": false,
+   "moves_money": false
+  },
+  {
+   "name": "mlb-pitcher-skill-change",
+   "plugin": "mlb-data",
+   "description": "Use when the user wants to know if an MLB pitcher has actually changed: 'did his fastball velocity drop', 'new pitch for Skubal', 'is he throwing the slider more', 'why is his strikeout rate up', 'whiff rate on his changeup', 'is he hurt or just tired'. Compares pitch usage, average and top velocity and whiff rate by pitch type across seasons or games, with pitch counts. Not for a game preview (see mlb-game-preview), a list of lucky or unlucky results (see mlb-regression-candidates) or the weekly schedule (see mlb-streaming-planner).",
+   "reads_live_data": true,
+   "writes": false,
+   "moves_money": false
+  },
+  {
+   "name": "mlb-regression-candidates",
+   "plugin": "mlb-data",
+   "description": "Use when the user wants to know whose MLB season numbers are likely to move back toward normal: 'who is getting lucky', 'regression candidates', 'is his average sustainable', 'who is overperforming his strikeout rate', 'sell-high hitters', 'whose ERA is out of line with the peripherals'. Compares results against steadier rates (BABIP computed from plate appearances, strikeout and walk rates, home runs per plate appearance) with sample sizes. Not for a pitcher's pitch-level changes (see mlb-pitcher-skill-change), game previews (see mlb-game-preview) or the weekly schedule (see mlb-streaming-planner).",
+   "reads_live_data": true,
+   "writes": false,
+   "moves_money": false
+  },
+  {
+   "name": "mlb-streaming-planner",
+   "plugin": "mlb-data",
+   "description": "Use when the user wants to plan a baseball week around schedules: 'who has the most games this week', 'who should I stream', 'which teams play at home this week', 'easy offences to pitch against', 'two-start week planning', 'which bullpen games are coming'. Builds a week view from the schedule, opponents' offence and run prevention, recent form of named players, injuries and the market's total. Not for lucky or unlucky results (see mlb-regression-candidates), a pitcher's pitch changes (see mlb-pitcher-skill-change) or one game's preview (see mlb-game-preview).",
+   "reads_live_data": true,
+   "writes": false,
+   "moves_money": false
+  },
+  {
+   "name": "ufc-elo-baseline",
+   "plugin": "mma-data",
+   "description": "Use when the user wants a ratings-only baseline for a UFC fight: 'what does Elo say about this fight', 'baseline probability for Jones vs Aspinall', 'how strong is each fighter by rating', 'who is the highest rated lightweight', 'did the rating see that upset coming', 'rating gap between the two'. Converts the pre-fight rating gap into an expected win probability, compares it with the market as information and shows the rating history. Refuses to use in-fight stats from the fight being predicted (leakage). Not for a full fight preview (see ufc-fight-preview), a fighter's profile (see ufc-fighter-profile) or model building (see model-building).",
    "reads_live_data": true,
    "writes": false,
    "moves_money": false
@@ -28,7 +100,15 @@
   {
    "name": "ufc-fight-preview",
    "plugin": "mma-data",
-   "description": "Use when the user wants a preview of a UFC (or PFL, Bellator) fight or card: 'preview Jones vs Aspinall', 'break down the main event', 'who wins this fight', 'striking vs wrestling matchup', 'how do they finish fights'. Produces a one-page report: records by method, per-15-minute striking and grappling rates for and against, our Elo, physical profile, recent opposition, and the moneylines. Not for career stat leaderboards (call get_leaders) or modeling (see model-building).",
+   "description": "Use when the user wants a UFC, PFL or Bellator fight preview or matchup breakdown: 'preview Jones vs Aspinall', 'break down the main event', 'who wins this UFC fight', 'striker vs wrestler, who has the edge', 'how does he finish fights', 'is the favorite justified in this fight', 'fight night card preview'. Produces a one-page report: records by method, striking and grappling rates for and against, our Elo, recent opposition and the moneylines. Not for career stat leaderboards (call get_leaders) or modeling (see model-building).",
+   "reads_live_data": true,
+   "writes": false,
+   "moves_money": false
+  },
+  {
+   "name": "ufc-fighter-profile",
+   "plugin": "mma-data",
+   "description": "Use when the user wants to know who a UFC fighter is in numbers: 'profile of Islam Makhachev', 'how does Topuria fight', 'what is his record by method', 'strikes landed per minute for Pereira', 'is he a finisher', 'recent opposition for Chandler', 'does he wrestle'. Reports bio, record by method, career rates per 15 minutes with fight time counted, recent fights and rating history. Not for a specific fight's preview (see ufc-fight-preview), a ratings baseline (see ufc-elo-baseline) or stat leaderboards (call get_leaders).",
    "reads_live_data": true,
    "writes": false,
    "moves_money": false
@@ -44,7 +124,15 @@
   {
    "name": "nba-minutes-usage-redistribution",
    "plugin": "nba-data",
-   "description": "Use when an NBA or WNBA player is out or limited and the user asks who benefits: 'Embiid is out, who gets the minutes', 'how does usage change without Luka', 'who starts if Tatum sits', 'fantasy pickup with the injury', 'how did the Knicks play without Brunson'. Measures what happened in games the player missed (minutes, shots, usage per teammate) against games he played, with sample sizes. Not for prop lines (see nba-player-props-research) or a game preview (see nba-game-preview).",
+   "description": "Use when an NBA or WNBA player is out or limited and the user asks who benefits: 'Embiid is out, who gets the minutes', 'who starts if Tatum sits', 'how did the Knicks do without Brunson', 'usage bump with the starter out', 'how does usage change without Luka', 'fantasy pickup with the injury'. Compares minutes, shots and usage per teammate in games the player missed against games he played, with sample sizes. Not for prop lines (see nba-player-props-research) or a game preview (see nba-game-preview).",
+   "reads_live_data": true,
+   "writes": false,
+   "moves_money": false
+  },
+  {
+   "name": "nba-pace-efficiency-matchup",
+   "plugin": "nba-data",
+   "description": "Use when the user wants to compare two NBA or WNBA teams on pace and efficiency: 'will this be a fast game', 'Celtics vs Knicks pace matchup', 'who has the better net rating', 'offense versus defense matchup', 'four factors comparison', 'is this a high-possession game'. Lines up pace, offensive and defensive rating per 100 possessions and the four factors for both teams, plus our ratings and the posted total as market information. Not for a full game preview (see nba-game-preview), player lines (see nba-player-props-research) or shot locations (see nba-shot-quality).",
    "reads_live_data": true,
    "writes": false,
    "moves_money": false
@@ -58,6 +146,30 @@
    "moves_money": false
   },
   {
+   "name": "nba-shot-quality",
+   "plugin": "nba-data",
+   "description": "Use when the user wants to know how good a player's or team's shots are in the NBA or WNBA: 'is Curry's shot selection good', 'how many corner threes does Boston take', 'is he over-performing his shot quality', 'shot chart for Haliburton', 'where does Denver allow shots from', 'expected points per shot'. Reports attempts, makes and expected points per shot by zone, so shooting results can be set against shot location. NBA and WNBA only (college shots carry no expected points). Not for prop lines (see nba-player-props-research), game previews (see nba-game-preview) or pace and efficiency (see nba-pace-efficiency-matchup).",
+   "reads_live_data": true,
+   "writes": false,
+   "moves_money": false
+  },
+  {
+   "name": "nfl-epa-leaderboards",
+   "plugin": "nfl-data",
+   "description": "Use when the user wants NFL rankings built on expected points added: 'who leads the league in EPA per play', 'best rushing offense by EPA', 'top receivers by receiving EPA', 'which defense is best by EPA allowed', 'EPA leaders on third down', 'rank the teams by efficiency'. Builds a leaderboard with the filters stated, the sample size per row and penalties, kneels and spikes excluded. Not for one quarterback's efficiency profile (see nfl-qb-efficiency), a game preview (see nfl-game-preview) or fourth-down decisions (see nfl-fourth-down-review).",
+   "reads_live_data": true,
+   "writes": false,
+   "moves_money": false
+  },
+  {
+   "name": "nfl-fourth-down-review",
+   "plugin": "nfl-data",
+   "description": "Use when the user wants to review fourth-down decisions in the NFL: 'what did the Lions do on fourth down', 'how often does Baltimore go for it', 'review that fourth-and-2 call', 'fourth down tendencies this season', 'did they punt in plus territory', 'go-for-it rate when trailing'. Pulls fourth-down plays with the situation filters and reports what teams did and what the numbers say about those plays (conversion, EPA, win probability). Not for a game preview (see nfl-game-preview), league EPA rankings (see nfl-epa-leaderboards) or building a decision model (see model-building).",
+   "reads_live_data": true,
+   "writes": false,
+   "moves_money": false
+  },
+  {
    "name": "nfl-game-preview",
    "plugin": "nfl-data",
    "description": "Use when the user wants a preview or breakdown of one NFL or college football game: 'preview Bills vs Chiefs', 'break down Sunday's Eagles game', 'what should I know about the Ravens game', 'who's hurt for the Lions game', 'matchup analysis for TNF'. Produces a one-page report: records and form, efficiency (EPA, success rate), injuries, the line and what it implies, and head-to-head. Not for a whole week's slate of player props (see nfl-player-props-research), fantasy usage (see nfl-weekly-usage-report) or building a model (see model-building).",
@@ -66,9 +178,25 @@
    "moves_money": false
   },
   {
+   "name": "nfl-injury-impact",
+   "plugin": "nfl-data",
+   "description": "Use when the user wants to know what an NFL injury changes: 'how much does losing the left tackle matter', 'what happens to the offense without their QB', 'who plays if the RB1 is out', 'is the Bills defense worse without Milano', 'injury report effect on the Chiefs', 'how did the team do when he missed games'. Combines the injury report, depth chart, snap counts and with-and-without splits from play-by-play, with sample sizes. Not for fantasy waiver advice (see nfl-weekly-usage-report), prop lines (see nfl-player-props-research) or a full game preview (see nfl-game-preview).",
+   "reads_live_data": true,
+   "writes": false,
+   "moves_money": false
+  },
+  {
    "name": "nfl-player-props-research",
    "plugin": "nfl-data",
    "description": "Use when the user asks about NFL player prop lines as information: 'what's Josh Allen's passing yards line', 'how often has Saquon gone over his rushing line', 'compare receiving yards lines across books', 'how did his line move', 'what does the market imply for his TD'. Shows lines by sportsbook, a player's record against his line with sample size, line movement and no-margin probability. Never says which side to take. Not for game-level previews (see nfl-game-preview) or fantasy start/sit (see nfl-weekly-usage-report).",
+   "reads_live_data": true,
+   "writes": false,
+   "moves_money": false
+  },
+  {
+   "name": "nfl-qb-efficiency",
+   "plugin": "nfl-data",
+   "description": "Use when the user wants an efficiency profile of an NFL quarterback or a comparison of two: 'how efficient is Jordan Love', 'compare Burrow and Herbert', 'is Daniels' pressure rate a problem', 'QB EPA and success rate', 'is he better than his completion percentage', 'CPOE for Purdy'. Reports EPA per dropback, success rate, completion percentage above expectation where the data has it, air yards, time to throw and pressure splits with sample sizes. Not for QB prop lines (see nfl-player-props-research), league-wide EPA lists (see nfl-epa-leaderboards) or a game preview (see nfl-game-preview).",
    "reads_live_data": true,
    "writes": false,
    "moves_money": false
@@ -210,9 +338,25 @@
    "moves_money": false
   },
   {
+   "name": "soccer-season-simulation",
+   "plugin": "soccer-data",
+   "description": "Use when the user wants simulated odds for how a league season finishes: 'who wins the league', 'chance of finishing top four', 'relegation odds', 'simulate the rest of the season', 'how likely is Arsenal to win the title', 'what are Spurs' chances of Europe'. Runs a Monte Carlo of the remaining fixtures from our club Elo ratings, the current table and a stated draw and home-advantage assumption, and reports finishing-position probabilities with the method. Not for one match (see soccer-match-preview), shot quality (see soccer-xg-breakdown) or a club's style (see soccer-team-style-profile).",
+   "reads_live_data": true,
+   "writes": false,
+   "moves_money": false
+  },
+  {
+   "name": "soccer-team-style-profile",
+   "plugin": "soccer-data",
+   "description": "Use when the user wants to know how a soccer club plays: 'what is Brighton's style', 'how does Arsenal build up', 'do they press high', 'who counter-attacks', 'compare Liverpool and City styles', 'does this team take shots from distance', 'is it a possession team'. Profiles possession, shot volume and quality, set pieces, discipline and where shots come from, for and against, relative to the league, with the formulas stated. Not for one match's xG story (see soccer-xg-breakdown), match previews (see soccer-match-preview) or finishing positions (see soccer-season-simulation).",
+   "reads_live_data": true,
+   "writes": false,
+   "moves_money": false
+  },
+  {
    "name": "soccer-xg-breakdown",
    "plugin": "soccer-data",
-   "description": "Use when the user wants the expected-goals story of a soccer match or a club's or player's shots: 'xG breakdown of Arsenal Chelsea', 'did City deserve to win', 'shot map for Saka this season', 'who created the best chances', 'is Haaland over-performing his xG'. Shows shots with location, outcome and our xG, the xG race, big chances, and finishing over or under expected with sample size. Not for pre-match previews (see soccer-match-preview).",
+   "description": "Use when the user wants the expected-goals story of a soccer match, club or player: 'xG breakdown of Arsenal Chelsea', 'did City deserve to win', 'who created the best chances', 'Liverpool shots conceded this season', 'shot map for Saka', 'is Haaland over-performing his xG'. Shows shots with location, outcome and our xG, the xG race, big chances, and finishing over or under expected with sample size. Not for pre-match previews (see soccer-match-preview).",
    "reads_live_data": true,
    "writes": false,
    "moves_money": false
@@ -330,9 +474,25 @@
    "moves_money": false
   },
   {
+   "name": "tennis-head-to-head",
+   "plugin": "tennis-data",
+   "description": "Use when the user asks about two tennis players' history against each other: 'Sinner vs Alcaraz head to head', 'who leads the rivalry', 'how has he done against lefties', 'do they split on clay', 'has he ever beaten him', 'is the head to head meaningful here'. Shows the record, by surface and round, every meeting's score, and sets it against current ratings and rankings with the caveat that ratings usually beat head-to-head. Not for a full match preview (see tennis-match-preview), a draw simulation (see tennis-tournament-simulation) or rankings lists (call get_rankings).",
+   "reads_live_data": true,
+   "writes": false,
+   "moves_money": false
+  },
+  {
    "name": "tennis-match-preview",
    "plugin": "tennis-data",
-   "description": "Use when the user wants a preview of one ATP or WTA singles match: 'preview Sinner vs Alcaraz', 'who wins Swiatek vs Gauff on clay', 'break down tonight's match', 'how do they match up on grass', 'head to head and form'. Produces a one-page report: our overall and surface Elo with the pregame win probability, surface records, recent form, the head to head with its caveat, and the market's prices. Not for full tournament draws (use get_tournament directly) or modeling (see model-building).",
+   "description": "Use when the user wants a tennis match preview or matchup analysis for any ATP or WTA singles match: 'preview Sinner vs Alcaraz', 'break down tonight's tennis match', 'US Open quarterfinal preview', 'Wimbledon semifinal breakdown', 'how do they match up on grass', 'who wins Swiatek vs Gauff on clay', 'tennis matchup analysis'. Produces a one-page report: our surface Elo and pregame win probability, surface records, form, head to head with its caveat, and the market's prices. Not for rankings lists or full draws (call the tools directly) or modeling (see model-building).",
+   "reads_live_data": true,
+   "writes": false,
+   "moves_money": false
+  },
+  {
+   "name": "tennis-tournament-simulation",
+   "plugin": "tennis-data",
+   "description": "Use when the user wants title chances for a tennis tournament from the draw: 'who wins Wimbledon', 'simulate the US Open draw', 'chance Sinner reaches the final', 'how tough is Alcaraz's quarter', 'odds of an upset in the first round', 'WTA 1000 draw simulation'. Simulates the draw with our surface Elo ratings, states the method and reports round-by-round probabilities. Not for one match (see tennis-match-preview), a head-to-head record (see tennis-head-to-head) or a finished tournament's results (call get_tournament).",
    "reads_live_data": true,
    "writes": false,
    "moves_money": false

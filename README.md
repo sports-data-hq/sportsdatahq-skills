@@ -51,14 +51,14 @@ Just one skill: `npx skills add sports-data-hq/sportsdatahq-skills --skill nfl-g
 | Sport | Skills |
 |---|---|
 | Hockey | `nhl-game-preview`, `nhl-player-props-research`, `nhl-goalie-analysis`, `nhl-daily-slate`, `nhl-advanced-stats`, `nhl-xg-model`, `nhl-war-gar`, `nhl-team-analysis`, `nhl-player-scouting`, `nhl-playoff-simulation`, `nhl-totals-model`, `nhl-game-lookup`, `nhl-odds-explorer`, `nhl-puckapi-tools`, `nhl-research-workflow` |
-| Football | `nfl-game-preview`, `nfl-player-props-research`, `nfl-weekly-usage-report` |
-| Basketball | `nba-game-preview`, `nba-player-props-research`, `nba-minutes-usage-redistribution` |
-| Baseball | `mlb-game-preview` |
-| Soccer | `soccer-match-preview`, `soccer-xg-breakdown` |
-| Tennis | `tennis-match-preview` |
-| Golf | `golf-tournament-preview` |
-| UFC | `ufc-fight-preview` |
-| Cricket | `cricket-match-preview` |
+| Football | `nfl-game-preview`, `nfl-player-props-research`, `nfl-weekly-usage-report`, `nfl-fourth-down-review`, `nfl-epa-leaderboards`, `nfl-qb-efficiency`, `nfl-injury-impact` |
+| Basketball | `nba-game-preview`, `nba-player-props-research`, `nba-minutes-usage-redistribution`, `nba-shot-quality`, `nba-pace-efficiency-matchup` |
+| Baseball | `mlb-game-preview`, `mlb-regression-candidates`, `mlb-pitcher-skill-change`, `mlb-streaming-planner` |
+| Soccer | `soccer-match-preview`, `soccer-xg-breakdown`, `soccer-season-simulation`, `soccer-team-style-profile` |
+| Tennis | `tennis-match-preview`, `tennis-head-to-head`, `tennis-tournament-simulation` |
+| Golf | `golf-tournament-preview`, `golf-strokes-vs-field`, `golf-course-history` |
+| UFC | `ufc-fight-preview`, `ufc-elo-baseline`, `ufc-fighter-profile` |
+| Cricket | `cricket-match-preview`, `cricket-phase-analysis`, `cricket-chase-win-probability`, `cricket-venue-effects` |
 
 More are on the way for every sport: fourth-down and EPA work, xG and GSAx reports, regression screens, simulations. `catalog.json` lists every skill with its plugin and flags (all read-only; none move money).
 

@@ -1,0 +1,55 @@
+{
+  "skill": "mlb-streaming-planner",
+  "tasks": [
+    {
+      "prompt": "Who has the most games this week and where?",
+      "expect": [
+        "get_schedule called with days 7",
+        "games per team with home and away",
+        "no probable starters invented"
+      ]
+    },
+    {
+      "prompt": "Easiest offences to pitch against this week",
+      "expect": [
+        "get_team_stats and get_schedule called",
+        "opponents ranked on a stated measure",
+        "season-to-date caveat stated"
+      ]
+    },
+    {
+      "prompt": "Should I stream Hunter Brown on Tuesday?",
+      "expect": [
+        "states probable starters are not in the data",
+        "shows his recent games and the opponent's offence",
+        "no recommendation beyond the numbers"
+      ]
+    }
+  ],
+  "triggers": {
+    "should": [
+      "who has the most games this week",
+      "who should I stream",
+      "which teams play at home this week",
+      "easy offences to pitch against",
+      "two-start week planning",
+      "which bullpen games are coming",
+      "which teams play 7 games this week",
+      "what does the schedule look like for the Red Sox",
+      "best matchups for pitchers this week",
+      "which opponents strike out the most"
+    ],
+    "should_not": [
+      "preview the Dodgers game",
+      "is his average sustainable",
+      "did his velocity drop",
+      "Ohtani home run prop",
+      "MLB standings",
+      "NFL weekly usage report",
+      "fantasy football start sit",
+      "build a DFS lineup optimiser",
+      "the game's closing line movement",
+      "spray chart for Soto"
+    ]
+  }
+}

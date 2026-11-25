@@ -1,0 +1,55 @@
+{
+  "skill": "mlb-pitcher-skill-change",
+  "tasks": [
+    {
+      "prompt": "Did Paul Skenes lose velocity this season?",
+      "expect": [
+        "get_pitch_mix for two seasons",
+        "average and top velocity compared with pitches counted",
+        "in-season trend computed and labelled as computed"
+      ]
+    },
+    {
+      "prompt": "Is Skubal throwing his changeup more?",
+      "expect": [
+        "usage by pitch type across seasons",
+        "whiff rate with swings noted",
+        "no spin or movement claims"
+      ]
+    },
+    {
+      "prompt": "Why is his strikeout rate up?",
+      "expect": [
+        "get_pitch_mix and get_player called",
+        "pitch-level evidence tied to the K% change",
+        "admits when the data cannot say"
+      ]
+    }
+  ],
+  "triggers": {
+    "should": [
+      "did his fastball velocity drop",
+      "new pitch for Skubal",
+      "is he throwing the slider more",
+      "why is his strikeout rate up",
+      "whiff rate on his changeup",
+      "is he hurt or just tired",
+      "has his arsenal changed",
+      "velocity trend for Skenes",
+      "is the cutter new",
+      "pitch mix change from last season"
+    ],
+    "should_not": [
+      "preview the Yankees game",
+      "who is getting lucky this season",
+      "who to stream this week",
+      "Cole strikeouts prop tonight",
+      "MLB standings",
+      "spin rate for his curveball",
+      "build a pitch-type classifier",
+      "NFL quarterback velocity",
+      "spray chart for Judge",
+      "his career ERA"
+    ]
+  }
+}
