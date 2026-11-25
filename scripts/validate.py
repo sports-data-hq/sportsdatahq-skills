@@ -27,8 +27,16 @@ for skill in sorted(ROOT.glob("plugins/*/skills/*/SKILL.md")):
     if len(text.splitlines()) > 500: problems.append(f"{name}: over 500 lines")
     sport = SPORT_OF.get(plugin)
     known = set(TOOLS[sport]) if sport else ALL_TOOLS
-    for t in set(re.findall(r"`((?:get|list|search)_[a-z_]+)", text)):
-        if t not in known: problems.append(f"{name}: tool {t} not on {sport or 'any'} API")
+    # A tool named in a "do not invent X" warning or a "X -> use Y" table is not a call.
+    NOT_A_CALL = re.compile(r"invent|not exist|doesn.t exist|no such|instead|yourself|compute|closest|\| *Use `|not a tool|not on (this|every)", re.I)
+    for line in text.splitlines():
+        if NOT_A_CALL.search(line): continue
+        # "| `wished_for_tool` | how to get it from real tools |" rows: the first cell names a tool that does not exist.
+        row = re.match(r"^\|\s*`([a-z_]+)`\s*\|(.*)\|", line)
+        if row and row.group(1) not in known and (re.search(r"`(?:get|list|search)_[a-z_]+`", row.group(2)) or re.search(r"\b(derive|implement|build|compute|use|not available|not a direct|calculate|ask|split by)\b", row.group(2), re.I)):
+            continue
+        for t in set(re.findall(r"`((?:get|list|search)_[a-z_]+)", line)):
+            if t not in known: problems.append(f"{name}: tool {t} not on {sport or 'any'} API")
 print(f"{len(list(ROOT.glob('plugins/*/skills/*/SKILL.md')))} skills checked")
 for p in problems: print("PROBLEM", p)
 sys.exit(1 if problems else 0)
