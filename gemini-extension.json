@@ -1,13 +1,61 @@
 {
-  "name": "puckapi",
-  "version": "1.0.0",
-  "description": "PuckAPI MCP server for NHL hockey data: schedules, results, stats and odds.",
+  "name": "sportsdatahq",
+  "version": "2.0.0",
+  "description": "SportsDataHQ MCP servers for nine sports: hockey, football, basketball, baseball, soccer, tennis, golf, UFC and cricket. Each needs its API key in an environment variable.",
   "contextFileName": "GEMINI.md",
   "mcpServers": {
     "puckapi": {
       "httpUrl": "https://mcp.puckapi.com/mcp",
       "headers": {
         "x-api-key": "${PUCKAPI_API_KEY}"
+      }
+    },
+    "endzoneapi": {
+      "httpUrl": "https://mcp.endzoneapi.com/mcp",
+      "headers": {
+        "x-api-key": "${ENDZONEAPI_API_KEY}"
+      }
+    },
+    "dunkapi": {
+      "httpUrl": "https://mcp.dunkapi.com/mcp",
+      "headers": {
+        "x-api-key": "${DUNKAPI_API_KEY}"
+      }
+    },
+    "fastballapi": {
+      "httpUrl": "https://mcp.fastballapi.com/mcp",
+      "headers": {
+        "x-api-key": "${FASTBALLAPI_API_KEY}"
+      }
+    },
+    "strikerapi": {
+      "httpUrl": "https://mcp.strikerapi.com/mcp",
+      "headers": {
+        "x-api-key": "${STRIKERAPI_API_KEY}"
+      }
+    },
+    "acesapi": {
+      "httpUrl": "https://mcp.acesapi.com/mcp",
+      "headers": {
+        "x-api-key": "${ACESAPI_API_KEY}"
+      }
+    },
+    "birdieapi": {
+      "httpUrl": "https://mcp.birdieapi.com/mcp",
+      "headers": {
+        "x-api-key": "${BIRDIEAPI_API_KEY}"
+      }
+    },
+    "fighterapi": {
+      "httpUrl": "https://mcp.fighterapi.com/mcp",
+      "headers": {
+        "x-api-key": "${FIGHTERAPI_API_KEY}"
+      }
+    },
+    "yorkerapi": {
+      "httpUrl": "https://mcp.yorkerapi.com/mcp",
+      "headers": {
+        "x-api-key": "${YORKERAPI_API_KEY}"
       }
     }
   }

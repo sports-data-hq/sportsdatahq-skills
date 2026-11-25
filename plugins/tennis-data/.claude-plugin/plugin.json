@@ -1,0 +1,21 @@
+{
+  "name": "tennis-data",
+  "displayName": "AcesAPI: tennis skills",
+  "version": "2.0.0",
+  "description": "Tennis analysis skills on AcesAPI: game previews, player and team research, and the community's standard metrics, with every number pulled live from the AcesAPI MCP server.",
+  "author": {
+    "name": "SportsDataHQ",
+    "url": "https://sportsdatahq.com"
+  },
+  "homepage": "https://sportsdatahq.com/skills?sport=tennis",
+  "repository": "https://github.com/sports-data-hq/sportsdatahq-skills",
+  "license": "MIT",
+  "keywords": [
+    "tennis",
+    "atp",
+    "wta",
+    "elo",
+    "sports-data",
+    "acesapi"
+  ]
+}

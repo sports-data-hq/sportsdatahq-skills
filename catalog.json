@@ -1,0 +1,341 @@
+{
+ "generated_from": "plugins/*/skills/*/SKILL.md",
+ "skills": [
+  {
+   "name": "cricket-match-preview",
+   "plugin": "cricket-data",
+   "description": "Use when the user wants a preview of a cricket match in any format: 'preview India vs Australia ODI', 'IPL preview MI vs CSK', 'who's favored in the Big Bash tonight', 'how does this ground play', 'T20 World Cup match preview'. Produces a one-page report: team ratings in the format and our pregame win probability (T20 and international ODI), venue profile (par scores, toss and batting-first record), recent results, key players' form, and the market's prices. Not for ball-by-ball replays (call get_deliveries) or modeling (see model-building).",
+   "reads_live_data": true,
+   "writes": false,
+   "moves_money": false
+  },
+  {
+   "name": "golf-tournament-preview",
+   "plugin": "golf-data",
+   "description": "Use when the user wants a preview of a golf tournament or a player's chances: 'preview this week's PGA Tour event', 'who's playing best going into the Masters', 'course history at Augusta for Scheffler', 'field strength this week', 'LPGA preview'. Produces a report: what's on, the strongest players by our strokes-versus-field rating, course or event history for the names that matter, and winner prices for the four men's majors. Not for a finished tournament's leaderboard (call get_leaderboard) or modeling (see model-building).",
+   "reads_live_data": true,
+   "writes": false,
+   "moves_money": false
+  },
+  {
+   "name": "mlb-game-preview",
+   "plugin": "mlb-data",
+   "description": "Use when the user wants a preview of one MLB or college baseball game: 'preview Yankees vs Red Sox', 'break down tonight's Dodgers game', 'how does this pitcher match up', 'what's the run line and total', 'who's hot for the Mets series'. Produces a one-page report: records and run differential, team offense and run prevention, our Elo ratings, the starters' arsenals when known, the line and what it implies. Not for regression screens or pitcher skill changes (other mlb- skills) or model building (see model-building).",
+   "reads_live_data": true,
+   "writes": false,
+   "moves_money": false
+  },
+  {
+   "name": "ufc-fight-preview",
+   "plugin": "mma-data",
+   "description": "Use when the user wants a preview of a UFC (or PFL, Bellator) fight or card: 'preview Jones vs Aspinall', 'break down the main event', 'who wins this fight', 'striking vs wrestling matchup', 'how do they finish fights'. Produces a one-page report: records by method, per-15-minute striking and grappling rates for and against, our Elo, physical profile, recent opposition, and the moneylines. Not for career stat leaderboards (call get_leaders) or modeling (see model-building).",
+   "reads_live_data": true,
+   "writes": false,
+   "moves_money": false
+  },
+  {
+   "name": "nba-game-preview",
+   "plugin": "nba-data",
+   "description": "Use when the user wants a preview of one NBA, WNBA or college basketball game: 'preview Celtics vs Knicks', 'break down tonight's Lakers game', 'who's out for the Nuggets', 'pace and efficiency matchup for this game', 'what's the line on Bucks Heat'. Produces a one-page report: records, ratings, pace and efficiency (offensive, defensive, net rating, four factors), injuries, the line and what it implies. Not for player props (see nba-player-props-research), minutes when a star sits (see nba-minutes-usage-redistribution) or modeling (see model-building).",
+   "reads_live_data": true,
+   "writes": false,
+   "moves_money": false
+  },
+  {
+   "name": "nba-minutes-usage-redistribution",
+   "plugin": "nba-data",
+   "description": "Use when an NBA or WNBA player is out or limited and the user asks who benefits: 'Embiid is out, who gets the minutes', 'how does usage change without Luka', 'who starts if Tatum sits', 'fantasy pickup with the injury', 'how did the Knicks play without Brunson'. Measures what happened in games the player missed (minutes, shots, usage per teammate) against games he played, with sample sizes. Not for prop lines (see nba-player-props-research) or a game preview (see nba-game-preview).",
+   "reads_live_data": true,
+   "writes": false,
+   "moves_money": false
+  },
+  {
+   "name": "nba-player-props-research",
+   "plugin": "nba-data",
+   "description": "Use when the user asks about NBA or WNBA player prop lines as information: 'what's Luka's points line', 'how often does Jokic go over his rebounds', 'compare threes lines across books', 'how did his line move', 'what does the market imply for his PRA'. Shows lines by sportsbook, the player's record against his line with sample size and minutes context, movement and no-margin probability. Never says which side to take. Not for game previews (see nba-game-preview) or who absorbs minutes when a player sits (see nba-minutes-usage-redistribution).",
+   "reads_live_data": true,
+   "writes": false,
+   "moves_money": false
+  },
+  {
+   "name": "nfl-game-preview",
+   "plugin": "nfl-data",
+   "description": "Use when the user wants a preview or breakdown of one NFL or college football game: 'preview Bills vs Chiefs', 'break down Sunday's Eagles game', 'what should I know about the Ravens game', 'who's hurt for the Lions game', 'matchup analysis for TNF'. Produces a one-page report: records and form, efficiency (EPA, success rate), injuries, the line and what it implies, and head-to-head. Not for a whole week's slate of player props (see nfl-player-props-research), fantasy usage (see nfl-weekly-usage-report) or building a model (see model-building).",
+   "reads_live_data": true,
+   "writes": false,
+   "moves_money": false
+  },
+  {
+   "name": "nfl-player-props-research",
+   "plugin": "nfl-data",
+   "description": "Use when the user asks about NFL player prop lines as information: 'what's Josh Allen's passing yards line', 'how often has Saquon gone over his rushing line', 'compare receiving yards lines across books', 'how did his line move', 'what does the market imply for his TD'. Shows lines by sportsbook, a player's record against his line with sample size, line movement and no-margin probability. Never says which side to take. Not for game-level previews (see nfl-game-preview) or fantasy start/sit (see nfl-weekly-usage-report).",
+   "reads_live_data": true,
+   "writes": false,
+   "moves_money": false
+  },
+  {
+   "name": "nfl-weekly-usage-report",
+   "plugin": "nfl-data",
+   "description": "Use when the user has weekly NFL fantasy or usage questions: 'who gets more work with the WR1 out', 'snap share trends for the Bengals backfield', 'target share leaders this week', 'who is the waiver add after the injury', 'compare usage for my two flex options'. Builds a usage report from snaps, targets, carries, red-zone work and injuries, and names who absorbs a vacated role. Not for player prop lines (see nfl-player-props-research) or a single game preview (see nfl-game-preview).",
+   "reads_live_data": true,
+   "writes": false,
+   "moves_money": false
+  },
+  {
+   "name": "nhl-advanced-stats",
+   "plugin": "nhl-data",
+   "description": "Use when the user asks what Corsi, Fenwick, PDO, xG, high-danger chances, zone entries, RAPM or WAR mean, how to read a team's or player's advanced numbers, whether a team is lucky or unlucky, or what a stat tells you. Explains the metric and, when asked, pulls real numbers to show it. Not for odds or margin concepts (use odds-market-analysis), building an xG model (use nhl-xg-model), turning metrics into model features (use feature-engineering) or value decomposition (use nhl-war-gar).",
+   "reads_live_data": true,
+   "writes": false,
+   "moves_money": false
+  },
+  {
+   "name": "nhl-daily-slate",
+   "plugin": "nhl-data",
+   "description": "Use when the user asks what is on tonight, wants the full NHL slate, every game today, a daily rundown, or which games the model sees differently from the market. Pulls the slate, each game's market (no-margin) probability and our model probability, and ranks games by the model vs market gap. Odds are information only: no stakes, picks or wagering advice. Not for one game in depth (use nhl-game-preview), a plain schedule or results lookup (use nhl-game-lookup), odds-only comparison (use nhl-odds-explorer) or historical testing (use backtesting).",
+   "reads_live_data": true,
+   "writes": false,
+   "moves_money": false
+  },
+  {
+   "name": "nhl-game-lookup",
+   "plugin": "nhl-data",
+   "description": "Use when the user asks who plays tonight, what is on the schedule, when a team plays next, what happened in last night's game, the score, or the head-to-head record between two teams. Finds NHL games by date, team, matchup or season: results, upcoming schedule and head-to-head history. Not for how a team is performing (use nhl-team-analysis), odds or lines (use nhl-odds-explorer), a full pre-game report (use nhl-game-preview) or player stats (use nhl-player-scouting).",
+   "reads_live_data": true,
+   "writes": false,
+   "moves_money": false
+  },
+  {
+   "name": "nhl-game-preview",
+   "plugin": "nhl-data",
+   "description": "Use when the user asks for a preview of one NHL game, a matchup breakdown, a pre-game report, 'Sabres vs Leafs tonight', who is in goal, or how two teams compare. Builds one report: records and rest, goalie matchup, key stats, odds snapshot with market (no-margin) probability, how our probability differs from the market's, and head-to-head. Odds are information only, no wagering advice. Not for the whole slate (use nhl-daily-slate), odds only (use nhl-odds-explorer), deep goalie work (use nhl-goalie-analysis), deep team work (use nhl-team-analysis) or model building (use model-building).",
+   "reads_live_data": true,
+   "writes": false,
+   "moves_money": false
+  },
+  {
+   "name": "nhl-goalie-analysis",
+   "plugin": "nhl-data",
+   "description": "Use when the user asks about NHL goalie stats, save percentage, GAA, who the best goalie is, whether a goalie is overrated or running hot, goalie fatigue, back-to-back starts, tandems, or how a goalie does against a team. Returns shot-quality-adjusted numbers (goals saved above expected, high-danger save percentage, rolling form) that hold up better than raw save percentage. Not for skaters (use nhl-player-scouting), team shot suppression (use nhl-team-analysis), goalie model features (use feature-engineering) or goalie saves props (use nhl-player-props-research).",
+   "reads_live_data": true,
+   "writes": false,
+   "moves_money": false
+  },
+  {
+   "name": "nhl-odds-explorer",
+   "plugin": "nhl-data",
+   "description": "Use when the user asks for NHL odds, what the lines are, how books compare, the margin (vig) in a market, how a line has moved, steam or sharp movement, or what the market probability is. Compares prices across books, converts to implied and fair (no-margin) probability, and reads line movement. Odds are information only: no stakes and no wagering advice. Not for devigging theory or closing-line quality (use odds-market-analysis), comparing a model with the market (use market-vs-model) or game results (use nhl-game-lookup).",
+   "reads_live_data": true,
+   "writes": false,
+   "moves_money": false
+  },
+  {
+   "name": "nhl-player-props-research",
+   "plugin": "nhl-data",
+   "description": "Use when the user asks about NHL player props, a player's shots, points, goals, assists or saves projection, anytime goalscorer probability, how a player did against his prop line, how a prop line moved, or DFS-style projections. Projects a player's stat for one game and shows how our probability differs from the market's for that line. Odds are information only: no stakes, picks or wagering advice. Not for team results models (use model-building), scouting without projections (use nhl-player-scouting), a plain look at current lines (use nhl-odds-explorer) or game totals (use nhl-totals-model).",
+   "reads_live_data": true,
+   "writes": false,
+   "moves_money": false
+  },
+  {
+   "name": "nhl-player-scouting",
+   "plugin": "nhl-data",
+   "description": "Use when the user asks how an NHL player is playing, a player's points per game, a team's top scorers, to compare two skaters, how a prospect from another league translates to the NHL (NHLe), or wants stats for fantasy. Searches players and gives season stats, game logs, per-game rates and multi-season trends. Not for goalies (use nhl-goalie-analysis), team-level analysis (use nhl-team-analysis), WAR or GAR (use nhl-war-gar) or prop projections (use nhl-player-props-research).",
+   "reads_live_data": true,
+   "writes": false,
+   "moves_money": false
+  },
+  {
+   "name": "nhl-playoff-simulation",
+   "plugin": "nhl-data",
+   "description": "Use when the user asks about playoff odds, a team's chances to make the playoffs, who wins the division, Stanley Cup probability, how likely a team is to win the Cup, a season simulation or a bracket simulation. Runs a Monte Carlo season and playoff simulator on PuckAPI standings and schedule. Not for one game's win probability (use model-building or nhl-game-preview). Not for team stats without a simulation (use nhl-team-analysis). Not for player questions (use nhl-player-scouting).",
+   "reads_live_data": true,
+   "writes": false,
+   "moves_money": false
+  },
+  {
+   "name": "nhl-puckapi-tools",
+   "plugin": "nhl-data",
+   "description": "Use when any hockey skill needs data, or when the user asks which PuckAPI tool to call for games, schedules, standings, team or player stats, goalies, shots, shifts, odds, line movement or player props. Routes requests to the right tool of the PuckAPI MCP server and tracks credit cost. Not for analysis or modeling (use nhl-advanced-stats, model-building or market-vs-model). Not for recommending wagers: prices are shown as information only.",
+   "reads_live_data": true,
+   "writes": false,
+   "moves_money": false
+  },
+  {
+   "name": "nhl-research-workflow",
+   "plugin": "nhl-data",
+   "description": "Use when the user asks how to analyze hockey data with Claude, how to structure an analysis session, how to test a hunch about a team or player, how to improve a model that is stuck, or how to write up model performance. Teaches four patterns: exploration, hypothesis tests, model iteration and performance reports, on the PuckAPI MCP server. Not for one specific lookup (use nhl-game-lookup or nl-to-query). Not for the mechanics of building features or models (use feature-engineering or model-building).",
+   "reads_live_data": true,
+   "writes": false,
+   "moves_money": false
+  },
+  {
+   "name": "nhl-team-analysis",
+   "plugin": "nhl-data",
+   "description": "Use when the user asks how a team is doing, where a team sits in the division or conference, what their record is, who is in a playoff spot, how two teams compare, or how hard a schedule has been. Reads standings and team stats from the PuckAPI MCP server. Not for individual skaters (use nhl-player-scouting). Not for goalie numbers (use nhl-goalie-analysis). Not for building model features (use feature-engineering). Not for a single upcoming game (use nhl-game-preview).",
+   "reads_live_data": true,
+   "writes": false,
+   "moves_money": false
+  },
+  {
+   "name": "nhl-totals-model",
+   "plugin": "nhl-data",
+   "description": "Use when the user asks to model NHL game totals, predict total goals, how many goals a game will have, over/under probability, scoring pace, or whether a goalie matchup changes scoring. Builds a calibrated total-goals distribution from the PuckAPI MCP server and compares it to the market total as a probability gap. Not for who wins or the puck line (use model-building). Not for player goal or point props (use nhl-player-props-research). Not for just viewing current lines (use nhl-odds-explorer).",
+   "reads_live_data": true,
+   "writes": false,
+   "moves_money": false
+  },
+  {
+   "name": "nhl-war-gar",
+   "plugin": "nhl-data",
+   "description": "Use when the user asks about WAR, GAR, RAPM, wins above replacement, how valuable a player really is, whether a contract is good value, or wants a player card with component breakdown. Builds RAPM ridge regression on shift data from the PuckAPI MCP server (get_shifts, get_plays). Not for simple stat lookups (use nhl-player-scouting). Not for goalies, who use GSAx (use nhl-goalie-analysis). Not for team standings or form (use nhl-team-analysis). Not for game prediction (use model-building).",
+   "reads_live_data": true,
+   "writes": false,
+   "moves_money": false
+  },
+  {
+   "name": "nhl-xg-model",
+   "plugin": "nhl-data",
+   "description": "Use when the user asks to build an expected goals (xG) model, score shot quality, compute xGF% or xGA, detect rebounds or rush shots, or model the chance a shot becomes a goal. Trains XGBoost or LightGBM on shot events and locations from the PuckAPI MCP server (get_shot_map, get_plays). Not for using xG values that already exist (use nhl-team-analysis or nhl-advanced-stats). Not for game win models (use model-building). Not for goalie evaluation (use nhl-goalie-analysis).",
+   "reads_live_data": true,
+   "writes": false,
+   "moves_money": false
+  },
+  {
+   "name": "soccer-match-preview",
+   "plugin": "soccer-data",
+   "description": "Use when the user wants a preview of one soccer (football) match in any covered league: 'preview Arsenal vs Chelsea', 'break down the Clasico', 'what should I know about the Inter match', 'MLS preview LAFC vs Galaxy', 'Champions League preview'. Produces a one-page report: table position and form, our club Elo, xG for and against, lineups when out, the three-way line and what it implies. Not for one match's shot-by-shot xG story (see soccer-xg-breakdown) or modeling (see model-building).",
+   "reads_live_data": true,
+   "writes": false,
+   "moves_money": false
+  },
+  {
+   "name": "soccer-xg-breakdown",
+   "plugin": "soccer-data",
+   "description": "Use when the user wants the expected-goals story of a soccer match or a club's or player's shots: 'xG breakdown of Arsenal Chelsea', 'did City deserve to win', 'shot map for Saka this season', 'who created the best chances', 'is Haaland over-performing his xG'. Shows shots with location, outcome and our xG, the xG race, big chances, and finishing over or under expected with sample size. Not for pre-match previews (see soccer-match-preview).",
+   "reads_live_data": true,
+   "writes": false,
+   "moves_money": false
+  },
+  {
+   "name": "backtesting",
+   "plugin": "sports-analytics-core",
+   "description": "Use when the user asks to backtest a model, check whether a model really works historically, test it on past seasons, get confidence intervals, see if accuracy is fading, or compare the model to the market's closing probabilities. Walk-forward only; refuses in-sample testing. Reports sample size, an interval and a per-season breakdown. Not for tracking live predictions (use prediction-tracker), not for how our probability differs from the market today (use market-vs-model), not for training (use model-building), not for fold mechanics alone (use walk-forward-validation).",
+   "reads_live_data": false,
+   "writes": false,
+   "moves_money": false
+  },
+  {
+   "name": "data-pipeline",
+   "plugin": "sports-analytics-core",
+   "description": "Use when the user wants to automate a sports model: run predictions every morning, set up a cron job or GitHub Action, store predictions in a database, version models, retrain on a schedule or get alerted when accuracy drifts. Covers pulls through any sport's SportsDataHQ MCP server. Not for one-off lookups (use your sport's lookup skill or nl-to-query), not for building the model (use model-building), not for historical testing (use backtesting), not for grading logged predictions (use prediction-tracker).",
+   "reads_live_data": false,
+   "writes": false,
+   "moves_money": false
+  },
+  {
+   "name": "elo-engineering",
+   "plugin": "sports-analytics-core",
+   "description": "Use when the user asks to build Elo ratings, rate teams or players, tune K-factor or home advantage, carry ratings across seasons, add margin-of-victory, or mentions Fading, Form or Component Elo. Works for team sports and for tennis, golf, UFC and cricket player or fighter ratings. Not for general feature construction (use feature-engineering), not for a full model (use model-building), not for plain team stats (use nhl-team-analysis for hockey or your sport's stats tools), not for season simulation (use nhl-playoff-simulation).",
+   "reads_live_data": false,
+   "writes": false,
+   "moves_money": false
+  },
+  {
+   "name": "feature-engineering",
+   "plugin": "sports-analytics-core",
+   "description": "Use when the user asks to prepare data for a model, build rolling averages or recent-form features, add rest days or back-to-back flags, adjust for strength of schedule, build starter or goalkeeper quality features, use Elo as an input, or check features for leakage. Enforces shift(1) before any rolling calculation. Not for looking up raw stats (use your sport's lookup skill such as nhl-game-lookup or nhl-team-analysis), not for explaining hockey metrics (use nhl-advanced-stats), not for expected goals features (use nhl-xg-model), not for training (use model-building).",
+   "reads_live_data": false,
+   "writes": false,
+   "moves_money": false
+  },
+  {
+   "name": "market-vs-model",
+   "plugin": "sports-analytics-core",
+   "description": "Use when the user asks how our probability differs from the market's, whether the model disagrees with the odds, who the market likes more than the model does, or whether the model beats the closing line. Covers model vs market gap, fair (no-margin) probability, closing-line comparison as a measure of model quality, and how large a sample must be before a gap means anything. Odds are information only: no stake sizing, no wagering advice. Not for raw odds lookup (use odds-market-analysis, or nhl-odds-explorer for hockey), not for checking model accuracy over history (use backtesting), not for calibrating probabilities (use probability-calibration).",
+   "reads_live_data": true,
+   "writes": false,
+   "moves_money": false
+  },
+  {
+   "name": "model-building",
+   "plugin": "sports-analytics-core",
+   "description": "Use when the user wants to build a prediction model for game or match outcomes, train a classifier, choose between logistic regression, random forest or XGBoost, tune hyperparameters, see which features matter or combine models. Always walk-forward; refuses k-fold. Works for any sport. Not for building features (use feature-engineering), not for checking probability quality (use probability-calibration), not for fold design alone (use walk-forward-validation), not for expected goals models (use nhl-xg-model), not for comparing output with market probabilities (use market-vs-model).",
+   "reads_live_data": false,
+   "writes": false,
+   "moves_money": false
+  },
+  {
+   "name": "nl-to-query",
+   "plugin": "sports-analytics-core",
+   "description": "Use when the user asks a research question in plain English and does not name a tool or field, for example 'show me games where the home team was outshot but won', 'how often does the team that scores first win', 'find back-to-back losses', 'who leads the league in X when Y'. Translates the question into conditions, calls your sport's SportsDataHQ MCP tools, retries with adjusted filters when results look wrong, and reports counts with sample size. Not for a lookup where the tool is obvious (use nhl-game-lookup, nhl-team-analysis or nhl-goalie-analysis for hockey), not for building model features (use feature-engineering).",
+   "reads_live_data": false,
+   "writes": false,
+   "moves_money": false
+  },
+  {
+   "name": "odds-market-analysis",
+   "plugin": "sports-analytics-core",
+   "description": "Use when the user asks what odds mean as a probability, how to convert American, decimal or fractional odds, what the bookmaker margin (vig, juice, overround) is, how to remove it (devig, no-vig line, Shin, power, multiplicative), how a line moved, or how a closing line compares with our model. Odds are treated as information about the market, never as an instruction to wager. Not for browsing current prices (use nhl-odds-explorer for hockey), not for comparing our model with the market (use market-vs-model), not for calibrating model output (use probability-calibration).",
+   "reads_live_data": true,
+   "writes": false,
+   "moves_money": false
+  },
+  {
+   "name": "prediction-tracker",
+   "plugin": "sports-analytics-core",
+   "description": "Use when the user wants to log model predictions and grade them later, asks how accurate the model has been so far, whether accuracy is slipping, or whether it is beating the closing line, for example 'track my predictions', 'how's the model doing', 'is it still any good', 'log tonight's probabilities'. Logs probability, outcome, Brier score, log loss, calibration and closing-line comparison, with sample size and intervals. Not for placing or sizing wagers (never done here), not for historical tests before going live (use backtesting or walk-forward-validation), not for fixing calibration (use probability-calibration), not for retraining (use model-building).",
+   "reads_live_data": false,
+   "writes": false,
+   "moves_money": false
+  },
+  {
+   "name": "probability-calibration",
+   "plugin": "sports-analytics-core",
+   "description": "Use when the user asks whether model probabilities can be trusted, if 63% really means 63%, for a reliability diagram or calibration plot, Brier score, log loss, Platt scaling or isotonic regression, or whether calibration is drifting. Verifies and corrects predicted probabilities against outcomes, with sample size and intervals. Not for odds math or removing the margin (use odds-market-analysis), not for training a model (use model-building), not for comparing with the market (use market-vs-model), not for historical accuracy tests alone (use backtesting).",
+   "reads_live_data": false,
+   "writes": false,
+   "moves_money": false
+  },
+  {
+   "name": "sports-data-preflight",
+   "plugin": "sports-analytics-core",
+   "description": "Use before any analysis that joins, compares or aggregates sports data across games, players, seasons or leagues: resolving a player or team to its id, checking which season a date belongs to, confirming a league is the right one (NHL vs PWHL, MLB vs college baseball, Premier League vs Championship), spotting duplicates, and deciding whether there is enough data to answer. Use when the user says 'compare', 'over the last N games', 'this season', 'career', 'trend', or names a player whose id you do not have yet. Not for a single lookup (call the tool directly) or for modeling itself (see model-building).",
+   "reads_live_data": true,
+   "writes": false,
+   "moves_money": false
+  },
+  {
+   "name": "sports-skill-router",
+   "plugin": "sports-analytics-core",
+   "description": "Use when a sports data or analytics request comes in and it is unclear which skill to load, for example 'help me with this sports data', 'where do I start', 'what can you do with hockey stats', 'which skill handles X'. Routes the request to the right two or three skills so not all of them load. Not for answering the question itself: once routed, the chosen skill does the work. Single-skill requests (for example 'devig these odds') can go straight to odds-market-analysis without this router.",
+   "reads_live_data": false,
+   "writes": false,
+   "moves_money": false
+  },
+  {
+   "name": "visualization",
+   "plugin": "sports-analytics-core",
+   "description": "Use when the user wants a chart, plot, graph, picture or shareable image of an analysis, for example 'plot the calibration', 'make a matchup card', 'chart the model against the market', 'visualize that', 'make this look good for a post'. Renders output from another skill as matplotlib/seaborn code or a terminal chart. Not for pulling or exploring data (use nl-to-query, or nhl-game-lookup for hockey), not for the analysis itself (run the relevant skill first, then come back here).",
+   "reads_live_data": false,
+   "writes": false,
+   "moves_money": false
+  },
+  {
+   "name": "walk-forward-validation",
+   "plugin": "sports-analytics-core",
+   "description": "Use when the user asks how to validate or test a sports prediction model, whether k-fold or a random train/test split is okay, why accuracy fell on new data, whether the model is overfit, or whether a result is statistically significant. Gives the time-ordered (walk-forward) method with per-season results, baselines and intervals, and redirects k-fold on time-ordered data. Not for historical strategy simulations (use backtesting), not for building the model (use model-building), not for calibrating probabilities (use probability-calibration).",
+   "reads_live_data": false,
+   "writes": false,
+   "moves_money": false
+  },
+  {
+   "name": "tennis-match-preview",
+   "plugin": "tennis-data",
+   "description": "Use when the user wants a preview of one ATP or WTA singles match: 'preview Sinner vs Alcaraz', 'who wins Swiatek vs Gauff on clay', 'break down tonight's match', 'how do they match up on grass', 'head to head and form'. Produces a one-page report: our overall and surface Elo with the pregame win probability, surface records, recent form, the head to head with its caveat, and the market's prices. Not for full tournament draws (use get_tournament directly) or modeling (see model-building).",
+   "reads_live_data": true,
+   "writes": false,
+   "moves_money": false
+  }
+ ]
+}

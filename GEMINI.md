@@ -2,7 +2,7 @@
 
 This extension connects Gemini CLI to the PuckAPI MCP server at https://mcp.puckapi.com/mcp.
 PuckAPI is a sports data API for NHL hockey. The server exposes tools for
-schedules, results, team and player stats, and betting odds.
+schedules, results, team and player stats, and odds.
 
 ## Setup
 

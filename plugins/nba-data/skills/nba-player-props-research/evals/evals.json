@@ -1,0 +1,12 @@
+{
+  "skill": "nba-player-props-research",
+  "tasks": [
+    {"prompt": "How often does Jokic go over his rebounds line?", "expect": ["get_prop_history with player_rebounds", "hit rate with n and pushes", "minutes split shown"]},
+    {"prompt": "Compare Steph Curry threes lines across books tonight", "expect": ["get_player_props with player_threes", "lines per book", "no 'best line to bet' language"]},
+    {"prompt": "What does the market imply for Luka's points tonight?", "expect": ["get_prop_probabilities", "no-margin probability as the market's view", "no pick"]}
+  ],
+  "triggers": {
+    "should": ["Luka points prop tonight", "how often does Jokic go over his rebounds", "compare threes lines across books", "how did Tatum's points line move", "PRA line for Giannis", "player prop history for Wemby", "NBA props for the Lakers game", "is SGA usually over his points line", "assists line for Haliburton", "what does the market imply for his rebounds"],
+    "should_not": ["Josh Allen passing yards prop", "preview the Celtics game", "who gets minutes with Embiid out", "NBA standings", "build an NBA props model", "shot chart for Curry", "NHL shots props", "explain what a parlay is", "fantasy basketball rankings", "LeBron career points"]
+  }
+}
