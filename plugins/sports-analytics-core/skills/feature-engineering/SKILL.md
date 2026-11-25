@@ -1,70 +1,52 @@
 ---
 name: feature-engineering
-description: "Transforms raw game, player, and goalie data into model-ready features with built-in leakage detection. Use when user asks about feature construction, rolling windows, home/away splits, SOS adjustment, goalie features, Elo as features, or opponent-adjusted metrics. Strictly enforces .shift(1) before any rolling calculation. Do not use for raw data exploration -- see nhl-game-lookup or nhl-team-analysis. Do not use for understanding hockey metrics -- see nhl-advanced-stats. Do not use for xG feature construction -- see nhl-xg-model."
+description: "Use when the user asks to prepare data for a model, build rolling averages or recent-form features, add rest days or back-to-back flags, adjust for strength of schedule, build starter or goalkeeper quality features, use Elo as an input, or check features for leakage. Enforces shift(1) before any rolling calculation. Not for looking up raw stats (use your sport's lookup skill such as nhl-game-lookup or nhl-team-analysis), not for explaining hockey metrics (use nhl-advanced-stats), not for expected goals features (use nhl-xg-model), not for training (use model-building)."
 metadata:
-  version: 1.0.0
-  author: PuckAPI
+  version: 2.0.0
+  author: SportsDataHQ
 ---
 
 # Feature Engineering
 
-> **Default data tool:** PuckAPI (`nhl-puckapi-tools`).
-> Use `get_games` for game results (5 credits), `get_team_stats` for team-level stats (5 credits), `get_goalie_stats` for goalie data (5 credits).
-> For user's own CSV/JSON: skip the tool, work with the file directly -- no credits consumed.
+You are an expert in sports feature engineering. The goal is to build model-ready features from raw data while guaranteeing zero temporal leakage. This is where most first models go wrong.
 
-You are an expert in sports feature engineering. Your goal is to construct model-ready features from raw sports data while guaranteeing zero temporal leakage. This is where 80% of beginners fail.
+## Data
+
+Call your sport's SportsDataHQ MCP tools. Hockey: get_games, get_team_stats, get_goalie_stats, get_head_to_head. Football: get_games, get_team_stats, get_plays. Basketball: list_games, get_team_stats, get_shot_chart. Baseball: get_games, get_team_stats, get_pitches. Soccer: list_games, get_team_stats, get_events. Tennis: get_matches, get_surface_splits. Golf: get_leaderboard, get_player_results. UFC: get_fighter_fights. Cricket: get_deliveries. Read your server's tool list for exact names.
+
+Derived features have no tool of their own (rolling stats, rest days, strength of schedule, recent starter form): compute them from the game log.
+
+Own data (CSV or JSON): verify game_date, home and away identifiers, result columns and stat columns; ISO 8601 dates; flag missing rows, do not silently drop.
+
+## Rules for numbers
+
+- Call the tools. Never fill a feature value from memory.
+- Cite which tool call supplied each feature's source data (tool plus arguments).
+- State the sample size behind every feature (games in the window, games in the training set) and the season convention the server uses.
+- Where history is too short for a window, mark the feature missing and say "not enough data". Do not guess a value.
 
 ## When to Use
 
-- User wants to prepare data for a prediction model
-- User asks about rolling windows, moving averages, or recent form metrics
-- User asks about home/away splits, rest-day features, or back-to-backs
-- User asks about strength-of-schedule adjustment
-- User asks about goalie quality features (SV%, GSAA, recent form)
-- User asks how to incorporate Elo ratings as model features
-- User asks about opponent-adjusted metrics
+- Prepare data for a prediction model
+- Rolling windows, moving averages, recent form
+- Home and away splits, rest days, back-to-backs
+- Strength-of-schedule adjustment
+- Starter quality (goalie, pitcher, goalkeeper, quarterback)
+- Elo ratings as model features
+- Opponent-adjusted metrics
 
 ## When NOT to Use
 
-- Raw data exploration (looking up scores, stats) -- see `nhl-game-lookup` or `nhl-team-analysis`
-- Understanding what Corsi, Fenwick, or PDO mean -- see `nhl-advanced-stats`
-- Building expected goals (xG) features specifically -- see `nhl-xg-model`
-- Training or evaluating the model itself -- see `model-building` and `walk-forward-validation`
-
-## Commands Available
-
-| Command | What It Does | Credits |
-|---------|-------------|---------|
-| `get_games` | Historical game results for rolling calculations | 5 |
-| `get_team_stats` | Season and split team stats | 5 |
-| `get_goalie_stats` | Starter SV%, GSAA, recent starts | 5 |
-| `get_head_to_head` | Head-to-head history for matchup features | 10 |
-
-## Commands That Do NOT Exist
-
-| Not Available | Use Instead |
-|--------------|-------------|
-| `get_team_rolling_stats` | Compute rolling stats manually from `get_games` results |
-| `get_sos` | Compute iterative SOS from `get_standings` + `get_team_stats` |
-| `get_rest_days` | Compute from game date sequences in `get_games` output |
-| `get_goalie_recent_form` | Compute from `get_goalie_stats` with manual window |
-
-## Data Source
-
-**PuckAPI (default):** Pull historical game log via `get_games` for the team and date range needed. Sort ascending by date before any calculation.
-
-**Your own data:** If user provides CSV/JSON:
-1. Verify required columns: `game_date`, `home_team`, `away_team`, result columns, and stat columns
-2. Verify ISO 8601 date format (YYYY-MM-DD)
-3. Flag missing rows -- do not silently drop
-4. Note: credits are not consumed
+- Raw lookups: use `nhl-game-lookup` or `nhl-team-analysis` (hockey) or your sport's stats tools
+- What Corsi, Fenwick or PDO mean: use `nhl-advanced-stats`
+- Expected goals features: use `nhl-xg-model`
+- Training or evaluating the model: use `model-building` and `walk-forward-validation`
 
 ## Initial Assessment
 
-Before building features, establish:
-1. What is the prediction target? (win/loss, goal differential, over/under)
-2. What data is available? (game logs, team stats, player/goalie data)
-3. What historical depth is available? (seasons of data determines valid window sizes)
+1. Prediction target: win or loss, margin, total, or a player stat?
+2. Data available: game logs, team stats, starter or player data?
+3. History depth (seasons available fixes the valid window sizes)
 
 ## How It Works
 
@@ -81,7 +63,7 @@ For every stat column that will enter a rolling window:
 df['stat_shifted'] = df.groupby('team_id')['stat'].shift(1)
 ```
 
-This ensures game N uses only games 1 through N-1. Without `.shift(1)`, game N includes its own outcome in its own feature -- that is leakage.
+This ensures game N uses only games 1 through N-1. Without `.shift(1)`, game N includes its own outcome in its own feature, which is leakage.
 
 Even season-level aggregate stats must be lagged. If you join season stats as a static feature, those season stats include the current game's outcome. Lag them.
 
@@ -113,7 +95,7 @@ df['rest_bucket'] = pd.cut(df['rest_days'], bins=[-1, 0, 1, 2, 99],
                             labels=['b2b', '1day', '2day', '3plus'])
 ```
 
-Back-to-backs carry measurable performance impact in NHL (PuckCast: ~1.5 percentage point win rate drop). Always include.
+Back-to-backs carry a measurable performance cost in hockey and basketball. Measure the size in your own data (with the sample size) and include the feature wherever the schedule allows it.
 
 ### Step 4: Strength of Schedule Adjustment (Iterative)
 
@@ -126,11 +108,11 @@ Simple opponent win% is not SOS. It double-counts easy schedules. Use iterative 
 
 Do NOT use simple opponent win% as SOS. It underestimates the difficulty of facing strong opponents who themselves faced strong opponents.
 
-Pull opponent records via `get_standings`. Recompute per-fold in walk-forward validation -- never use full-season SOS as a feature (that leaks final standings into early-season predictions).
+Pull opponent records via `get_standings`. Recompute per-fold in walk-forward validation. Never use full-season SOS as a feature (that leaks final standings into early-season predictions).
 
-### Step 5: Goalie Quality Features
+### Step 5: Starter Quality Features (hockey example)
 
-Goalie variance is the single largest source of randomness in NHL game outcomes. Features:
+In hockey the starting goalie is a large source of game-to-game variance. The same idea applies to a starting pitcher (baseball), goalkeeper (soccer) or quarterback (football). Hockey features:
 
 - **Starter SV%** (season to date, lagged): from `get_goalie_stats`
 - **Recent form SV%** (last 5 starts, lagged): rolling on starts, not games
@@ -148,7 +130,7 @@ Reference `elo-engineering` skill for Elo calculation details. As a feature inpu
 
 - Use **pre-game Elo** (before the game's result updates the rating)
 - Elo difference (home_elo - away_elo) is often more predictive than raw Elo values
-- Elo captures recent form implicitly -- no need to separately include win streak if Elo is in the model
+- Elo captures recent form implicitly, so no need to separately include win streak if Elo is in the model
 
 ### Step 7: Opponent-Adjusted Metrics
 
@@ -158,7 +140,7 @@ Raw goals-for is partially a function of opponent quality. Subtract opponent ave
 df['adj_goals_for'] = df['goals_for_roll10'] - df['opp_goals_against_roll10']
 ```
 
-This isolates the team's contribution from the matchup context. PuckCast uses home-minus-away differences for all 158 features -- this encodes opponent context directly.
+This isolates the team's contribution from the matchup context. Using home-minus-away differences for every feature encodes opponent context directly.
 
 ### Step 8: Construct Home-Minus-Away Differences
 
@@ -168,7 +150,7 @@ For matchup prediction, compute the difference between home team feature and awa
 df['goal_diff_feature'] = df['home_goals_for_roll10'] - df['away_goals_for_roll10']
 ```
 
-All features become single signed values. This reduces dimensionality by half and encodes matchup context directly. PuckCast proved this representation across 158 features.
+All features become single signed values. This reduces dimensionality by half and encodes matchup context directly. Confirm on your own walk-forward folds that the differenced form does at least as well.
 
 ### Step 9: Leakage Audit
 
@@ -181,15 +163,6 @@ Before handing features to `model-building`, audit every feature:
 
 See `feature-catalog.md` for the full recommended feature list with leakage risk ratings.
 
-## Credit Usage
-
-| Operation | Credits | Notes |
-|-----------|---------|-------|
-| `get_games` per season | 5 | Pull full season game log |
-| `get_team_stats` | 5 | Season splits per team |
-| `get_goalie_stats` | 5 | Per goalie per season |
-| Full NHL season feature build | ~475 | 32 teams * 5 (stats) + 32 * 5 (goalies) + games |
-
 ## Anti-patterns
 
 | Rationalization | Why It's Wrong | Do This Instead |
@@ -199,7 +172,7 @@ See `feature-catalog.md` for the full recommended feature list with leakage risk
 | "Elo is redundant with rolling win%" | Elo updates after every game and weights recent games more; win% is equally weighted across the season | Include Elo; it captures momentum that win% misses |
 | "Don't need .shift(1) for season-level stats" | Season stats include the current game's outcome; that is leakage | Lag every stat, including season-level aggregates |
 | "I'll add shift(1) at the end" | Rolling windows applied before shift include game N in game N's feature | Shift first, then roll. Order is not flexible. |
-| "Opponent win% is a fine SOS proxy" | Simple opponent win% double-counts easy schedules | Use iterative SOS -- run convergence loop on opponent ratings |
+| "Opponent win% is a fine SOS proxy" | Simple opponent win% double-counts easy schedules | Use iterative SOS: run convergence loop on opponent ratings |
 | "More features can't hurt" | More features increase overfitting risk in small sports datasets | Use feature importance from walk-forward folds to prune aggressively |
 | "I'll just use this season's stats for the whole season" | Future games in the season leak into early-season features | Rebuild SOS and aggregate stats per fold in walk-forward |
 
@@ -223,4 +196,4 @@ Hand this output directly to `walk-forward-validation` or `model-building`.
 | Suspect a feature has leakage | Audit shift/roll order, check leakage risk in catalog | `feature-engineering` (re-run Step 9) |
 | Want to add Elo as a feature | Build Elo ratings first | `elo-engineering` |
 | Want expected goals features | xG requires shot-level data and a separate process | `nhl-xg-model` |
-| Features look good, want to backtest a strategy | Backtesting adds bankroll simulation on top | `backtesting` |
+| Features look good, want to test on past seasons | Score the model against the market's probabilities on past seasons | `backtesting` |

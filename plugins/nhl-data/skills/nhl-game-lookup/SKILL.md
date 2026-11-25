@@ -1,18 +1,25 @@
 ---
 name: nhl-game-lookup
-description: "Finds games by date, team, matchup, or season -- past results, tonight's slate, upcoming schedule, head-to-head history. Use when user asks who plays tonight, what's on the schedule, when do the Sabres play next, what happened in last night's game, or head-to-head record between two teams. Do not use for team performance evaluation -- see nhl-team-analysis. Do not use for odds or betting lines -- see nhl-odds-explorer. Do not use for player stats -- see nhl-player-scouting."
+description: "Use when the user asks who plays tonight, what is on the schedule, when a team plays next, what happened in last night's game, the score, or the head-to-head record between two teams. Finds NHL games by date, team, matchup or season: results, upcoming schedule and head-to-head history. Not for how a team is performing (use nhl-team-analysis), odds or lines (use nhl-odds-explorer), a full pre-game report (use nhl-game-preview) or player stats (use nhl-player-scouting)."
 metadata:
-  version: 1.0.0
-  author: PuckAPI
+  version: 2.0.0
+  author: SportsDataHQ
 ---
 
-# Game Lookup
+# NHL Game Lookup
 
-> **Default data tool:** PuckAPI (`nhl-puckapi-tools`).
-> Use `get_games` for schedule and results (5 credits), `get_schedule` for a team's upcoming games within a 1-30 day window (2 credits), `get_game_detail` for full game info with odds and goalies (10 credits), `get_head_to_head` for matchup history (10 credits).
-> For the user's own schedule CSV, skip the tool and work with the file directly.
+> **Data:** the PuckAPI MCP server (`nhl-puckapi-tools`).
+> Tools: `get_games` for schedule and results (5 credits), `get_schedule` for a team's upcoming games in a 1 to 30 day window (2 credits), `get_game_detail` for full game info with odds and goalies (10 credits), `get_head_to_head` for matchup history (10 credits).
+> For the user's own schedule file, skip the tools and work with the file.
 
-You are an expert at finding and surfacing game data. Your goal is to answer schedule and results questions quickly and accurately, then route the user toward deeper analysis if they want it.
+You are an expert at finding game data. Answer schedule and results questions quickly and accurately, then point to deeper skills if the user wants more.
+
+## Rules for numbers
+
+- Call the tools. Never answer from memory.
+- Cite which tool call produced each score, record or date.
+- State the sample size for any head-to-head record (number of games and the seasons covered) and the season convention (the tools name an NHL season by the year it starts).
+- If nothing is returned, say "not enough data" or "no games found" and say what you queried. Do not guess a score.
 
 ## When to Use
 
@@ -26,10 +33,10 @@ You are an expert at finding and surfacing game data. Your goal is to answer sch
 
 ## When NOT to Use
 
-- Team performance evaluation, standings, stats -- see `nhl-team-analysis`
-- Betting lines, odds, line movement -- see `nhl-odds-explorer`
-- Player stats from a game -- see `nhl-player-scouting`
-- Full game preview with predictions -- see `nhl-game-preview`
+- Team performance evaluation, standings, stats: see `nhl-team-analysis`
+- Odds and line movement: see `nhl-odds-explorer`
+- Player stats from a game: see `nhl-player-scouting`
+- Full game preview with predictions: see `nhl-game-preview`
 
 ## Commands Available
 
@@ -52,7 +59,7 @@ You are an expert at finding and surfacing game data. Your goal is to answer sch
 
 ## Season Resolution
 
-- October through December: current calendar year is the season start (2025-26 season starts 2025)
+- October through December: current calendar year is the season start (2025-26 season is 2025)
 - January through September: previous calendar year is the season start (2025-26 season, referenced as 2025)
 - "This season" = season currently in progress or most recently completed
 - "Last season" = one full season prior
@@ -68,7 +75,7 @@ Before querying, understand:
 2. **Which team(s)?** One team for schedule queries, two teams for head-to-head.
 3. **What time window?** Tonight, this week, this season, or a specific date?
 
-If the question is "who plays tonight?" -- call `get_games` immediately. Do not ask for clarification on obvious queries.
+If the question is "who plays tonight?": call `get_games` immediately. Do not ask for clarification on obvious queries.
 
 ## How It Works
 
@@ -84,7 +91,7 @@ If the question is "who plays tonight?" -- call `get_games` immediately. Do not 
 
 ### Step 2: Resolve the date or season
 
-Apply season resolution rules above. For "tonight," use today's date (2026-05-01). For "this week," use a 7-day window from today.
+Apply season resolution rules above. For "tonight," use today's date (run `date` if unsure). For "this week," use a 7-day window from today.
 
 ### Step 3: Execute the query
 
@@ -106,8 +113,8 @@ Present results in the output format below. Offer routing to deeper skills only 
 
 **Your own data:** If user provides a CSV or JSON schedule:
 1. Verify required columns exist: `date`, `home_team`, `away_team`, `home_score`, `away_score` (or equivalent)
-2. Check date format -- ISO 8601 preferred (YYYY-MM-DD)
-3. Flag missing scores for future games -- do not treat blank scores as 0-0
+2. Check date format: ISO 8601 preferred (YYYY-MM-DD)
+3. Flag missing scores for future games: do not treat blank scores as 0-0
 4. Credits are not consumed when working with user's own data
 
 ## Credit Usage
@@ -120,14 +127,14 @@ Present results in the output format below. Offer routing to deeper skills only 
 | Head-to-head history | 10 | All historical matchups, two teams |
 | Full-week slate | 5 | One `get_games` call with date range |
 
-**Cost note:** `get_schedule` (2 credits) is the cheapest way to check upcoming games. Use `get_games` (5 credits) for broader lookups. Reserve `get_game_detail` (10 credits) and `get_head_to_head` (10 credits) for when you need full detail. Odds (10 credits) and line movement (25 credits) are the most expensive.
+**Cost note:** `get_schedule` (2 credits) is the cheapest way to check upcoming games. Use `get_games` (5 credits) for broader lookups. Reserve `get_game_detail` and `get_head_to_head` (10 credits each) for when you need full detail.
 
 ## Anti-patterns
 
 | Rationalization | Why It's Wrong | Do This Instead |
 |----------------|---------------|-----------------|
 | "I'll use `get_game_detail` for every result to get more data" | `get_game_detail` costs 10 credits vs 5 for `get_games` and is unnecessary for a simple score query | Use `get_games` for results; only escalate to `get_game_detail` if the user wants odds or goalie start info for a specific game |
-| "I'll pull the full schedule and filter locally" | Wastes the user's time; API filters are faster and cheaper | Filter at the query level using team and date parameters |
+| "I'll pull the full schedule and filter locally" | Wastes the user's time; tool filters are faster and cheaper | Filter at the query level using team and date parameters |
 | "The team name looks close enough, I'll proceed" | Partial matches cause silent wrong results | Verify exact team name with `list_teams` if unsure |
 | "No results probably means no games" | Could be a wrong date, wrong team, or off-season | Explicitly state what was queried and suggest alternate interpretations |
 
@@ -135,7 +142,7 @@ Present results in the output format below. Offer routing to deeper skills only 
 
 ### Tonight's slate
 ```
-Games -- [Date]
+Games: [Date]
 [Sport] | [Home Team] vs [Away Team] | [Start Time] | [Venue]
 ...
 [N] games scheduled.
@@ -143,21 +150,21 @@ Games -- [Date]
 
 ### Game result
 ```
-[Away Team] [Score] @ [Home Team] [Score] -- FINAL
+[Away Team] [Score] @ [Home Team] [Score]: FINAL
 Date: [Date] | Venue: [Venue]
 Period scores: [Q1/P1 scores if available]
 ```
 
 ### Team schedule (upcoming)
 ```
-[Team] -- Next [N] Games
+[Team]: Next [N] Games
 [Date] | [vs/at] [Opponent] | [Time/Result]
 ...
 ```
 
 ### Head-to-head
 ```
-[Team A] vs [Team B] -- All-time: [W-L-OT]
+[Team A] vs [Team B]: All-time: [W-L-OT]
 Last 5 meetings:
 [Date] | [Winner] [Score]-[Score] | [Location]
 ...
@@ -168,7 +175,7 @@ Last 5 meetings:
 | What You Found | Next Action | Skill |
 |----------------|-------------|-------|
 | Found a game, want full matchup breakdown | Run game preview with odds, stats, trends | `nhl-game-preview` |
-| Found a game, want current betting lines | Pull odds across books | `nhl-odds-explorer` |
+| Found a game, want current lines | Compare odds across books | `nhl-odds-explorer` |
 | Want to know how a team has been playing | Check standings and team stats | `nhl-team-analysis` |
 | Found a head-to-head, want to build a model feature | Encode H2H as a feature | `feature-engineering` |
 | Want stats for a player in a found game | Look up player season stats | `nhl-player-scouting` |

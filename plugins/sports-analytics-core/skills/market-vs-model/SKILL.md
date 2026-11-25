@@ -1,255 +1,114 @@
 ---
 name: market-vs-model
-description: "Compares model probabilities against market odds to find positive expected value bets. Use when user asks about EV calculation, edge magnitude, Kelly criterion, bankroll sizing, CLV tracking, closing line value, fractional Kelly, simultaneous bets, or which bets are worth placing. Do not use for odds exploration without a model -- see nhl-odds-explorer. Do not use for validating model accuracy -- see backtesting. Do not use for converting odds formats or computing implied probability -- see odds-market-analysis."
+description: "Use when the user asks how our probability differs from the market's, whether the model disagrees with the odds, who the market likes more than the model does, or whether the model beats the closing line. Covers model vs market gap, fair (no-margin) probability, closing-line comparison as a measure of model quality, and how large a sample must be before a gap means anything. Odds are information only: no stake sizing, no wagering advice. Not for raw odds lookup (use odds-market-analysis, or nhl-odds-explorer for hockey), not for checking model accuracy over history (use backtesting), not for calibrating probabilities (use probability-calibration)."
 metadata:
-  version: 1.0.0
-  author: PuckAPI
+  version: 2.0.0
+  author: SportsDataHQ
 ---
 
-# Edge Detection
+# Model vs Market
 
-> **Default data tool:** PuckAPI (`nhl-puckapi-tools`).
-> Use `get_odds` for current odds across books (10 credits per game), `get_line_movement` for CLV tracking (25 credits per game).
-> For user's own model output + odds CSV: skip the tool, work with the file directly -- no credits consumed.
+Compare the probability our model gives an outcome with the probability the market implies. This skill reports how the two differ and whether the model's view tends to be right. It does not tell anyone to wager and it does not size stakes. Odds are information.
 
-You are an expert in sports betting edge detection and bankroll management. Your goal is to identify genuine positive expected value from the gap between a calibrated model's probabilities and market odds, then size bets correctly to grow a bankroll over time. This is where the methodology chain produces actionable output. Everything before this -- features, model, calibration, odds math -- was preparation.
+## Rules for numbers
 
-> **Honest framing:** In April 2026, KellyBench tested every frontier AI model betting a full Premier League season. Every model lost money. Your edge, if it exists, will be small. This skill helps you find out whether it's real.
+- Call your sport's SportsDataHQ MCP tools. Do not answer from memory.
+- Cite the tool call behind each number (for example "get_game_probabilities, game X").
+- State the sample size and the season convention (calendar year, or the year the season starts or ends; check your sport's tool notes).
+- If there is not enough data, say "not enough data" instead of guessing.
+- Never present a past result as a pick or a prediction of what to do next.
 
-## When to Use
+## Data
 
-- User has a calibrated model probability and wants to know if it constitutes a bet
-- User asks about expected value, EV, or "is this worth betting"
-- User asks about Kelly criterion, fractional Kelly, or bankroll sizing
-- User asks about closing line value (CLV) or whether the market agreed with their pick
-- User asks how to rank today's slate by edge magnitude
-- User asks how large a sample is needed to confirm an edge is real
-- User asks about book-specific edges or line shopping
+| Need | Tool (any sport server that offers it) |
+|------|------------------------------------------|
+| Market probability, implied and fair (no-margin), averaged across books | `get_game_probabilities`, `get_prop_probabilities` |
+| Prices by book | `get_odds` |
+| Opening to closing movement | `get_line_movement`, `get_prop_movement` |
+| Period and alternate markets | `get_market_odds`, `get_alt_lines` |
+| How a kind of prop did against the market, with sample size and interval | `get_prop_backtest` |
+| Our model's probability | the sport's prediction tool (for hockey, `get_predictions`), or the user's own file |
 
-## When NOT to Use
+Examples by sport: hockey `get_game_probabilities` for an NHL game, basketball `get_game_probabilities` for an NBA game, soccer `get_game_probabilities` for home/draw/away, tennis and UFC `get_odds` for the two-way moneyline, golf `get_winner_odds` for majors.
 
-- Exploring current odds without a model -- see `nhl-odds-explorer`
-- Computing implied probability or devigging lines -- see `odds-market-analysis`
-- Validating model accuracy or ROI over historical periods -- see `backtesting`
-- Building or retraining the model itself -- see `model-building`
+Not every tool exists on every server. If a tool is missing, say so and use the closest one listed in that server's tool notes. Do not invent tools such as `get_ev` or `get_clv`.
 
-## Commands Available
+User-supplied files: require `game_id`, `model_prob`, and market odds (American or decimal). Check model probabilities are in [0, 1] and sum to about 1 per game. Warn if they were not calibrated (see `probability-calibration`), because gaps from uncalibrated probabilities are unreliable.
 
-| Command | What It Does | Credits |
-|---------|-------------|---------|
-| `get_odds` | Current odds across books for a game | 10 |
-| `get_line_movement` | Opening to closing line for CLV tracking | 25 |
-| `get_games` | Game results for win rate tracking | 5 |
+## How it works
 
-## Commands That Do NOT Exist
+### Step 1: Market probability without the margin
 
-| Not Available | Use Instead |
-|--------------|-------------|
-| `get_ev` | Compute EV manually from `get_odds` output + model probability |
-| `get_best_line` | Pull `get_odds` and compare across books manually |
-| `get_live_odds` | Use `get_odds` with today's date |
-| `get_clv` | Pull `get_line_movement` and compute closing line vs open |
+Convert each price to implied probability, then remove the margin to get the fair probability (see `odds-market-analysis`). Prefer the fair probability from `get_game_probabilities`, which averages across books. Show both the raw implied and the fair number.
 
-## Data Source
-
-**PuckAPI (default):** Use `get_odds` for current market lines. Use `get_line_movement` only when tracking CLV (expensive -- 25 credits per game; batch at end of day, not before bet).
-
-**Your own data:** If user provides model output + odds as CSV/JSON:
-1. Verify required columns: `game_id`, `model_prob`, `book_odds` (American or decimal), `book_name`
-2. Verify model probabilities are in [0, 1] and sum to ~1.0 per game (within 0.02 of 1.0)
-3. Flag if model probabilities were NOT passed through `probability-calibration` -- uncalibrated probabilities make EV calculations unreliable
-4. Note: credits are not consumed
-
-## Initial Assessment
-
-Before computing edges:
-1. Has the model been calibrated? (If not, EV calculations are unreliable -- suggest `probability-calibration` first)
-2. What is the user's bankroll and risk tolerance? (Determines Kelly fraction)
-3. How many bets are being placed simultaneously today? (Determines simultaneous Kelly adjustment)
-
-## How It Works
-
-### Step 1: Compute Expected Value
-
-For each game, compute EV against each available book:
+### Step 2: The model vs market gap
 
 ```python
-# b = decimal odds - 1 (profit per unit staked)
-# p = model probability of the bet winning
-# q = 1 - p
-ev = (p * b) - q
-# Equivalent: ev = (p * decimal_odds) - 1
+gap = model_prob - market_fair_prob   # in percentage points
 ```
 
-**American to decimal conversion:**
-- Positive odds: `decimal = (odds / 100) + 1` (e.g., +150 -> 2.50)
-- Negative odds: `decimal = (100 / abs(odds)) + 1` (e.g., -110 -> 1.909)
+Report per outcome: model probability, market fair probability, gap. A positive gap means our model rates the outcome higher than the market does.
 
-EV > 0 means the bet has positive expected value. EV < 0 means the book has the edge. EV = 0 is breakeven.
+Read gaps with care:
+- A gap under about 3 points is within typical calibration error. Say so.
+- A gap over about 10 points is far more often a model error or missing information (injury, lineup, starter) than a true difference. Check calibration and inputs first.
+- Compare against several books and the average, not one price. A gap that exists against one book only is a book difference, not a model view.
 
-### Step 2: Rank by Edge Magnitude
+### Step 3: Rank a slate by gap
 
-Sort all bets by EV descending. Highest EV bets first:
+Sort games by absolute gap. Present as "where our model differs most from the market", with the likely reason (rest, starter, injuries) taken from tool output. Frame it as a list of disagreements to investigate, not a list of things to do.
+
+### Step 4: Closing-line comparison (model quality)
+
+The closing line is the market's best final estimate. If the model's probabilities move toward the closing fair probability more often than away from it, the model is picking up real information.
 
 ```python
-bets_df = bets_df.sort_values('ev', ascending=False)
+# for each prediction: model_prob, open_fair, close_fair
+moved_toward_model = (abs(close_fair - model_prob) < abs(open_fair - model_prob))
+share = moved_toward_model.mean()
 ```
 
-Apply minimum edge threshold: **recommend 3-5% EV minimum** to account for calibration uncertainty. A model claiming 55% on a -110 line produces EV of 0.045 (4.5%). That sounds significant. With typical calibration error of ±2-3%, the true edge could be near zero.
+Pull `get_line_movement` for opening and closing prices. Report the share, the sample size and an interval. Sustained movement toward the model over 100+ predictions is a good sign. Near 50% means the model adds little beyond the market. Consistently away means the market knows something the model does not.
 
-Edges under 3% should be passed unless sample size is extremely large (500+ similar bets).
+Also compare log loss or Brier score of the model against the market's closing fair probability on the same games (see `prediction-tracker` and `backtesting`). The market is a hard benchmark; matching it is a good result.
 
-### Step 3: Line Shop Across Books
+### Step 5: How big a sample is enough
 
-The same game may have edge at one book and not another. Check all available lines:
-
-```python
-# get_odds returns lines from multiple books
-# Find best available odds for your side
-best_line = odds_df[odds_df['side'] == bet_side]['decimal_odds'].max()
-```
-
-An edge at DraftKings may not exist at Pinnacle (the sharpest book). If Pinnacle's line agrees with your model but DraftKings offers worse odds, your model has no DK edge. Always compare against the sharpest available line, not just where you plan to bet.
-
-### Step 4: Kelly Criterion -- Bet Sizing
-
-**Full Kelly:**
-```
-f* = (bp - q) / b
-where:
-  b = decimal odds - 1
-  p = model probability
-  q = 1 - p
-```
-
-Example: model says 55%, line is -110 (decimal 1.909):
-```
-b = 0.909
-f* = (0.909 * 0.55 - 0.45) / 0.909 = (0.500 - 0.45) / 0.909 = 0.055
-```
-Full Kelly recommends 5.5% of bankroll on this bet.
-
-**Use 1/4 Kelly, not full Kelly:**
-```
-f_quarter = f* / 4 = 0.0138 (1.38% of bankroll)
-```
-
-Full Kelly is theoretically optimal for log wealth maximization but practically dangerous. One calibration error and you're in a severe drawdown. 1/4 Kelly captures most of the growth while cutting variance by ~75%.
-
-**Simultaneous Kelly -- adjusting for same-day bets:**
-
-When placing N bets on the same day, the sum of Kelly fractions must not exceed a bankroll limit. If independent:
-```python
-total_kelly = sum(f_quarter for each bet)
-if total_kelly > 0.10:  # 10% bankroll cap per day
-    scale_factor = 0.10 / total_kelly
-    bet_sizes = [f * scale_factor for f in quarter_kelly_sizes]
-```
-
-If bets are correlated (same game, same division, same driver), reduce further. Correlated bets at full simultaneous Kelly compound drawdown risk.
-
-### Step 5: Risk of Ruin and Drawdown Tolerance
-
-**Rule: If bankroll drops 25%, pause and audit the model.**
-
-Do not persevere through a 25% drawdown on the assumption that variance will correct. At 1/4 Kelly with calibrated probabilities, a 25% drawdown in under 100 bets is a statistically meaningful signal that the model's edge is weaker than believed.
-
-Risk of ruin at different Kelly fractions (approximate, at 55% win rate, -110 lines):
-- Full Kelly: ruin probability ~15% (high)
-- 1/2 Kelly: ruin probability ~2%
-- 1/4 Kelly: ruin probability <0.5%
-
-### Step 6: Closing Line Value (CLV) Tracking
-
-CLV is the gold standard of bettor skill measurement. If the line moves toward your number by game time, the market confirmed your model's read.
-
-```python
-# clv = closing_odds - opening_odds (for your side)
-# Positive CLV: you beat the closing line (market agreed with you)
-# Negative CLV: market moved against you
-```
-
-Pull `get_line_movement` at end of day (not before bet -- 25 credits per game).
-
-**Interpretation:**
-- Sustained positive CLV over 50+ bets: your model has real signal
-- CLV near zero: you're betting with the public, no sharp edge
-- Negative CLV: market disagrees with your model; investigate
-
-**"When to stop" framework:**
-- Negative CLV for 3+ consecutive weeks: pause, not persevere. The market is not agreeing with you.
-- Bankroll down 25% in fewer than 100 bets: audit the model's calibration
-- Win rate tracking without CLV: incomplete. A bettor at 54% on -115 lines may be losing.
-
-### Step 7: Statistical Significance Check
-
-At small sample sizes, most apparent edges are noise.
-
-**Minimum bets for significance (p < 0.05, one-sided):**
-
-| Win Rate | Min Bets Needed |
-|----------|----------------|
-| 53% (-110 lines) | ~900 bets |
-| 55% (-110 lines) | ~350 bets |
-| 58% (-110 lines) | ~150 bets |
-| 60% (-110 lines) | ~90 bets |
-
-Formula: `n = (z^2 * p * q) / (margin^2)` where z=1.645 for 95% confidence, margin = claimed win rate - breakeven rate.
-
-If the user has 40 bets at 60%, do not confirm the edge. The confidence interval at n=40 is roughly ±15 percentage points.
-
-## Credit Usage
-
-| Operation | Credits | Notes |
-|-----------|---------|-------|
-| `get_odds` per game | 10 | Pull current lines across books |
-| `get_line_movement` per game | 25 | For CLV tracking only -- batch at day's end |
-| `get_games` | 5 | Track outcomes for win rate calculation |
-| Full slate (15 games) odds pull | 150 | One day of NHL odds |
-| Full slate CLV tracking | 375 | Expensive -- use selectively |
+At small samples, apparent differences are noise. For a hit rate p over n predictions, the 95% interval is about p +/- 1.96 * sqrt(p(1-p)/n). With n = 40 that is roughly 15 points wide each way at p = 0.5. Do not call a pattern real unless the interval excludes the benchmark. For historical tests, use `get_prop_backtest` where it exists: report its sample size, interval and by_season breakdown, and say that a past result is not a forecast.
 
 ## Anti-patterns
 
-| Rationalization | Why It's Wrong | Do This Instead |
-|----------------|---------------|-----------------|
-| "My model says 65% but the line is 55% -- huge edge!" | A 10-point gap is almost certainly a calibration error, not an edge. Has the model been through probability-calibration? | Verify calibration first. Reliability diagrams should show 65% model prob hitting ~65% in sample. |
-| "Full Kelly maximizes growth" | Full Kelly maximizes log-wealth in theory, but one miscalibrated estimate leads to severe drawdown and possible ruin | Use 1/4 Kelly. Capture 80% of theoretical growth at 25% of the variance. |
-| "I have a 60% win rate, I'm profitable" | Win rate without odds context is meaningless. 60% at -150 is losing money. 60% at +150 is exceptional | Always report: win rate, average odds, ROI in units, and CLV. |
-| "The line hasn't moved, so sharps agree with me" | Lack of movement is absence of signal, not confirmation. Sharps may not have bet yet, or the book is limiting action | Line movement is signal. Lack of movement is silence. Don't interpret silence as agreement. |
-| "I'll use full Kelly for a few bets to catch up after a loss" | Chasing with larger Kelly fractions after losses is gambler's ruin math. Drawdowns are normal. | Kelly fraction is a function of edge size only -- never of current bankroll loss. Reset after auditing model, not after a loss streak. |
-| "My CLV is only slightly negative, not a big deal" | Negative CLV sustained over weeks means the market consistently disagrees with your model. That's the definition of no edge. | Track CLV over 50+ bets. Three weeks of negative CLV = pause and audit. |
-| "I'll size up on games I feel strongly about" | "Feeling strongly" is not edge. Kelly criterion handles conviction -- it's encoded in the EV. | Bet sizes come from Kelly only. No intuition overrides. |
+| Rationalization | Why it is wrong | Do this instead |
+|-----------------|-----------------|-----------------|
+| "The model says 65% and the market says 55%, so the model found something" | A 10-point gap is usually a calibration or input error | Check calibration and lineup information first |
+| "The line has not moved, so the market agrees with us" | No movement is silence, not agreement | Treat movement as signal and absence of movement as no information |
+| "Our hit rate is 60%" | A rate without sample size and odds context says little | Report n, interval, and the market's own rate on the same games |
+| "One book differs, so the model is right" | A single book can be stale | Compare to the cross-book fair probability |
+| "Recent results confirm the gap" | Small samples mislead | Report by-season results and the interval |
 
-## Output Format
-
-Edge report for a slate:
+## Output format
 
 ```
-EDGE REPORT -- [Date]
+MODEL VS MARKET: [Date]  (season convention: [..])
 
-Game: [Home] vs [Away]
-Side: [Home ML / Away ML / Over / Under]
-Model Probability: [X.X%]
-Best Available Line: [Book] [+/-XXX] (decimal: X.XX)
-Implied Probability (devigified): [X.X%]
-Expected Value: [+X.X%]
-Full Kelly: [X.X%] of bankroll
-1/4 Kelly: [X.X%] of bankroll ($XXX at $X,000 bankroll)
+[Home] vs [Away]
+Our probability:        [X.X%]  (source: [tool or file])
+Market, implied:        [X.X%]  (get_odds, [book])
+Market, fair:           [X.X%]  (get_game_probabilities)
+Gap (model - market):   [+/-X.X points]
+Context:                [injury, starter, rest notes from tools]
 
 SLATE SUMMARY
-Total bets meeting threshold (>=3% EV): X
-Total 1/4 Kelly allocation: X.X% of bankroll
-Simultaneous Kelly cap applied: [Yes/No]
+Games compared: N   Median absolute gap: X.X points
+Largest gaps: [list]
 ```
 
-## What to Do Next
+## What to do next
 
-| What You Found | Next Action | Skill |
-|----------------|-------------|-------|
-| Edges found, want full slate analysis | Compile into daily betting card | `nhl-daily-slate` |
-| Want to track performance over time | Log bets and compute CLV, ROI | `prediction-tracker` |
-| Want historical validation of this approach | Walk-forward backtest with Kelly sizing | `backtesting` |
-| Model probabilities seem miscalibrated | Recalibrate before using for EV | `probability-calibration` |
-| Need current odds across books | Pull live lines | `nhl-odds-explorer` |
-| Need to convert odds formats or devig | Compute implied probabilities | `odds-market-analysis` |
-| Edge looks too large (>10%) | Almost certainly a calibration error -- investigate | `probability-calibration` |
+| Finding | Next skill |
+|---------|-----------|
+| Need odds converted or margin removed | `odds-market-analysis` |
+| Probabilities look off | `probability-calibration` |
+| Want to log predictions and grade them | `prediction-tracker` |
+| Want historical validation | `backtesting` or `walk-forward-validation` |
+| Hockey slate view | `nhl-daily-slate` |

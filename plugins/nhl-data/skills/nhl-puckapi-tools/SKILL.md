@@ -1,79 +1,131 @@
 ---
 name: nhl-puckapi-tools
-description: "Default data source for PuckAPI Skills. Routes all MCP tool calls for NHL games, schedules, team standings, player stats, goalie performance, and betting odds. Use when any other skill needs data. Do not invoke directly -- other skills call this. Not for data analysis, modeling, or bet recommendations -- see nhl-advanced-stats, model-building, or market-vs-model instead."
+description: "Use when any hockey skill needs data, or when the user asks which PuckAPI tool to call for games, schedules, standings, team or player stats, goalies, shots, shifts, odds, line movement or player props. Routes requests to the right tool of the PuckAPI MCP server and tracks credit cost. Not for analysis or modeling (use nhl-advanced-stats, model-building or market-vs-model). Not for recommending wagers: prices are shown as information only."
 metadata:
-  version: 1.0.0
-  author: PuckAPI
+  version: 2.0.0
+  author: SportsDataHQ
   user-invocable: false
 ---
 
-# PuckAPI Tool
+# PuckAPI Tools
 
-Every other skill delegates data retrieval here. This skill owns the 15 MCP tools, routes requests to the right endpoint, tracks credit cost, and handles the fallback when users bring their own data.
+Every other hockey skill delegates data retrieval here. This skill owns the 28 tools of the PuckAPI MCP server, routes requests to the right one, and tracks credit cost. The server covers the NHL plus the PWHL, OHL, WHL, QMJHL, ECHL, AHL and USHL.
 
-**Database coverage:** 6,882,653 plays | 23,495 games (2010-11 onward) | 107,058 odds records (2019-20 onward, sparse in the first year) | 4,898 players | 1,509 goalie-seasons | 1,803 skater-seasons | 21,994 games with derived goalie starts | 494 standings records | 34 franchises (32 active + 2 historical)
+**Coverage:** games from the 2010-11 season through the current season. Odds history starts later than game data; earlier games return empty odds arrays, not an error.
 
-**Full parameter schemas:** See `endpoints.md` in this directory (Level 3 -- load on demand).
+**Full parameter schemas:** see `endpoints.md` in this directory (load on demand), and read each tool's own schema before calling one you have not used.
 
 ---
 
-## When to Use Each Tool
+## Rules for numbers
+
+- Call the tools rather than answering from memory. Never quote a standing, stat, price or probability you did not just pull.
+- Cite which tool call produced each number.
+- State the sample size and the season convention (`20252026` = the 2025-26 season) with each figure.
+- If a tool returns nothing or too little, say "not enough data" instead of guessing.
+
+## Odds are information only
+
+Show lines and prices as data about the market. Do not work out a stake, payout or profit, do not recommend a wager, and do not send the user to a sportsbook. No tool places, accepts or tracks wagers. If asked to wager, say so and offer the data instead. Odds and props are pre-game only.
+
+---
+
+## The 28 Tools
+
+### Teams and standings
 
 | Task | Tool | Credits |
 |------|------|---------|
-| List all teams | `list_teams` | 1 |
+| All teams and abbreviations | `list_teams` | 1 |
+| Standings | `get_standings` | 2 |
+| One team's stats and advanced metrics | `get_team_stats` | 5 |
+| Two teams head to head | `get_head_to_head` | 10 |
+
+### Games
+
+| Task | Tool | Credits |
+|------|------|---------|
 | Upcoming schedule | `get_schedule` | 2 |
+| Past games with filters | `get_games` | 5 |
+| Model win probability for today's slate | `get_predictions` | 5 |
+| Full detail for one game (odds and starting goalies) | `get_game_detail` | 10 |
+
+### Players
+
+| Task | Tool | Credits |
+|------|------|---------|
 | Find a player by name | `search_players` | 2 |
-| League or conference standings | `get_standings` | 2 |
-| Games by date, team, or season | `get_games` | 5 |
-| Player bio + stats by NHL player ID | `get_player_stats` | 5 |
-| Single team stats + advanced metrics | `get_team_stats` | 5 |
-| Goalie leaderboard | `get_goalie_stats` | 5 |
-| Full game detail with odds + goalies | `get_game_detail` | 10 |
-| Head-to-head history between two teams | `get_head_to_head` | 10 |
-| Odds snapshot for a game | `get_odds` | 10 |
-| Opening vs closing line movement | `get_line_movement` | 25 |
+| Player bio and team context | `get_player_stats` | 5 |
+| Goalie leaderboard (save%, GAA, GSAx, wins) | `get_goalie_stats` | 5 |
+| Skater leaderboard (points, goals, assists, +/-, shots) | `get_skater_season_stats` | 5 |
+| Game-by-game lines for one player | `get_player_game_log` | 5 |
+| Model projections for tonight's players (paid plans only) | `get_prop_projections` | 25 |
+
+### Play-by-play
+
+| Task | Tool | Credits |
+|------|------|---------|
+| Events for a game, player or season | `get_plays` | 10 |
+| Shot locations to plot or model | `get_shot_map` | 10 |
+| Who was on the ice, shift by shift | `get_shifts` | 10 |
+| Exact 5v5 / power-play / shorthanded time | `get_situation_time` | 10 (per game) |
+
+### Market prices (information only)
+
+| Task | Tool | Credits |
+|------|------|---------|
+| Odds for one game | `get_odds` | 10 |
+| Market implied and fair (no-margin) probability for a game | `get_game_probabilities` | 5 |
+| How lines moved over time | `get_line_movement` | 25 |
+| Period and regulation-result lines, opening and closing by book | `get_market_odds` | 10 |
+| Alternate puck lines and totals | `get_alt_lines` | 10 |
+| Player prop lines by book | `get_player_props` | 10 |
+| How a player did against his prop line, game by game | `get_prop_history` | 10 |
+| How a prop line moved before a game | `get_prop_movement` | 10 |
+| Market implied and fair probability for a game's props | `get_prop_probabilities` | 10 |
+| How often a kind of prop hit against the market | `get_prop_backtest` | 25 |
+
+For `get_prop_backtest`, always report its sample size, its interval and its by-season breakdown, and do not present a past result as a pick. A free-plan call to `get_prop_projections` is refused and charged nothing.
 
 ---
 
 ## Tool Selection Guide
 
-Use this table when a request could match multiple tools.
-
 | You Need | Use This | Not This |
 |----------|----------|----------|
-| "What games are on tonight?" | `get_schedule` | `get_games` (returns past games too) |
+| "What games are on tonight?" | `get_schedule` | `get_games` (past games) |
 | "Show me BUF's last 10 games" | `get_games` with `team=BUF`, `limit=10` | `get_schedule` (future only) |
-| "Full game info with odds" | `get_game_detail` | `get_games` + `get_odds` separately |
-| "How have BUF and TOR fared against each other?" | `get_head_to_head` | `get_games` filtered manually |
+| "Full game info with odds" | `get_game_detail` | `get_games` plus `get_odds` |
+| "How have BUF and TOR fared against each other?" | `get_head_to_head` | `get_games` filtered by hand |
 | "Where does BUF rank in the Atlantic?" | `get_standings` with `division=Atlantic` | `get_team_stats` |
-| "BUF's Corsi and xG numbers" | `get_team_stats` | `get_standings` (standings have basic metrics only) |
-| "Find Connor McDavid's ID" | `search_players` with `query=McDavid` | `get_player_stats` (requires numeric ID) |
-| "McDavid's bio and current stats" | `get_player_stats` with known ID | `search_players` |
+| "BUF's Corsi and xG numbers" | `get_team_stats` | `get_standings` (basic metrics only) |
+| "Find Connor McDavid's ID" | `search_players` | `get_player_stats` (needs a numeric ID) |
 | "Best save percentage goalies this season" | `get_goalie_stats` with `sort_by=save_pct` | `get_player_stats` |
-| "What's the line on tonight's BUF game?" | `get_odds` with that game's ID | `get_line_movement` (movement, not snapshot) |
-| "Did DraftKings move the line today?" | `get_line_movement` | `get_odds` |
+| "Where does this player shoot from?" | `get_shot_map` | `get_plays` (use it for event context) |
+| "What does the market think of tonight's game?" | `get_game_probabilities` | computing it by hand from `get_odds` |
+| "What's the line on tonight's game?" | `get_odds` | `get_line_movement` (movement, not a snapshot) |
+| "Did the line move today?" | `get_line_movement` | `get_odds` |
 
 ---
 
 ## Credit Usage
 
-| Tier | Endpoints | Credits |
-|------|-----------|---------|
+| Tier | Tools | Credits |
+|------|-------|---------|
 | Lightweight | `list_teams` | 1 |
-| Standard | `get_schedule`, `search_players`, `get_standings` | 2 |
-| Moderate | `get_games`, `get_player_stats`, `get_team_stats`, `get_goalie_stats` | 5 |
-| Heavy | `get_game_detail`, `get_head_to_head`, `get_odds` | 10 |
-| Expensive | `get_line_movement` | 25 |
+| Standard | `get_standings`, `get_schedule`, `search_players` | 2 |
+| Moderate | `get_games`, `get_game_probabilities`, `get_predictions`, `get_team_stats`, `get_player_stats`, `get_goalie_stats`, `get_skater_season_stats`, `get_player_game_log` | 5 |
+| Heavy | `get_odds`, `get_game_detail`, `get_head_to_head`, `get_plays`, `get_shot_map`, `get_shifts`, `get_situation_time`, `get_player_props`, `get_prop_history`, `get_prop_movement`, `get_market_odds`, `get_alt_lines`, `get_prop_probabilities` | 10 |
+| Expensive | `get_line_movement`, `get_prop_backtest`, `get_prop_projections` | 25 |
 
-**Bulk cost examples:**
+**Bulk cost examples** (at roughly 1,312 regular season games):
+
 | Operation | Credits | Notes |
 |-----------|---------|-------|
-| Full season odds backfill | ~12,300 | 10 credits x ~1,230 games |
-| Full season game details | ~12,300 | 10 credits x ~1,230 games |
-| Playoff odds (full bracket) | ~150-250 | Depends on rounds reached |
+| Full season of `get_game_detail` | ~13,120 | 10 credits per game |
+| Full season of `get_shifts` | ~13,120 | 10 credits per game |
 
-**Odds coverage caveat:** Odds data covers 2020-2026 NHL seasons. Calls to `get_odds` or `get_line_movement` for games before the 2019-20 season return empty odds arrays, not an error.
+Warn the user and agree a date range before any bulk pull. Prefer one wider call over many narrow ones.
 
 ---
 
@@ -81,94 +133,77 @@ Use this table when a request could match multiple tools.
 
 | Not Available | Use Instead |
 |--------------|-------------|
-| `get_live_odds` | `get_odds` with today's game ID (snapshot_type omitted returns all) |
+| `get_live_odds` | `get_odds` with today's game ID |
 | `get_player_advanced_stats` | `get_player_stats`, then compute via `nhl-advanced-stats` |
-| `get_team_schedule` | `get_games` with `team=ABBREV` |
-| `get_game_by_teams` | `get_head_to_head` or `get_games` with `team` filter |
+| `get_team_schedule` | `get_schedule` or `get_games` with `team=ABBREV` |
+| `get_game_by_teams` | `get_head_to_head` or `get_games` with a `team` filter |
 | `get_playoff_bracket` | `get_games` with `game_type=playoff` |
-| `get_historical_lineups` | Not available -- no lineup data in this dataset |
-| `get_goalie_game_log` | Not available -- use `get_game_detail` for per-game goalie starts |
+| `get_historical_lineups` | Not available |
 | `get_injuries` | Not available |
-| `get_power_play_stats` | Not available as a standalone endpoint |
-| `search_games` | Use `get_games` with filters |
+| `search_games` | `get_games` with filters |
 
 ---
 
 ## Season Resolution
 
-Every skill that touches time-sensitive data must resolve season IDs before calling tools.
+Resolve season IDs before calling tools.
 
-**Season ID format:** `YYYYYYYY` (eight digits, no separator). Example: 2025-26 season = `20252026`.
+**Season ID format:** eight digits, no separator. The 2025-26 season is `20252026`.
 
-**Current date resolution rules:**
-- October through December: current calendar year starts the season (Oct 2026 = season `20262027`)
-- January through September: previous calendar year starts the season (Mar 2026 = season `20252026`)
-- "This season" = season currently in progress or most recently completed
-- "Last season" = one season before "this season"
+- October through December: the current calendar year starts the season (Oct 2026 = `20262027`)
+- January through September: the previous calendar year starts the season (Mar 2026 = `20252026`)
+- "This season" = the season in progress or most recently completed; "last season" = one before
+- Regular season runs early October to mid-April, playoffs mid-April to mid-June, offseason July to September
+- Data starts at `20102011`; earlier seasons return empty, not an error
 
-**NHL calendar:**
-- Regular season: early October to mid-April
-- Playoffs: mid-April to mid-June
-- Offseason: July to September
-- Data coverage starts at `20102011` (2010-11 season). There is nothing before it; querying an earlier season returns empty, not an error
-
-**How to resolve when user says "current season":**
-1. Call `get_standings` with no `season` parameter -- the server resolves automatically
-2. Or call `get_team_stats` with no `season` -- same auto-resolution
-3. For `get_games`, pass `season=20252026` explicitly when targeting a specific season
+To get the current season, call `get_standings` with no `season` (the server resolves it), or pass `season=20252026` explicitly to `get_games`.
 
 ---
 
-## BYOD (Bring Your Own Data)
+## User-Provided Data
 
-When a user provides their own CSV, JSON, or database instead of using PuckAPI:
+When the user provides their own CSV, JSON or database instead of calling the tools:
 
-1. **Verify required columns exist** before proceeding (see `endpoints.md` for column schemas)
-2. **Check date format** -- ISO 8601 preferred (`YYYY-MM-DD`). Flag anything else.
-3. **Flag missing data explicitly** -- do not silently drop rows or impute without noting it
-4. **No credits consumed** when working with user-provided data
-5. **Column name mapping** -- if user data uses different column names, map them to the PuckAPI schema before passing to analytics skills
+1. Verify the required columns exist (see `endpoints.md`)
+2. Check the date format (ISO 8601, `YYYY-MM-DD` preferred) and flag anything else
+3. Flag missing data explicitly; do not silently drop rows or impute
+4. No credits are consumed
+5. Map the user's column names to the server's schema before passing to analytics skills
 
-**Common user-provided formats:**
-| Format | Required Minimum Columns | Notes |
-|--------|--------------------------|-------|
-| Game results CSV | `game_date`, `home_team`, `away_team`, `home_score`, `away_score` | `game_id` helpful but not required |
-| Odds CSV | `game_id` or (`game_date` + `home_team`), `bookmaker`, `ml_home`, `ml_away` | Snapshot type required for line movement analysis |
-| Player stats CSV | `player_id` or `player_name`, `team`, `season`, stat columns | Prefer numeric ID over name for joins |
+| Format | Minimum Columns |
+|--------|-----------------|
+| Game results | `game_date`, `home_team`, `away_team`, `home_score`, `away_score` |
+| Odds | `game_id` or (`game_date` + `home_team`), `bookmaker`, `ml_home`, `ml_away`, snapshot type |
+| Player stats | `player_id` or `player_name`, `team`, `season`, stat columns |
 
 ---
 
 ## How to Call These Tools
 
-### Pattern: Find game ID then fetch detail
-
-Most analytics workflows need a `game_id`. Get it from `get_games` or `get_schedule`, then pass to `get_game_detail`, `get_odds`, or `get_line_movement`.
+### Find the game ID, then fetch detail
 
 ```
 Step 1: get_games(team="BUF", date_from="2026-01-01", date_to="2026-01-31")
-        -> returns game list with IDs
+        -> game list with IDs
 Step 2: get_game_detail(game_id="2025020887")
-        -> returns full game with odds and goalie starts
+        -> full game with odds and goalie starts
 ```
 
-### Pattern: Player lookup by name then stats
+### Find the player ID, then stats
 
-`get_player_stats` requires a numeric NHL player ID. Always search first.
+`get_player_stats` needs a numeric player ID, so search first.
 
 ```
 Step 1: search_players(query="McDavid", active=true)
-        -> returns player list with IDs
 Step 2: get_player_stats(player_id=8478402)
-        -> returns bio + career stats
 ```
 
-### Pattern: Standings with advanced metrics
+### Standings with advanced metrics
 
-`get_standings` includes Corsi, Fenwick, and xG columns. No need to call `get_team_stats` separately for a full league view.
+`get_standings` includes Corsi, Fenwick and xG columns, so a full league view needs no `get_team_stats` calls.
 
 ```
 get_standings(conference="Eastern", season="20252026")
--> returns all Eastern teams sorted by rank with advanced metrics
 ```
 
 ---
@@ -177,12 +212,13 @@ get_standings(conference="Eastern", season="20252026")
 
 | What Claude Might Do | Why It's Wrong | Do This Instead |
 |---------------------|---------------|-----------------|
-| Call `get_odds` for every game in a season | 10 credits x 1,230 games = 12,300 credits | Warn user before bulk odds pulls, ask for date range |
-| Call `get_line_movement` when user just wants current odds | 25 credits wasted | Use `get_odds` with `snapshot_type=current` (10 credits) |
-| Call `search_players` and then guess the ID | IDs must be exact | Use the actual `id` field from `search_players` results |
-| Pass a team name like "Buffalo Sabres" to `team` parameter | Tool expects abbreviation | Always use 2-3 letter abbreviation (e.g. `BUF`) |
-| Assume odds exist for pre-2020 games | Returns empty array, not an error | Check game season before calling odds endpoints |
-| Call `get_game_detail` in a loop for many games | N x 10 credits per game | Use `get_games` (5 credits) for bulk data, `get_game_detail` only when you need odds/goalies for a specific game |
+| Call `get_odds` for every game in a season | Thousands of credits | Warn the user and ask for a date range |
+| Call `get_line_movement` when the user wants current prices | 25 credits for a snapshot | Use `get_odds` (10 credits) |
+| Guess a player ID after `search_players` | IDs must be exact | Use the `id` field from the results |
+| Pass "Buffalo Sabres" as `team` | The tool expects an abbreviation | Use `BUF` |
+| Assume odds exist for older games | Returns an empty array | Check the season before calling odds tools |
+| Loop `get_game_detail` over many games | 10 credits per game | Use `get_games` (5 credits) for bulk data |
+| Compute a stake or payout from a price | Odds are information only | Show the price and the implied or fair probability |
 
 ---
 
@@ -191,10 +227,10 @@ get_standings(conference="Eastern", season="20252026")
 | What You Retrieved | Next Action | Skill |
 |--------------------|-------------|-------|
 | Game results for a season | Compute Elo ratings or features | `elo-engineering` or `feature-engineering` |
-| Standings with Corsi/Fenwick | Analyze team performance trends | `nhl-team-analysis` |
-| Odds for upcoming games | Find edge vs market | `market-vs-model` |
-| Line movement data | Detect sharp action signals | `odds-market-analysis` |
-| Player/goalie stats | Scout performance vs league | `nhl-player-scouting` or `nhl-goalie-analysis` |
-| Head-to-head history | Build game preview | `nhl-game-preview` |
+| Standings with Corsi/Fenwick | Analyze team performance | `nhl-team-analysis` |
+| Odds or market probabilities | See how our probability differs from the market's | `market-vs-model` |
+| Line movement data | Read implied and no-margin probability, movement and closing line | `odds-market-analysis` |
+| Player or goalie stats | Scout against the league | `nhl-player-scouting` or `nhl-goalie-analysis` |
+| Head-to-head history | Build a game preview | `nhl-game-preview` |
 | Full season game log | Run a backtest | `backtesting` |
 | Raw game data, need features | Engineer model inputs | `feature-engineering` |

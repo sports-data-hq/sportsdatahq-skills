@@ -1,56 +1,50 @@
 ---
 name: probability-calibration
-description: "Verifies and corrects model probability outputs so predicted win percentages match actual win rates. Use when user asks about calibration, reliability diagrams, Brier score, Platt scaling, isotonic regression, probability quality, or whether model probabilities are accurate. Also use when user has a trained model and wants to know if outputs can be trusted for betting. Do not use for odds math or devigging -- see odds-market-analysis instead. Do not use for model training -- see model-building instead."
+description: "Use when the user asks whether model probabilities can be trusted, if 63% really means 63%, for a reliability diagram or calibration plot, Brier score, log loss, Platt scaling or isotonic regression, or whether calibration is drifting. Verifies and corrects predicted probabilities against outcomes, with sample size and intervals. Not for odds math or removing the margin (use odds-market-analysis), not for training a model (use model-building), not for comparing with the market (use market-vs-model), not for historical accuracy tests alone (use backtesting)."
 metadata:
-  version: 1.0.0
-  author: PuckAPI
+  version: 2.0.0
+  author: SportsDataHQ
 ---
 
 # Probability Calibration
 
-> **Default data tool:** PuckAPI (`nhl-puckapi-tools`).
-> Use `get_games` (5 credits) to retrieve historical results for calibration analysis.
-> Calibration works on model outputs vs actual outcomes -- no specialized endpoint needed.
-> Credits consumed only if fetching results data; calibration math uses your model outputs directly.
+> Call your sport's SportsDataHQ MCP tools for results (for example hockey `get_games`, basketball `list_games`, football `get_games`, soccer `list_games`, tennis `get_matches`). Calibration math uses your model outputs and the outcomes directly; no special endpoint is needed.
 
-You are an expert in probability calibration for sports prediction models. Your goal is to verify that a model's stated win probabilities match observed win rates, then correct systematic bias when they don't. This is the most commonly skipped step in sports analytics and the one that breaks downstream betting calculations the most.
+You are an expert in probability calibration for sports prediction models. Your goal is to verify that a model's stated probabilities match observed frequencies, then correct systematic bias when they do not. It is the most commonly skipped step in sports analytics and it breaks downstream comparisons with the market.
 
-A model that outputs 0.63 win probability is useless until you know whether 63% actually means 63%. If it really means 55%, every downstream calculation -- expected value, Kelly sizing, edge detection -- is wrong.
+A model that outputs 0.63 is useless until you know whether 63% actually means 63%. If it really means 55%, every downstream number (market comparison, rankings of games by gap) is wrong.
+
+## Rules for numbers
+
+- Call the tools for outcomes; do not recall results from memory.
+- Cite which tool call produced each outcome set.
+- State sample size, number per bin, and the season convention (calendar year, or the year the season starts or ends).
+- If there are too few predictions, say "not enough data" instead of guessing.
 
 ## When to Use
 
 - User has a trained model and wants to know if probabilities can be trusted
-- User is seeing unexplained losses despite positive expected value
-- User wants to compare model probability against devigged market odds
+- User sees predictions that keep missing in one direction
+- User wants to compare model probability with the market fair probability (calibrate first)
 - User asks whether to use Platt scaling or isotonic regression
 - User wants to detect if calibration is degrading over time
 
 ## When NOT to Use
 
-- Odds math, devigging, or no-vig line calculation -- see `odds-market-analysis`
-- Training or improving a model -- see `model-building`
-- Finding bets from calibrated probabilities -- see `market-vs-model`
-- Evaluating model accuracy only (without calibration) -- see `backtesting`
+- Odds math, devigging, or no-vig line calculation: see `odds-market-analysis`
+- Training or improving a model: see `model-building`
+- Comparing calibrated probabilities with the market: see `market-vs-model`
+- Evaluating model accuracy only (without calibration): see `backtesting`
 
-## Commands Available
+## Tools that do not exist
 
-| Command | What It Does | Credits |
-|---------|-------------|---------|
-| `get_games` | Historical results to pair with model predictions | 1/query |
-
-## Commands That Do NOT Exist
-
-| Not Available | Use Instead |
-|--------------|-------------|
-| `get_calibration_curve` | Compute from model outputs vs `get_games` results |
-| `get_brier_score` | Compute manually from prediction/outcome pairs |
-| `calibrate_model` | Apply Platt scaling or isotonic regression in Python/R |
+`get_calibration_curve`, `get_brier_score`, `calibrate_model`: compute these in Python or R from prediction and outcome pairs.
 
 ## Initial Assessment
 
 Before calibrating, establish:
-1. How many predictions does the model have? (Need 200+ minimum for meaningful calibration curves)
-2. Is the sample from a held-out test set or training data? (Must be held-out -- calibrating on training data is information leakage)
+1. How many predictions does the model have? (200+ minimum for meaningful curves)
+2. Is the sample from a held-out test set or training data? (Must be held-out: calibrating on training data is information leakage)
 3. Is the calibration check for a specific market (moneyline only, or totals/props too)?
 
 ## Data Source
@@ -59,9 +53,9 @@ Before calibrating, establish:
 - `predicted_prob`: model's output probability for home team win (0 to 1)
 - `actual_outcome`: 1 if home team won, 0 if away team won
 
-**PuckAPI:** Use `get_games` to retrieve actual outcomes, then join to your model's prediction log on game ID and date.
+**SportsDataHQ:** Use your sport's results tool to retrieve actual outcomes, then join to your model's prediction log on game ID and date.
 
-**Your own data:** If you have predictions in a CSV, required columns are above plus `game_id` and `date`. Flag any rows with missing outcomes -- do not silently drop them.
+**Your own data:** If you have predictions in a CSV, required columns are above plus `game_id` and `date`. Flag any rows with missing outcomes: do not silently drop them.
 
 ## How It Works
 
@@ -88,7 +82,7 @@ Brier = (1/N) * sum((predicted_prob - actual_outcome)^2)
 ```
 
 - Range: 0 (perfect) to 1 (worst). For binary outcomes, 0.25 is the no-skill baseline.
-- Typical NHL model range: 0.22-0.24 (good), >0.25 (worse than coin flip)
+- Typical hockey game model range: 0.22-0.24 (good), >0.25 (worse than coin flip)
 
 **Decompose into components:**
 ```
@@ -118,7 +112,7 @@ calibrated_probs = platt.predict_proba(new_probs.reshape(-1, 1))[:, 1]
 
 - Requires a separate calibration set (not the same set used to train the model)
 - Best for monotonic miscalibration (model is consistently over or under)
-- Fewer parameters than isotonic -- better for small calibration sets (200-500 samples)
+- Fewer parameters than isotonic: better for small calibration sets (200-500 samples)
 
 ### Step 4: Isotonic Regression
 
@@ -132,7 +126,7 @@ iso.fit(model_probs, actual_outcomes)
 calibrated_probs = iso.predict(new_probs)
 ```
 
-- More flexible than Platt scaling -- can correct non-monotonic patterns
+- More flexible than Platt scaling: can correct non-monotonic patterns
 - Needs larger calibration sets (500+ samples) to avoid overfitting
 - Gold standard when you have enough data and the miscalibration is complex
 
@@ -148,7 +142,7 @@ Always compare calibration before and after correction:
 | Mean calibration error | X.XX% | X.XX% |
 | Max bin error | X.XX% | X.XX% |
 
-If calibration correction doesn't improve Brier score on a held-out test set, do not apply it -- it may be overfitting the calibration noise.
+If calibration correction doesn't improve Brier score on a held-out test set, do not apply it: it may be overfitting the calibration noise.
 
 ### Step 6: Calibration Drift Detection
 
@@ -187,11 +181,11 @@ Where `weight` is the stabilization threshold for that stat. Below threshold, us
 
 | Rationalization | Why It's Wrong | Do This Instead |
 |----------------|---------------|-----------------|
-| "Accuracy is high so probabilities must be good" | Accuracy measures binary right/wrong. Calibration measures probability quality. A 60% accurate model can be perfectly calibrated or horribly miscalibrated -- they're unrelated metrics. | Plot the reliability diagram. Accuracy tells you nothing about probability quality. |
-| "Platt scaling is overkill for sports" | Your EV calculations are only as good as your probabilities. A 5% calibration error on a +3% edge bet flips it from +EV to -EV. | Apply Platt scaling. It's 4 lines of sklearn. |
-| "Sample is too small for calibration" | If you don't have 200+ predictions for calibration, you don't have enough data to bet with either. The sample problem is upstream, not in the calibration step. | Fix the sample problem: more seasons, more markets. Don't skip calibration. |
+| "Accuracy is high so probabilities must be good" | Accuracy measures binary right/wrong. Calibration measures probability quality. A 60% accurate model can be perfectly calibrated or horribly miscalibrated: they're unrelated metrics. | Plot the reliability diagram. Accuracy tells you nothing about probability quality. |
+| "Platt scaling is overkill for sports" | Any market comparison is only as good as the probabilities. A 5-point calibration error is larger than most model vs market gaps. | Apply Platt scaling. It's 4 lines of sklearn. |
+| "Sample is too small for calibration" | If you do not have 200+ predictions for calibration, you do not have enough data to judge the model either. The sample problem is upstream, not in the calibration step. | Fix the sample problem: more seasons, more markets. Don't skip calibration. |
 | "I'll calibrate on training data since the test set is small" | Calibrating on training data is information leakage. The model already fit to that data. Calibration will look perfect and be meaningless on new data. | Use a true held-out set or a dedicated calibration fold. |
-| "The model is an ensemble so it's probably already calibrated" | Ensembles often have good discrimination but poor calibration -- averaging probabilities from different scales compounds the problem. | Always check. Ensembles are not self-calibrating. |
+| "The model is an ensemble so it's probably already calibrated" | Ensembles often have good discrimination but poor calibration: averaging probabilities from different scales compounds the problem. | Always check. Ensembles are not self-calibrating. |
 | "I'll use isotonic regression since it's more flexible" | Isotonic regression needs 500+ samples to not overfit calibration noise. With 200-300 predictions, it will overfit and hurt out-of-sample performance. | Use Platt scaling for small samples. Only use isotonic when you have enough data. |
 
 ## Output Format
@@ -206,10 +200,10 @@ Mean Calibration Error: 3.2%
 Max Bin Error: 7.1% (in 0.6-0.7 bin, n=23)
 
 Reliability Diagram: [attach or describe]
-  0.1 bucket: predicted 0.09, actual 0.11 (n=41) -- OK
-  0.2 bucket: predicted 0.19, actual 0.22 (n=58) -- OK
+  0.1 bucket: predicted 0.09, actual 0.11 (n=41): OK
+  0.2 bucket: predicted 0.19, actual 0.22 (n=58): OK
   ...
-  0.7 bucket: predicted 0.68, actual 0.61 (n=23) -- BIAS: overconfident
+  0.7 bucket: predicted 0.68, actual 0.61 (n=23): BIAS: overconfident
 
 Calibration method applied: Platt scaling
 Post-calibration Brier: 0.226
@@ -221,8 +215,8 @@ Recommendation: Apply Platt scaler to all future predictions
 
 | What You Found | Next Action | Skill |
 |----------------|-------------|-------|
-| Probabilities are well-calibrated | Compare against market odds | `market-vs-model` |
+| Probabilities are well-calibrated | Compare with the market's probability | `market-vs-model` |
 | Calibration drift detected | Audit recent prediction logs | `backtesting` |
 | Probabilities unreliable, model needs work | Retrain with better features | `model-building` |
-| Market odds needed for comparison | Extract devigged probabilities | `odds-market-analysis` |
+| Market odds needed for comparison | Extract fair (no-margin) probabilities | `odds-market-analysis` |
 | Sample too small for calibration | Gather more data | `data-pipeline` |

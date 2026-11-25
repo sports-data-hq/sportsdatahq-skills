@@ -1,6 +1,6 @@
 # Hockey Analytics Glossary
 
-Quick reference for hockey analytics terms used across PuckAPI Skills.
+Quick reference for hockey analytics terms used across the SportsDataHQ skills.
 
 ## Possession & Shot Metrics
 
@@ -65,6 +65,6 @@ Quick reference for hockey analytics terms used across PuckAPI Skills.
 | **RW** | Regulation Wins only. First NHL tiebreaker since 2019-20. |
 | **PDO** | Shooting% + Save% at 5v5. Expected value is 100 (or 1.000). Teams far from 100 are experiencing luck that will regress. |
 
-## Betting Terms
+## Market Terms
 
-See `betting-glossary.md` for odds, vig, devigging, and bankroll terms.
+See `market-glossary.md` for odds formats, vig, fair probability, line movement and closing line.

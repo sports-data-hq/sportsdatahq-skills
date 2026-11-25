@@ -1,4 +1,4 @@
-# AI Sports Workflow -- Prompt Patterns
+# AI Sports Workflow: Prompt Patterns
 
 > Level 3 reference file. Zero context cost until loaded. Contains 10-15 concrete example prompts per workflow pattern with expected outputs.
 
@@ -61,7 +61,7 @@ Second half   | 46.9% | 46.1% | 14-16-6
 
 ### Surface Phase
 
-**Prompt:** "Based on the Sabres data above, write a one-paragraph summary of what the numbers say about this team -- no editorializing, just what the data shows."
+**Prompt:** "Based on the Sabres data above, write a one-paragraph summary of what the numbers say about this team: no editorializing, just what the data shows."
 
 **Expected output:**
 ```
@@ -148,7 +148,7 @@ Verdict: Directionally interesting, not conclusive.
 
 Issues:
 1. p=0.041 is marginal. One bad month's data and it flips.
-2. Effect size is 4.8pp on home win rate -- meaningful in betting but small for modeling.
+2. Effect size is 4.8pp on home win rate: small for modeling.
 3. Not adjusted for: rest advantage (away team may also be on B2B), 
    game importance (playoff push teams push harder), goalie starts.
 
@@ -176,7 +176,7 @@ Possible causes:
 3. Model complexity too high for the signal in the data
 
 Recommended actions (in order):
-1. Check feature importance -- remove bottom 20% of features
+1. Check feature importance: remove bottom 20% of features
 2. Check for leakage: any feature that uses same-game data?
 3. Reduce model complexity (shallower tree depth, higher regularization)
 4. Report validation accuracy at different time windows (early vs. late season)
@@ -222,7 +222,7 @@ Additional features worth testing:
 Statistical significance check:
   z-test on proportions: n=500, p1=0.583, p2=0.591
   z = 0.8pp / SE ≈ 0.36
-  p ≈ 0.72 -- not significant
+  p ≈ 0.72: not significant
 
 Recommendation: Don't count it as a win yet. Run on a held-out third season 
 (not the same walk-forward window) to confirm. If it holds, keep it. 
@@ -253,60 +253,57 @@ Overestimates confidence above 70%. Apply isotonic regression to the high end.
 
 ### Performance Summary
 
-**Prompt:** "Generate a monthly performance report for my NHL model. This month: 34-28-3 record, average odds -115, average model edge claimed was 4.2%."
+**Prompt:** "Generate a monthly performance report for my NHL model. This month it called 65 games and got 36 right. Use the tools to pull the results and the market probabilities."
 
 **Expected output:**
 ```
-Performance Report -- April 2026
+Model Performance Report: April 2026
 ---------------------------------
-Record: 34-28-3 | Win rate: 54.8% | Total bets: 65
+Games scored: 65 | Accuracy: 55.4% (95% interval 43-67%) | Brier: 0.249
+Sources: results from get_games, market fair probability from get_game_probabilities
 
-At -115 average odds (implied 53.5%):
-  Theoretical edge: +1.3pp above breakeven
-  Estimated ROI: +2.1% (at -115 odds)
-  Units: +1.4u on 1u flat betting
-
-Edge claimed vs. edge realized:
-  Claimed: 4.2% average | Realized: +1.3pp vs. breakeven
-  Edge capture: ~31% of claimed edge -- model is overestimating edge
+Model vs market (information only):
+  Mean gap between our probability and the market fair probability: 2.1pp
+  Closing-line comparison: our probability vs closing fair probability, mean difference 1.4pp
 
 Trend:
-  First 2 weeks: 20-12-1 (62.5%) -- may be running hot
-  Last 2 weeks:  14-16-2 (46.7%) -- regression or market adjustment
+  First 2 weeks: 20-12-1 (62.5%), may be running hot
+  Last 2 weeks:  14-16-2 (46.7%), regression or market adjustment
 
 Diagnosis:
-  Strong start inflated monthly numbers. Second-half results suggest line 
-  movement is compressing the edge. Run CLV check on line movement.
+  65 games is a small sample and the interval is wide. The strong start
+  inflated the monthly number. Not enough data to call the model better
+  than the market from one month; add more seasons before concluding.
 ```
 
 ---
 
-**Prompt:** "Compare my model's accuracy in home favorites vs. away underdogs vs. home underdogs over the season."
+**Prompt:** "Compare my model's accuracy for home favorites vs. away underdogs vs. home underdogs over the season."
 
-**What it surfaces:** Systematic bias. Models often perform differently by bet type. If home favorites are at 65% accuracy and away underdogs are at 48%, you're not betting the same model.
+**What it surfaces:** Systematic bias. Models often perform differently by game type. If home favorites are at 65% accuracy and away underdogs are at 48%, you are not evaluating one uniform model. Report the sample size for each group.
 
 ---
 
-**Prompt:** "Show me the 5 games where my model had the largest edge claim and lost. What went wrong?"
+**Prompt:** "Show me the 5 games where my model's probability was furthest from the result. What went wrong?"
 
 **Expected output format:**
 ```
-Miss #1: BUF +145 (model: 52%, market: 40%) -- Lost
-  What happened: Ullmark pulled after 2 goals, backup struggled
-  Flag: Goalie injury not available pre-game -- expected miss
+Miss #1: BUF vs OTT (model: 52%, market fair: 40%): Lost
+  What happened: starter pulled after 2 goals, backup struggled
+  Flag: goalie change not known pre-game, expected miss
 
-Miss #2: TOR -135 (model: 63%, market: 57%) -- Lost
-  What happened: Late goal against trend, PK breakdown
-  Flag: Small sample variance, no structural issue
+Miss #2: TOR vs BOS (model: 63%, market fair: 57%): Lost
+  What happened: late goal against the run of play, PK breakdown
+  Flag: small sample variance, no structural issue
 
 Pattern: 3 of 5 biggest misses involved goalie changes.
-Action: Add starting goalie confirmation as a pre-bet filter.
+Action: Add starting goalie confirmation as a pre-game input.
 ```
 
 ---
 
 ### Season Wrap
 
-**Prompt:** "Generate a season-end performance digest. Metrics to include: total record, ROI, best month, worst month, largest win, largest loss, calibration summary, edge compression trend."
+**Prompt:** "Generate a season-end performance digest. Metrics to include: games scored, accuracy with interval, best month, worst month, calibration summary, and how the gap to the market probability changed over the season."
 
 **What it triggers:** Full `backtesting` skill review + `visualization` for trend charts. Use this as the anchor prompt for an end-of-season audit session.

@@ -62,17 +62,11 @@ Team xGF = sum of xG for all shots taken
 Team xGA = sum of xG for all shots allowed
 xGF% = xGF / (xGF + xGA)
 
-**Provider differences:**
-| Provider | Key differentiators |
-|----------|-------------------|
-| Moneypuck | Includes pre-shot movement, pass origin |
-| Natural Stat Trick | Zone-entry adjusted, widely used |
-| Evolving Hockey | Feeds into their RAPM/WAR system |
-| Sportlogiq | Tracking-data based, most accurate, paid |
+**Model differences:** public xG models differ in features (pre-shot movement, pass origin, zone-entry adjustment, tracking data). Never compare an xG value from one model with another's. State which model a number comes from.
 
 ### High-Danger Zone Definition
 
-Most used definition (Natural Stat Trick standard):
+A common definition:
 ```
 High Danger: shots from inside the "royal road" (line from one post to the other)
              and within the inner slot, roughly:
@@ -103,7 +97,7 @@ Adjustments applied before fitting:
 
 Output: Goals added per 60 minutes of even-strength ice time, relative to a replacement player.
 
-### WAR (Evolving Hockey methodology)
+### WAR (one public methodology)
 
 ```
 WAR = (offensive_contribution + defensive_contribution) / goals_per_win
@@ -159,29 +153,22 @@ After 800 shots: ~67% actual, ~33% regressed
 
 ## Which Tools Provide Each Metric
 
-| Metric | PuckAPI | Natural Stat Trick | Evolving Hockey | Moneypuck |
-|--------|---------------|-------------------|-----------------|-----------|
-| CF% | Yes -- `corsiPct`, 5v5 | Yes | Yes | Yes |
-| FF% | Yes -- `fenwickPct`, 5v5 | Yes | Yes | Yes |
-| PDO | via team_stats (compute) | Yes | Yes | Yes |
-| xGF / xGA | Yes -- `expectedGoalsFor`/`Against`, 5v5 | Yes | Yes | Yes |
-| GSAX | Yes -- `gsax`, all strengths | No | Yes | Yes |
-| High-danger SV% | Yes -- `highDangerSavePct` | Yes | Yes | Yes |
-| HDCF% | via `get_shot_map` (compute) | Yes | Yes | Yes |
-| Goalie starts + TOI | Yes -- `get_game_detail` | No | No | No |
-| Zone entries | No | Yes (limited) | No | No |
-| RAPM | No | No | Yes | No |
-| WAR | No | No | Yes | No |
-| GSAA | via goalie_stats (compute) | Yes | Yes | Yes |
+| Metric | In the PuckAPI MCP server |
+|--------|---------------------------|
+| CF% | Yes (`corsiPct`, 5v5) via `get_team_stats` |
+| FF% | Yes (`fenwickPct`, 5v5) via `get_team_stats` |
+| PDO | Compute from `get_team_stats` |
+| xGF / xGA | Yes (`expectedGoalsFor` / `expectedGoalsAgainst`, 5v5) |
+| GSAX | Yes (`gsax`, all strengths) via `get_goalie_stats` |
+| High-danger SV% | Yes (`highDangerSavePct`) |
+| HDCF% | Compute from `get_shot_map` |
+| Goalie starts | `get_game_detail` |
+| GSAA | Compute from `get_goalie_stats` |
+| Zone entries | No |
+| RAPM | No (needs a separate model) |
+| WAR | No (needs a separate model) |
 
-**Implication:** the shot-quality metrics are returned directly now, not left
-to the caller. Expected goals and GSAX are computed from 1.8M shots scored on
-distance, angle, shot type, strength and rebound status, and calibrated within
-each season so league GSAX sums to zero. RAPM and WAR still need another
-source. PDO and HDCF% are a short computation away from what is returned.
-
-What none of the others give you over MCP is any of this in a single
-conversational call alongside the play-by-play it was derived from.
+**Implication:** shot-quality metrics are returned directly. Expected goals and GSAX are computed from shot-level data scored on distance, angle, shot type, strength and rebound status, and calibrated within each season so league GSAX sums to zero. RAPM and WAR need your own model. PDO and HDCF% are a short computation from what is returned.
 
 ---
 
@@ -193,7 +180,7 @@ conversational call alongside the play-by-play it was derived from.
 | "Corsi is the best possession metric" | xGF% predicts future goals better. Corsi ignores shot quality. |
 | "A player's CF% reflects their individual skill" | CF% includes linemates and zone starts. Adjust before comparing players. |
 | "RAPM is objective player value" | RAPM estimates are model-dependent and noisy for small samples. |
-| "WAR from different sites is comparable" | Each provider uses different inputs and formulas. Source matters. |
+| "WAR from different sites is comparable" | Each model uses different inputs and formulas. Name the method. |
 | "High xG means high goals" | Goalies can save high-xG shots. Short-term, actual goals can diverge significantly from xG. |
 
 ---

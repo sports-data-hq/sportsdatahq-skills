@@ -1,12 +1,12 @@
 # xG Feature Reference
 
-> Level 3 reference. Read this when SKILL.md directs you here for feature formulas and data source details.
+> Level 3 reference. Read this when SKILL.md directs you here for feature formulas and data details.
 
 ## Coordinate System
 
 NHL coordinates use feet. Center ice = (0, 0). Net centers are at approximately x = ±89, y = 0. Shots toward the right net (positive x) are recorded as positive x values.
 
-Always normalize to "attacking direction" before computing distance and angle -- flip coordinates for shots at the left net.
+Always normalize to "attacking direction" before computing distance and angle: flip coordinates for shots at the left net.
 
 ```python
 # Normalize to attacking direction
@@ -20,15 +20,15 @@ df['y_norm'] = df['y_coord'] * df['shot_toward_right_net'].map({True: 1, False: 
 
 | Feature | Formula | Data Source | Used By |
 |---------|---------|-------------|---------|
-| `shot_distance` | `sqrt((89 - x_norm)^2 + y_norm^2)` | coordinates | MoneyPuck, Evolving Hockey, all public models |
-| `shot_angle` | `abs(atan2(y_norm, 89 - x_norm)) * (180/pi)` | coordinates | MoneyPuck, Evolving Hockey, all public models |
+| `shot_distance` | `sqrt((89 - x_norm)^2 + y_norm^2)` | coordinates | all public models |
+| `shot_angle` | `abs(atan2(y_norm, 89 - x_norm)) * (180/pi)` | coordinates | all public models |
 | `shot_type_wrist` | 1 if shot_type == "Wrist" else 0 | event type | All public models |
 | `shot_type_slap` | 1 if shot_type == "Slap" else 0 | event type | All public models |
 | `shot_type_snap` | 1 if shot_type == "Snap" else 0 | event type | All public models |
 | `shot_type_backhand` | 1 if shot_type == "Backhand" else 0 | event type | All public models |
 | `shot_type_tip` | 1 if shot_type == "Tip-In" else 0 | event type | All public models |
-| `shot_type_deflection` | 1 if shot_type == "Deflected" else 0 | event type | MoneyPuck, Evolving Hockey |
-| `shot_type_wrap` | 1 if shot_type == "Wrap-around" else 0 | event type | MoneyPuck |
+| `shot_type_deflection` | 1 if shot_type == "Deflected" else 0 | event type | common in public models |
+| `shot_type_wrap` | 1 if shot_type == "Wrap-around" else 0 | event type | public models |
 | `strength_5v5` | 1 if strength_state == "5v5" else 0 | event state | All public models (or separate model) |
 | `strength_pp` | 1 if strength_state in {"5v4","5v3","4v3"} else 0 | event state | All public models |
 | `strength_sh` | 1 if strength_state in {"4v5","3v5","3v4"} else 0 | event state | All public models |
@@ -40,12 +40,12 @@ df['y_norm'] = df['y_coord'] * df['shot_toward_right_net'].map({True: 1, False: 
 
 | Feature | Formula | Data Source | Notes |
 |---------|---------|-------------|-------|
-| `seconds_since_last_event` | `game_seconds - prev_event_game_seconds` | event sequence | Clip at 30 seconds -- longer gaps break rebound/rush logic |
+| `seconds_since_last_event` | `game_seconds - prev_event_game_seconds` | event sequence | Clip at 30 seconds: longer gaps break rebound/rush logic |
 | `distance_from_last_event` | `sqrt((x - prev_x)^2 + (y - prev_y)^2)` | coordinates | Measures puck travel, not player travel |
-| `is_rebound` | `seconds_since_last_event < 3 AND prev_event in {SHOT, GOAL, MISS}` | event sequence | MoneyPuck, Evolving Hockey |
-| `is_rush` | `seconds_since_last_event < 4 AND distance_from_last_event > 30` | event sequence | MoneyPuck; proxy for zone entry transition |
+| `is_rebound` | `seconds_since_last_event < 3 AND prev_event in {SHOT, GOAL, MISS}` | event sequence | common in public models |
+| `is_rush` | `seconds_since_last_event < 4 AND distance_from_last_event > 30` | event sequence | public models; proxy for zone entry transition |
 | `angle_change` | `abs(shot_angle - prev_shot_angle)` | coordinates | Only defined when is_rebound == 1 |
-| `rebound_angle_speed` | `is_rebound * angle_change / max(seconds_since_last_event, 0.1)` | derived | MoneyPuck "shotAnglePlusReboundSpeed" |
+| `rebound_angle_speed` | `is_rebound * angle_change / max(seconds_since_last_event, 0.1)` | derived | rebound angle speed |
 | `period` | raw period value (1, 2, 3, OT) | event metadata | OT shots in 3v3 have higher conversion |
 | `game_seconds` | seconds elapsed since puck drop | event metadata | Capture fatigue/desperation effects |
 
@@ -55,8 +55,8 @@ df['y_norm'] = df['y_coord'] * df['shot_toward_right_net'].map({True: 1, False: 
 
 | Feature | Why It Matters | Availability |
 |---------|---------------|-------------|
-| Screen / traffic in front of goalie | Screened shots convert at 2-3x the rate of unscreened shots at the same distance and angle | Not available in standard NHL event data. NHL EDGE tracking (sensor pucks, camera-based player tracking) may expose this in future datasets. |
-| Goalie positioning at shot release | A goalie out of position increases shot xG independent of distance/angle | Not available in standard event data. EDGE tracking only. |
+| Screen / traffic in front of goalie | Screened shots convert at 2-3x the rate of unscreened shots at the same distance and angle | Not available in standard event data. Player and puck tracking data may expose this in future datasets. |
+| Goalie positioning at shot release | A goalie out of position increases shot xG independent of distance/angle | Not available in standard event data. Tracking data only. |
 | Shot velocity / release speed | Faster shots give goalies less reaction time | Not available in standard event data. |
 | Shot release location vs stick position | Deceptive release points | Not available in standard event data. |
 
@@ -108,12 +108,6 @@ These rates vary by distance and angle. The model learns these implicitly throug
 
 ---
 
-## Public Model Comparison
+## Validation Benchmarks
 
-| Model | Features Included | Blocked Shots | Strength State Handling | Public Brier Score |
-|-------|------------------|---------------|------------------------|-------------------|
-| MoneyPuck | Distance, angle, shot type, rebound, rush, rebound angle speed | Excluded | Separate models | ~0.048 |
-| Evolving Hockey | Distance, angle, shot type, rebound, rush, last event | Included (flagged) | Single model with state features | ~0.050 |
-| Naive distance-only logistic | Distance | N/A | None | ~0.055 |
-
-Use MoneyPuck and Evolving Hockey team-level xGF% for validation. A model within 2 percentage points of their team rankings is calibrated correctly.
+Do not rely on quoted public Brier scores. Compute a distance-only logistic baseline on the same held-out seasons and report your model against it. For team-level validation, compare your xGF% against the expected-goals figures the PuckAPI MCP server returns from `get_team_stats` and `get_standings`, and report the correlation and number of teams.

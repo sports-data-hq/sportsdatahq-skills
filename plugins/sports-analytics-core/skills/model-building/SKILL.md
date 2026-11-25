@@ -1,51 +1,43 @@
 ---
 name: model-building
-description: "Trains and validates prediction models for sports game outcomes. Use when user asks about building a prediction model, training a classifier, choosing between logistic regression or XGBoost, model selection, hyperparameter tuning, feature importance, or ensemble methods. Always uses walk-forward methodology -- refuses k-fold. Do not use for feature construction -- see feature-engineering. Do not use for validating probability calibration -- see probability-calibration. Do not use for xG models specifically -- see nhl-xg-model."
+description: "Use when the user wants to build a prediction model for game or match outcomes, train a classifier, choose between logistic regression, random forest or XGBoost, tune hyperparameters, see which features matter or combine models. Always walk-forward; refuses k-fold. Works for any sport. Not for building features (use feature-engineering), not for checking probability quality (use probability-calibration), not for fold design alone (use walk-forward-validation), not for expected goals models (use nhl-xg-model), not for comparing output with market probabilities (use market-vs-model)."
 metadata:
-  version: 1.0.0
-  author: PuckAPI
+  version: 2.0.0
+  author: SportsDataHQ
 ---
 
 # Model Building
 
-> **Default data tool:** PuckAPI (`nhl-puckapi-tools`).
-> Use `get_games` for historical game results (5 credits per query).
-> Model training consumes no credits -- credits are spent in data collection and feature engineering upstream.
+You are an expert in building sports prediction models. The goal is a classifier that gives honest accuracy and probability estimates on held-out walk-forward test folds. Training accuracy is never reported. Walk-forward test performance is the only number that matters.
 
-You are an expert in building sports prediction models. Your goal is to train classifiers that produce honest accuracy estimates on held-out walk-forward test folds. Training accuracy is never reported. Walk-forward test accuracy is the only number that matters.
+## Data
+
+Call your sport's SportsDataHQ MCP tools for historical results and inputs (hockey get_games and get_shot_map, football get_games and get_plays, basketball list_games and get_shot_chart, baseball get_games and get_pitches, soccer list_games and get_events, tennis get_matches and get_match, golf get_leaderboard, UFC get_fight, cricket get_deliveries). Features should already be built and audited upstream (feature-engineering). Training itself is local and calls no tools.
+
+Own data (feature matrix CSV): columns game_id, game_date, season, all feature columns, and the target (for example home_win). Sorted ascending by game_date, no NaN in feature columns.
+
+## Rules for numbers
+
+- Call the tools for any data figure; never answer from memory.
+- Cite which tool call supplied the training data (tool plus arguments).
+- State sample size per fold (training and test games) and the season convention.
+- Report intervals with every accuracy or log loss figure. If there are too few test games, say "not enough data" instead of ranking models on noise.
 
 ## When to Use
 
-- User wants to build a model that predicts game outcomes
-- User asks which algorithm to use (logistic regression vs random forest vs XGBoost)
-- User wants to tune hyperparameters
-- User wants to combine multiple models into an ensemble
-- User wants to understand which features matter
-- User has features ready and wants to train
+- Build a model that predicts outcomes
+- Choose between logistic regression, random forest and XGBoost
+- Tune hyperparameters
+- Combine models into an ensemble
+- Find which features matter
 
 ## When NOT to Use
 
-- Feature construction -- see `feature-engineering`
-- Evaluating whether walk-forward methodology is correctly implemented -- see `walk-forward-validation`
-- Verifying that predicted probabilities are calibrated -- see `probability-calibration`
-- xG (expected goals) models specifically -- see `nhl-xg-model`
-- Finding betting edges from model output -- see `market-vs-model`
-
-## Commands Available
-
-| Command | What It Does | Credits |
-|---------|-------------|---------|
-| `get_games` | Historical results for training data | 5 per season |
-| `get_team_stats` | Team stats for feature pipeline | 5 per call |
-
-## Commands That Do NOT Exist
-
-| Not Available | Use Instead |
-|--------------|-------------|
-| `train_model` | Train locally using scikit-learn (instructions below) |
-| `get_model_accuracy` | Compute from walk-forward predictions manually |
-| `get_feature_importance` | Extract from trained model object after fitting |
-| `optimize_hyperparameters` | Grid search within walk-forward folds (instructions below) |
+- Feature construction: use `feature-engineering`
+- Checking the fold design: use `walk-forward-validation`
+- Checking probabilities are calibrated: use `probability-calibration`
+- Expected goals models: use `nhl-xg-model`
+- How our probability differs from the market's: use `market-vs-model`
 
 ## Initial Assessment
 
@@ -92,7 +84,7 @@ Progress through this ladder. Move to the next only if walk-forward accuracy imp
 
 ### Step 3: Walk-Forward Hyperparameter Tuning
 
-Hyperparameters are tuned using walk-forward folds -- never on the full dataset.
+Hyperparameters are tuned using walk-forward folds, never on the full dataset.
 
 **Correct approach:**
 ```python
@@ -103,7 +95,7 @@ from sklearn.model_selection import TimeSeriesSplit
 inner_cv = TimeSeriesSplit(n_splits=3)
 param_grid = {'n_estimators': [100, 200, 500], 'max_depth': [3, 5, 7], 'learning_rate': [0.05, 0.1, 0.2]}
 
-# Grid search only on training data -- never on test fold
+# Grid search only on training data, never on test fold
 grid_search = GridSearchCV(XGBClassifier(), param_grid, cv=inner_cv, scoring='neg_log_loss')
 grid_search.fit(X_train, y_train)
 best_model = grid_search.best_estimator_
@@ -115,7 +107,7 @@ best_model = grid_search.best_estimator_
 
 If three or more models each reach 58%+ walk-forward accuracy independently, ensemble them.
 
-**Hard vote beats probability averaging in practice (PuckCast result: +2pp over averaging):**
+**Test both combination rules on your own walk-forward folds.** Hard vote is often a robust choice when base models are diverse; probability averaging keeps more information and is better when you need probabilities rather than labels.
 
 ```python
 # Hard vote: majority of models must agree
@@ -129,9 +121,9 @@ def avg_proba(preds_list):
     return np.mean(preds_list, axis=0)
 ```
 
-**Why hard vote wins:** When models disagree on a game, the market is typically pricing in that uncertainty. Disagreement games are lower-confidence bets. Hard vote automatically skips them (no majority = no prediction). Probability averaging smooths disagreements into a low-confidence probability that the model then bets on anyway.
+**Trade-off:** When models disagree on a game, that is a lower-confidence prediction. Hard vote can abstain there (no majority, no prediction). Probability averaging smooths the disagreement into a probability near 0.5, which is honest but loses the signal that the models split. If you need probabilities for calibration or for comparing with the market, average, then calibrate.
 
-**Diversity requirement:** Models in an ensemble must use zero shared features. Three models with overlapping features do not reduce variance -- they are correlated noise. PuckCast used three fully separate feature sets across its three base models.
+**Diversity requirement:** Models in an ensemble must use zero shared features. Three models with overlapping features do not reduce variance, they are correlated noise. Aim for separate feature sets across base models.
 
 ### Step 5: Feature Importance Analysis
 
@@ -148,7 +140,7 @@ coef_df = pd.DataFrame({'feature': features, 'coef': np.abs(lr.coef_[0])})
 coef_df.sort_values('coef', ascending=False)
 ```
 
-Aggregate importance across folds. Features that consistently rank in the bottom 10% across all folds are candidates for removal. Remove them and retest -- if walk-forward accuracy holds or improves, they're gone.
+Aggregate importance across folds. Features that consistently rank in the bottom 10% across all folds are candidates for removal. Remove them and retest, if walk-forward accuracy holds or improves, they're gone.
 
 **Warning sign:** If a feature shows very high importance (>30% of total) in isolation, inspect it for leakage. Leaky features dominate importance rankings because they carry perfect information.
 
@@ -159,9 +151,9 @@ Compare training accuracy vs walk-forward test accuracy per fold:
 | Gap | Interpretation |
 |-----|---------------|
 | <2pp | No meaningful overfitting |
-| 2-5pp | Moderate overfitting -- consider regularization |
-| 5-10pp | Significant overfitting -- prune features, increase regularization |
-| >10pp | Severe overfitting -- model is memorizing training data |
+| 2-5pp | Moderate overfitting, consider regularization |
+| 5-10pp | Significant overfitting, prune features, increase regularization |
+| >10pp | Severe overfitting, model is memorizing training data |
 
 **For XGBoost:** Increase `min_child_weight`, decrease `max_depth` (try 3-4), add `subsample=0.8`, add `colsample_bytree=0.8`.
 **For Random Forest:** Increase `min_samples_leaf`, decrease `max_features`.
@@ -190,47 +182,30 @@ metadata = {
     'walk_forward_log_loss': 0.670,
     'n_walk_forward_folds': 3,
     'baseline_home_win': 0.548,
-    'baseline_market': 0.572
+    'baseline_market': 0.572  # market no-margin probability, accuracy
 }
 with open('model_v1_metadata.json', 'w') as f:
     json.dump(metadata, f, indent=2)
 ```
 
-Always version models. When you retrain, increment the version. Keep old models -- if new model underperforms, you roll back.
-
-## Data Source
-
-**PuckAPI (default):** Historical game results via `get_games`. Features already computed upstream via `feature-engineering`. Credits consumed upstream, not here.
-
-**Your own data:** If user provides feature matrix CSV:
-1. Verify columns: `game_id`, `game_date`, `season`, all feature columns, `home_win` target
-2. Verify data is sorted ascending by game_date
-3. Verify no NaN values in feature columns (handle upstream)
-4. No credits consumed
-
-## Credit Usage
-
-| Operation | Credits | Notes |
-|-----------|---------|-------|
-| Training and validation | 0 | Local computation; credits consumed in data pipeline |
-| `get_games` per season (if pulling here) | 5 | Only if not pulled upstream |
+Always version models. When you retrain, increment the version. Keep old models, if new model underperforms, you roll back.
 
 ## Anti-patterns
 
 | Rationalization | Why It's Wrong | Do This Instead |
 |----------------|---------------|-----------------|
-| "90% accuracy on training data" | Meaningless. Training accuracy always inflates -- the model has seen this data. | Report walk-forward test accuracy only. Training accuracy is not in the output. |
+| "90% accuracy on training data" | Meaningless. Training accuracy always inflates; the model has seen this data. | Report walk-forward test accuracy only. Training accuracy is not in the output. |
 | "XGBoost always wins on tabular data" | Start with logistic regression baseline. If the gap is <1pp, the complexity isn't worth it. | Ladder up: LR first, RF second, XGBoost third. |
 | "More features = better model" | More features = more overfitting risk on small sports datasets (1,000-5,000 games/season). | Use feature importance to prune. Start with 12 features, add only when walk-forward improves. |
-| "My model beats Vegas on this season's data" | Over how many games? What's the CLV? One season is ~1,230 games -- significant at 60% but barely. | Minimum 3 walk-forward folds. Report per-fold. Calculate statistical significance. |
-| "Probability averaging is the right ensemble method" | PuckCast tested both. Hard vote on diverse models outperformed probability averaging by 2pp. | Hard vote, zero shared features across base models. |
+| "My model beats the market this season" | Over how many games, with what interval? One season is a small sample. | Minimum 3 walk-forward folds. Report per fold with an interval, and compare log loss with the market's no-margin probability (see backtesting). |
+| "Probability averaging is the right ensemble method" | Not always; it depends on the data. | Test hard vote and averaging on walk-forward folds, with diverse base models. |
 | "I tuned hyperparameters on the test fold to maximize accuracy" | That is test-set snooping. Your reported accuracy will not generalize. | Tune only on training folds. Lock parameters before touching the test fold. |
 | "I'll add more data later to fix overfitting" | More data helps, but overfitting from too many features or too deep trees isn't fixed by data volume. | Regularize the model now. Prune features. |
 | "k-fold is fine for model comparison" | k-fold leaks future data into training on time series. Use walk-forward for all evaluation. | Walk-forward for model comparison, not just final evaluation. |
 
 ## Output Format
 
-Model building produces:
+Model building produces the report below. All numbers are placeholders showing the format, not results:
 
 ```
 Model Training Report
@@ -257,7 +232,7 @@ Top 5 Features by Importance:
 
 Baselines beaten:
   Home-win-always (54.8%): YES (+4.9pp)
-  Market implied (57.2%): YES (+2.5pp)
+  Market no-margin probability (57.2%): YES (+2.5pp)
 
 Model saved: model_v1.pkl + scaler_v1.pkl + model_v1_metadata.json
 
@@ -269,9 +244,9 @@ Next: probability-calibration to verify probability outputs
 | What You Found | Next Action | Skill |
 |----------------|-------------|-------|
 | Model trained, want to verify probabilities are accurate | Check calibration curve | `probability-calibration` |
-| Want to find betting edges from model output | Compare model probabilities vs market | `market-vs-model` |
-| Want to test betting strategies historically | Simulate bankroll with historical games | `backtesting` |
-| Train accuracy >> test accuracy (>5pp gap) | Overfit -- prune features, add regularization | `feature-engineering` + return here |
+| Want to see how the model's probability differs from the market's | Compare with no-margin market probabilities | `market-vs-model` |
+| Want to test the model on past seasons against the market | Walk-forward test with intervals | `backtesting` |
+| Train accuracy >> test accuracy (>5pp gap) | Overfit, prune features, add regularization | `feature-engineering` + return here |
 | Model doesn't beat baselines | More features needed or different architecture | `feature-engineering` + return here |
 | Want to build xG model specifically | Different methodology, shot-level data | `nhl-xg-model` |
 | Need to add Elo as a feature | Build Elo ratings first | `elo-engineering` |

@@ -12,7 +12,7 @@ Full mapping of natural language hockey terms to data fields, operators, and val
 
 | User Said | Field | Operator | Value | Notes |
 |-----------|-------|----------|-------|-------|
-| "outshot" | shots_for < shots_against | — | — | Team received more shots than they generated |
+| "outshot" | shots_for < shots_against | n/a |: | Team received more shots than they generated |
 | "outshot 2:1" | shots_against / shots_for | > | 2.0 | Severe shot differential |
 | "outshot badly" | shots_against - shots_for | > | 10 | Absolute differential |
 | "dominated possession" | shots_for / (shots_for + shots_against) | > | 0.55 | ~Corsi% proxy |
@@ -26,13 +26,13 @@ Full mapping of natural language hockey terms to data fields, operators, and val
 | "blowout" | abs(goal_differential) | >= | 4 | 4+ goal margin |
 | "close game" | abs(goal_differential) | <= | 1 | 1 goal or less |
 | "comeback win" | was_trailing | = | true AND result | = | "W" | Trailed at some point |
-| "home ice" OR "home team" | venue_type | = | "home" | — |
-| "road game" OR "away team" | venue_type | = | "away" | — |
+| "home ice" OR "home team" | venue_type | = | "home" | n/a |
+| "road game" OR "away team" | venue_type | = | "away" | n/a |
 | "division rival" | same_division | = | true | Same division matchup |
 | "conference game" | same_conference | = | true | Same conference |
 | "first half of season" | game_number | <= | 41 | NHL 82-game season |
-| "back half of season" | game_number | >= | 42 | — |
-| "last 10 games" | (sort by date desc, limit 10) | — | — | Apply to filtered results |
+| "back half of season" | game_number | >= | 42 | n/a |
+| "last 10 games" | (sort by date desc, limit 10) | n/a |: | Apply to filtered results |
 | "power play game" | pp_opportunities | >= | 3 | 3+ PP chances |
 | "penalty-filled" | total_penalties | >= | 10 | Combined |
 
@@ -41,15 +41,15 @@ Full mapping of natural language hockey terms to data fields, operators, and val
 | User Said | Field | Operator | Value | Notes |
 |-----------|-------|----------|-------|-------|
 | "good offense" | goals_for_avg | >= | 3.2 | Season average |
-| "weak offense" | goals_for_avg | <= | 2.5 | — |
-| "stingy defense" | goals_against_avg | <= | 2.5 | — |
-| "porous defense" | goals_against_avg | >= | 3.2 | — |
+| "weak offense" | goals_for_avg | <= | 2.5 | n/a |
+| "stingy defense" | goals_against_avg | <= | 2.5 | n/a |
+| "porous defense" | goals_against_avg | >= | 3.2 | n/a |
 | "good power play" | pp_pct | >= | 0.22 | 22%+ PP |
-| "struggling PP" | pp_pct | <= | 0.15 | — |
+| "struggling PP" | pp_pct | <= | 0.15 | n/a |
 | "good penalty kill" | pk_pct | >= | 0.82 | 82%+ PK |
 | "hot team" | points_last_10 | >= | 14 | 7+ wins in 10 |
-| "cold team" | points_last_10 | <= | 8 | — |
-| "playoff contender" | playoff_odds | >= | 0.50 | If available |
+| "cold team" | points_last_10 | <= | 8 | n/a |
+| "playoff contender" | playoff_probability | >= | 0.50 | If available |
 | "bottom feeder" | standings_rank | >= | 25 | League rank |
 
 ### Goalie Conditions
@@ -57,8 +57,8 @@ Full mapping of natural language hockey terms to data fields, operators, and val
 | User Said | Field | Operator | Value | Notes |
 |-----------|-------|----------|-------|-------|
 | "strong goalie performance" | sv_pct | >= | 0.915 | Single-game |
-| "bad goalie game" | sv_pct | <= | 0.875 | — |
-| "quality start" | (sv_pct >= 0.915) OR (gaa <= 2.50 AND shots_faced < 20) | — | — | QS definition |
+| "bad goalie game" | sv_pct | <= | 0.875 | n/a |
+| "quality start" | (sv_pct >= 0.915) OR (gaa <= 2.50 AND shots_faced < 20) | n/a |: | QS definition |
 | "really bad start" | sv_pct | <= | 0.850 | Threshold for RBS |
 | "high workload" | shots_faced | >= | 40 | Heavy game |
 | "goalie pulled" | goalie_pulled | = | true | Mid-game change |
@@ -70,13 +70,13 @@ Full mapping of natural language hockey terms to data fields, operators, and val
 | User Said | Field | Operator | Value | Notes |
 |-----------|-------|----------|-------|-------|
 | "point game" | points | >= | 1 | Scored or assisted |
-| "multi-point game" | points | >= | 2 | — |
-| "hat trick" | goals | >= | 3 | — |
-| "big night" | points | >= | 3 | — |
-| "held scoreless" | points | = | 0 | — |
+| "multi-point game" | points | >= | 2 | n/a |
+| "hat trick" | goals | >= | 3 | n/a |
+| "big night" | points | >= | 3 | n/a |
+| "held scoreless" | points | = | 0 | n/a |
 | "heavy minutes" | toi | >= | 22 | Time on ice (minutes) |
 | "sheltered" | toi | <= | 12 | Limited ice time |
-| "plus game" | plus_minus | > | 0 | — |
+| "plus game" | plus_minus | > | 0 | n/a |
 
 ---
 
@@ -126,7 +126,4 @@ Pre-built filter chains for recurring research questions:
 
 **"Trap game setup" (NHL)**
 - previous_opponent_quality = "high" AND current_opponent_quality = "low" AND venue_type = "away"
-- Note: opponent_quality must be derived -- use standings rank proxy
-
-**"Home dog covers puck line"**
-- venue_type = "home" AND opening_spread > 0 AND goal_differential >= opening_spread
+- Note: opponent_quality must be derived: use standings rank proxy

@@ -1,314 +1,166 @@
 ---
 name: odds-market-analysis
-description: "Converts betting odds between formats and removes bookmaker margin to find true implied probabilities. Use when user asks about devigging, vig removal, implied probability, no-vig lines, American/decimal/fractional odds conversion, Shin method, Power method, or bookmaker margin. Prerequisite for edge detection. Do not use for viewing current odds -- see nhl-odds-explorer instead. Do not use for model probability calibration -- see probability-calibration instead. Do not use for finding edges -- see market-vs-model instead."
+description: "Use when the user asks what odds mean as a probability, how to convert American, decimal or fractional odds, what the bookmaker margin (vig, juice, overround) is, how to remove it (devig, no-vig line, Shin, power, multiplicative), how a line moved, or how a closing line compares with our model. Odds are treated as information about the market, never as an instruction to wager. Not for browsing current prices (use nhl-odds-explorer for hockey), not for comparing our model with the market (use market-vs-model), not for calibrating model output (use probability-calibration)."
 metadata:
-  version: 1.0.0
-  author: PuckAPI
+  version: 2.0.0
+  author: SportsDataHQ
 ---
 
-# Odds Analysis
+# Odds and Market Analysis
 
-> **Default data tool:** PuckAPI (`nhl-puckapi-tools`).
-> Use `get_odds` (10 credits) for current odds data.
-> Use `get_line_movement` (25 credits) for historical line movement -- most expensive operation.
-> For your own odds CSV, skip the tool and work with the file directly.
+Turn prices into probabilities and measure how the market moves. Odds are information about what the market thinks. This skill does not size stakes and does not recommend wagers.
 
-You are an expert in betting odds mathematics. Your goal is to extract true implied probabilities from bookmaker odds by removing the embedded margin (vig). This is prerequisite knowledge for any downstream edge detection or expected value calculation.
+## Rules for numbers
 
-## When to Use
+- Call your sport's SportsDataHQ MCP tools. Do not quote prices or probabilities from memory.
+- Cite the tool call behind each number (for example "get_odds for game X, book Y").
+- State sample size (books, games, snapshots) and the season convention.
+- If prices are missing for a game or book, say "not enough data" instead of guessing.
 
-- User has betting odds and wants to know the "true" implied probability
-- User wants to compare odds across multiple sportsbooks
-- User asks about vig, juice, margin, or overround
-- User wants to build a no-vig line from two-sided market odds
-- User needs odds in a different format (American, decimal, fractional)
+## Data
 
-## When NOT to Use
+| Need | Tool |
+|------|------|
+| Prices by book (moneyline, spread, total) | `get_odds` |
+| Average implied and fair (no-margin) probability across books | `get_game_probabilities`, `get_prop_probabilities` |
+| Opening to closing movement | `get_line_movement`, `get_prop_movement` |
+| Period and alternate markets, opening and closing by book | `get_market_odds`, `get_alt_lines` |
+| Past prop results against the market with sample size and interval | `get_prop_backtest` |
 
-- Viewing or exploring current odds -- see `nhl-odds-explorer`
-- Comparing model probabilities against market to find edges -- see `market-vs-model`
-- Model output calibration -- see `probability-calibration`
-- Tracking line movement over time -- the `get_line_movement` endpoint covers that; this skill covers the math
+Examples: hockey puck line and totals, basketball spreads, football spreads and totals, baseball run lines, soccer three-way (home/draw/away), tennis and UFC two-way moneylines, golf winner prices for the majors. Availability differs by sport server; check that server's tool notes and do not invent tools such as `get_no_vig_line`. Compute those from `get_odds` using the methods below, or read the fair probability straight from `get_game_probabilities`.
 
-## Commands Available
+For a user's own CSV, work with the file directly.
 
-| Command | What It Does | Credits |
-|---------|-------------|---------|
-| `get_odds` | Current odds snapshot for a game | 10/game |
-| `get_line_movement` | Historical line movement for a game | 25/game |
+## Initial assessment
 
-## Commands That Do NOT Exist
+1. Which format: American, decimal or fractional?
+2. Two-way market (moneyline, over/under) or three-way (soccer home/draw/away)?
+3. How many books? More books give a steadier estimate.
 
-| Not Available | Use Instead |
-|--------------|-------------|
-| `get_no_vig_line` | Compute from `get_odds` using devig methods below |
-| `get_true_probability` | Compute from `get_odds` using Shin or multiplicative method |
-| `get_historical_odds` | Use `get_odds` with a past game date |
-| `compare_books` | Fetch `get_odds` per book and compare manually |
-
-## Credit Usage
-
-| Operation | Credits | Notes |
-|-----------|---------|-------|
-| Odds snapshot (one game) | 10 | Returns all available books |
-| Line movement (one game) | 25 | Full price history, use sparingly |
-| Full season odds (backtest) | ~820-1,230 | 82 NHL games * 10cr each |
-
-## Initial Assessment
-
-Before starting, establish:
-1. Which odds format is the user working with? (American most common in US; decimal in Europe)
-2. Is this a two-sided market (moneyline) or three-outcome market (soccer 1X2)?
-3. How many books are available? (More books = better Shin method estimate)
-
-## Format Conversion
-
-### American to Decimal
+## Format conversion
 
 ```
-# Positive odds (underdog)
-decimal = (american / 100) + 1
-# Example: +150 -> (150/100) + 1 = 2.50
-
-# Negative odds (favorite)
-decimal = (100 / abs(american)) + 1
-# Example: -180 -> (100/180) + 1 = 1.556
+American -> decimal:  +150 -> 150/100 + 1 = 2.50     -180 -> 100/180 + 1 = 1.556
+Decimal -> American:  2.50 -> (2.50 - 1) * 100 = +150   1.556 -> -100 / 0.556 = -180
+American -> fractional: +150 -> 3/2    -180 -> 5/9
 ```
 
-### Decimal to American
+Raw implied probability (margin included):
 
 ```
-# Decimal >= 2.0 (underdog)
-american = (decimal - 1) * 100
-# Example: 2.50 -> (2.50 - 1) * 100 = +150
-
-# Decimal < 2.0 (favorite)
-american = -100 / (decimal - 1)
-# Example: 1.556 -> -100 / (1.556 - 1) = -180
+positive American: 100 / (american + 100)     +150 -> 0.400
+negative American: abs(a) / (abs(a) + 100)    -180 -> 0.643
+decimal:           1 / decimal
 ```
 
-### American to Fractional
+## Margin (vig)
+
+On a two-way market the raw probabilities sum to more than 1.
 
 ```
-# Positive: american/100 = fractional
-# +150 -> 150/100 = 3/2
-
-# Negative: 100/abs(american) = fractional
-# -180 -> 100/180 = 5/9
+total_implied = raw_home + raw_away
+margin = total_implied - 1.0
 ```
 
-### Raw Implied Probability (with vig)
+Example: Sabres +150 / Leafs -180 gives 0.400 + 0.643 = 1.043, a 4.3% margin. Typical ranges: main moneylines 3-6%, main totals 4-5%, player props 7-12%.
 
+## Four ways to remove the margin
+
+### 1. Multiplicative
+Divide each raw probability by the total. Fast, assumes the margin is spread proportionally.
 ```
-# From American positive
-raw_prob = 100 / (american + 100)
-# +150 -> 100 / 250 = 0.400
-
-# From American negative
-raw_prob = abs(american) / (abs(american) + 100)
-# -180 -> 180 / 280 = 0.643
-
-# From decimal
-raw_prob = 1 / decimal
-# 1.556 -> 1 / 1.556 = 0.643
+fair_i = raw_i / total_implied
 ```
 
-## Vig Calculation
+### 2. Power
+Find exponent k so that the sum of raw_i^(1/k) equals 1 (numerical solve, for example `scipy.optimize.brentq`). Better than multiplicative on lopsided markets.
 
-Vig (vigorish) is the bookmaker's margin. On a two-sided market, both raw probabilities sum to more than 1.0.
-
-```
-total_implied = raw_prob_home + raw_prob_away
-vig = total_implied - 1.0
-```
-
-**Example:** DraftKings has Sabres +150 / Leafs -180.
-- Raw prob Sabres: 100 / (150 + 100) = 0.400
-- Raw prob Leafs: 180 / (180 + 100) = 0.643
-- Total: 0.400 + 0.643 = 1.043
-- Vig: 0.043 (4.3% margin)
-
-Typical vig ranges:
-- Moneyline main markets: 3-6%
-- Totals main markets: 4-5%
-- Props: 7-12%
-- Live betting: 8-15%
-
-## Four Devigging Methods
-
-### 1. Multiplicative Method
-
-Divide each raw probability by the total overround. Simple and fast.
-
-```
-true_prob_home = raw_prob_home / total_implied
-true_prob_away = raw_prob_away / total_implied
-```
-
-**Example (continued):**
-- True prob Sabres: 0.400 / 1.043 = 0.384
-- True prob Leafs: 0.643 / 1.043 = 0.617
-- Check: 0.384 + 0.617 = 1.001 (rounding)
-
-**Use when:** Quick estimate is needed, books are balanced. Assumes vig is distributed proportionally across both sides.
-
-### 2. Power Method
-
-Assumes equal overround per outcome -- finds exponent p such that sum of probabilities^p = 1.
-
-```
-# Find p via numerical solve:
-raw_prob_home^(1/p) + raw_prob_away^(1/p) = 1
-
-true_prob_home = raw_prob_home^(1/p)
-true_prob_away = raw_prob_away^(1/p)
-```
-
-Use scipy.optimize.brentq or similar to solve for p. More accurate than multiplicative on asymmetric markets (heavy favorites).
-
-**Use when:** Moneyline markets with significant favorites where vig is likely tilted.
-
-### 3. Shin Method
-
-Accounts for the possibility of insider trading (informed bettors). The bookmaker widens lines beyond pure vig to protect against sharp action. Shin estimates the true probability plus the insider trading component.
-
-```
-# Shin's z parameter (fraction of bets from informed traders):
-z = solve for: sum of (raw_prob_i^2 / (z + (1-z) * raw_prob_i)) = 1
-
-# True probability:
-true_prob_i = sqrt(z^2 + 4*(1-z)*raw_prob_i^2) / (2*(1-z)) - z / (2*(1-z))
-```
-
-The Shin calculation requires numerical methods. In practice:
+### 3. Shin
+Models a share z of informed money. Solve for z, then compute fair probabilities.
 
 ```python
+import math
 from scipy.optimize import brentq
 
-def shin_z(z, raw_probs):
-    return sum(p**2 / (z + (1-z)*p) for p in raw_probs) - 1
+def shin_gap(z, raw):
+    return sum(p**2 / (z + (1 - z) * p) for p in raw) - 1
 
-z = brentq(shin_z, 0, 0.5, args=(raw_probs,))
-true_probs = [
-    (math.sqrt(z**2 + 4*(1-z)*p**2) - z) / (2*(1-z))
-    for p in raw_probs
-]
+z = brentq(shin_gap, 0, 0.5, args=(raw_probs,))
+fair = [(math.sqrt(z**2 + 4 * (1 - z) * p**2) - z) / (2 * (1 - z)) for p in raw_probs]
 ```
+Works for three-way markets with three raw probabilities. Check that the result sums to 1. Preferred for research and for comparison with a model.
 
-**Use when:** You want the most accurate true probability estimate. Best for comparing against model. Gold standard for research.
+### 4. Worst case
+Put all the margin on one side. Gives a bound, not an estimate.
 
-**Limitation:** Requires at least two outcomes. For three-outcome markets (soccer), extend the formula to three sides.
+| Method | Use | Accuracy |
+|--------|-----|----------|
+| Multiplicative | Quick check, balanced markets | Moderate |
+| Power | Heavy favorites | Good |
+| Shin | Research, model comparison | Best with several books |
+| Worst case | Bounds only | Conservative |
 
-### 4. Worst-Case Method
+Default: Shin. If the sport server offers `get_game_probabilities`, use its fair probability and say that is where it came from.
 
-Assumes all vig is placed on one side -- the most conservative estimate.
+## Worked example
 
-```
-# Assumes entire vig on favorite:
-true_prob_favorite = raw_prob_favorite - vig
-true_prob_underdog = raw_prob_underdog  # no adjustment
+Sabres +150 / Leafs -180: raw 40.0% / 64.3% (total 104.3%).
 
-# Or alternatively: entire vig on underdog
-true_prob_underdog = raw_prob_underdog - vig
-true_prob_favorite = raw_prob_favorite
-```
-
-**Use when:** Conservative analysis, want to know the floor on underdog true probability. Not recommended for betting EV calculations -- too conservative.
-
-## When to Use Each Method
-
-| Method | Use Case | Sample Size | Accuracy |
-|--------|----------|-------------|----------|
-| Multiplicative | Quick estimates, balanced markets | Any | Moderate |
-| Power | Favorites with significant lines | Any | Good |
-| Shin | Research, model comparison, EV bets | Best with multiple books | Best |
-| Worst-case | Conservative floor estimates | Any | Conservative |
-
-**Default recommendation:** Shin for any research or betting application. Multiplicative only for quick sanity checks.
-
-## Worked Example: Full Devig
-
-**Market:** DraftKings Sabres +150 / Leafs -180
-
-**Step 1: Raw implied probabilities**
-- Sabres: 100 / (150+100) = 0.4000
-- Leafs: 180 / (180+100) = 0.6429
-- Total: 1.0429, Vig: 4.29%
-
-**Step 2: Multiplicative method**
-- True Sabres: 0.4000 / 1.0429 = 38.4%
-- True Leafs: 0.6429 / 1.0429 = 61.7%
-
-**Step 3: Power method**
-- Solve for p: 0.4000^(1/p) + 0.6429^(1/p) = 1 -> p ≈ 1.041
-- True Sabres: 0.4000^(1/1.041) = 38.5%
-- True Leafs: 0.6429^(1/1.041) = 61.5%
-
-**Step 4: Shin method**
-- Solve for z: numerical result z ≈ 0.021
-- True Sabres: 38.3%
-- True Leafs: 61.7%
-
-**Result comparison:**
-
-| Method | Sabres True Prob | Leafs True Prob |
-|--------|-----------------|-----------------|
+| Method | Sabres | Leafs |
+|--------|--------|-------|
 | Multiplicative | 38.4% | 61.7% |
 | Power | 38.5% | 61.5% |
 | Shin | 38.3% | 61.7% |
-| Raw (with vig) | 40.0% | 64.3% |
+| Raw | 40.0% | 64.3% |
 
-Note how raw probabilities sum to 104.3%. Using raw probabilities for EV calculation would make every bet look worse than it is -- you'd be comparing your model against an inflated baseline.
+Comparing a model against raw probabilities would compare it with a number inflated by the margin. Always use fair probability.
 
-## No-Vig Line Construction
+## No-margin line
 
-The no-vig line is the American odds equivalent of the true probability.
-
+Convert a fair probability back to American odds:
 ```
-# True prob -> American odds:
-# If true_prob > 0.5:
-no_vig_american = -100 * true_prob / (1 - true_prob)
-
-# If true_prob < 0.5:
-no_vig_american = 100 * (1 - true_prob) / true_prob
+fair_prob > 0.5:  -100 * p / (1 - p)
+fair_prob < 0.5:  +100 * (1 - p) / p
 ```
+Fair 38.3% gives +161 / -161. A posted +150 is the price with the margin built in.
 
-**Example:** Shin says Sabres true prob = 38.3%
-- 0.383 < 0.5, so: 100 * (0.617 / 0.383) = +161
+## Line movement
 
-DraftKings posts +150, no-vig line is +161. DraftKings is 11 cents short on the underdog side.
+Pull opening and closing prices with `get_line_movement`. Report the move in fair probability points, not just in American odds, because the same cents mean different things at different prices. Movement has many causes (injury news, lineup news, volume, repositioning). Describe it, with the time and the books involved; do not claim a cause unless a tool result shows it. Lack of movement is no information.
+
+## Closing line as a measure of model quality
+
+The closing fair probability is the market's final estimate and a strong benchmark. To judge a model:
+- Compare model log loss or Brier score with the closing fair probability's on the same games.
+- Report how often the market moved toward the model's number between open and close.
+- Report sample size and an interval. Under about 100 games the answer is mostly noise.
+
+Matching the closing line is a good result. Beating it consistently is rare. This is a statement about the model, not an instruction to do anything.
 
 ## Anti-patterns
 
-| Rationalization | Why It's Wrong | Do This Instead |
-|----------------|---------------|-----------------|
-| "I'll just use the raw implied probability from the odds" | Raw implied probability includes the vig. For a -180 favorite, raw implied is 64.3% but true probability might be 61.7%. Using raw makes every underdog look worse than it is. | Always devig before comparing against model. One of the four methods above, Shin preferred. |
-| "Multiplicative is close enough for moneyline" | On balanced markets (near -110/-110), yes. On heavy favorites (-300+), multiplicative and Shin diverge by 1-2%. On an edge that is already 2-3%, that's significant. | Use Shin for anything with significant implied probability asymmetry. |
-| "Line movement means sharp action, I should follow it" | Line movement reflects many things: injury news, public betting, sharp action, or just book repositioning. It is evidence, not proof. | Use line movement as one signal. Cross-reference with injury reports and model output before acting. |
-| "Props have the same vig as moneylines" | Props carry 7-12% vig vs 3-5% on moneylines. The no-vig probability for a prop at -115 is very different from a moneyline at -115. | Always calculate vig explicitly from the two-sided market before devigging. |
+| Rationalization | Why it is wrong | Do this instead |
+|-----------------|-----------------|-----------------|
+| "Use the raw implied probability" | It includes the margin | Remove the margin first |
+| "Multiplicative is fine on a heavy favorite" | It diverges from Shin by 1-2 points at -300 and beyond | Use Shin or the cross-book fair probability |
+| "Props have the same margin as moneylines" | Props carry 7-12% | Compute the margin from the two sides each time |
+| "The line moved, so informed money did it" | Movement has many causes | Describe the move; do not assign a cause without evidence |
 
-## Output Format
-
-For a devigged market:
+## Output format
 
 ```
-Game: Buffalo Sabres vs Toronto Maple Leafs
-Book: DraftKings
-Raw odds: Sabres +150 / Leafs -180
-
-Raw implied: Sabres 40.0% / Leafs 64.3% (total: 104.3%, vig: 4.3%)
-
-Devigged (Shin method):
-  Sabres: 38.3%
-  Leafs:  61.7%
-  No-vig line: Sabres +161 / Leafs -161
+Game: [Away] at [Home]   Book: [name]   Source: get_odds
+Raw odds: [A] +150 / [B] -180
+Raw implied: 40.0% / 64.3% (total 104.3%, margin 4.3%)
+Fair (Shin): 38.3% / 61.7%    No-margin line: +161 / -161
 ```
 
-## What to Do Next
+## What to do next
 
-| What You Found | Next Action | Skill |
-|----------------|-------------|-------|
-| Devigged odds in hand, have model probability | Compare model vs market to find edge | `market-vs-model` |
-| Want to explore current lines across books | Browse available odds | `nhl-odds-explorer` |
-| Need calibrated model probability first | Verify model output quality | `probability-calibration` |
-| Building a backtest with historical odds | Fetch historical odds data | `backtesting` |
+| Finding | Next skill |
+|---------|-----------|
+| Fair probability in hand, have a model | `market-vs-model` |
+| Want current prices across books (hockey) | `nhl-odds-explorer` |
+| Model probabilities need checking | `probability-calibration` |
+| Want a historical test | `backtesting` |
+| Odds term unclear | `docs/market-glossary.md` |

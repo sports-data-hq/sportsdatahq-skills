@@ -1,4 +1,4 @@
-# Hockey Skills -- Claude Code Instructions
+# Sports Analytics Skills: Claude Code Instructions
 
 ## Public Repo Rules
 
@@ -21,6 +21,9 @@ This is a public, open-source repository. Every commit, file, and message is vis
 ### Code and content:
 - No "AI-powered", "intelligent", or similar buzzwords
 - No comments referencing internal conversations or decisions
+- Skill descriptions start with "Use when", name casual phrasings, say what the skill is not for, and stay under 1,000 characters
+- Skills that report numbers must call tools, cite the tool call, state sample size and season convention, and say "not enough data" instead of guessing
+- No em dashes
 - Skill descriptions should be factual and specific to what the skill does
 - Credit costs must match the live PuckAPI pricing (see nhl-puckapi-tools/endpoints.md)
 
@@ -28,24 +31,23 @@ This is a public, open-source repository. Every commit, file, and message is vis
 
 ```
 claude-sports-analytics/
-├── .claude-plugin/plugin.json   # Plugin manifest
-├── skills/                      # 28 skill directories
-│   ├── nhl-puckapi-tools/            # MCP tool reference (endpoints + fields)
-│   ├── nhl-advanced-stats/        # Core metrics and concepts
-│   ├── nhl-game-lookup/             # Finding and filtering games
-│   └── ...                      # See README for full list
-└── docs/                        # Glossaries, routing, season logic
+├── plugins/sports-analytics-core/skills/   # sport-agnostic skills
+├── plugins/nhl-data/skills/                # hockey skills (nhl-puckapi-tools has endpoints.md)
+└── docs/                                   # Glossaries, routing, season logic
 ```
 
 ## Key Facts
 
-- 28 skills, all NHL/hockey focused
+- Two plugin folders: `plugins/sports-analytics-core` (13 sport-agnostic skills) and `plugins/nhl-data` (15 hockey skills)
 - MCP server at mcp.puckapi.com/mcp
 - Data starts from the 2010-11 season. 16 completed seasons plus the one in progress. Do not claim 2008-09; it is not there
 - 32 active NHL teams (includes Utah Hockey Club, not Arizona Coyotes)
-- Odds from the books PuckAPI tracks (DraftKings, FanDuel, BetMGM, ESPN BET and others). The
-  count moves as books come and go, so do not publish a number.
-- 15 MCP tools with credit costs defined in nhl-puckapi-tools/endpoints.md
+- Odds are information only. Skills show prices, implied and fair probability, line movement
+  and the gap between our probability and the market's. They never size stakes, give money-management
+  advice or recommend wagers. The book count moves, so do not publish a number.
+- Never name the companies or sites the data comes from. Say "the PuckAPI MCP server" (hockey) or
+  "your sport's SportsDataHQ MCP server" (core skills).
+- 28 MCP tools with credit costs defined in nhl-puckapi-tools/endpoints.md
 - Shot-quality metrics are returned by the API, not computed by the caller:
   `gsax`, `expectedGoalsAgainst`, `highDangerSavePct`, `rollingSavePct`,
   `rollingGsax`, `trend`, `restDays` on goalies; `corsiPct`, `fenwickPct`,

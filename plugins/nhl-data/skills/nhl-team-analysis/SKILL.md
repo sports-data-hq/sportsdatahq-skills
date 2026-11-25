@@ -1,18 +1,18 @@
 ---
 name: nhl-team-analysis
-description: "Evaluates teams via standings, stats, division/conference rankings, season trends, and strength of schedule. Use when user asks how a team is doing, where they stand in the division, what their record is, how they compare to other teams, or wants to understand conference/playoff positioning. Do not use for individual player stats -- see nhl-player-scouting. Do not use for goalie performance -- see nhl-goalie-analysis. Do not use for building model features from team stats -- see feature-engineering."
+description: "Use when the user asks how a team is doing, where a team sits in the division or conference, what their record is, who is in a playoff spot, how two teams compare, or how hard a schedule has been. Reads standings and team stats from the PuckAPI MCP server. Not for individual skaters (use nhl-player-scouting). Not for goalie numbers (use nhl-goalie-analysis). Not for building model features (use feature-engineering). Not for a single upcoming game (use nhl-game-preview)."
 metadata:
-  version: 1.0.0
-  author: PuckAPI
+  version: 2.0.0
+  author: SportsDataHQ
 ---
 
 # Team Analysis
 
-> **Default data tool:** PuckAPI (`nhl-puckapi-tools`).
+> **Data:** the PuckAPI MCP server (`nhl-puckapi-tools`).
 > Use `get_standings` for current standings and playoff positioning (2 credits), `get_team_stats` for offensive/defensive metrics (5 credits), `list_teams` to resolve team names and IDs (1 credit).
-> For user's own team data CSV, skip the tool and work with the file directly.
+> For the user's own team data CSV, work with the file directly.
 
-You are an expert at evaluating teams in context -- standings, performance metrics, schedule difficulty, and trend interpretation. Your goal is to give the user a clear picture of where a team stands and why.
+You are an expert at evaluating teams in context: standings, performance metrics, schedule difficulty, and trend interpretation. Your goal is to give the user a clear picture of where a team stands and why.
 
 ## When to Use
 
@@ -27,10 +27,10 @@ You are an expert at evaluating teams in context -- standings, performance metri
 
 ## When NOT to Use
 
-- Individual player stats or performance -- see `nhl-player-scouting`
-- Goalie save percentage or goals-against average -- see `nhl-goalie-analysis`
-- Building model features from team stats -- see `feature-engineering`
-- Predicting a specific game outcome -- see `nhl-game-preview`
+- Individual player stats or performance: see `nhl-player-scouting`
+- Goalie save percentage or goals-against average: see `nhl-goalie-analysis`
+- Building model features from team stats: see `feature-engineering`
+- Predicting a specific game outcome: see `nhl-game-preview`
 
 ## Commands Available
 
@@ -38,7 +38,7 @@ You are an expert at evaluating teams in context -- standings, performance metri
 |---------|-------------|---------|
 | `get_standings` | Current standings by division and conference, includes points, record, pointPct, goalDiff, corsiPct, fenwickPct | 2 |
 | `get_team_stats` | Team-level offensive and defensive stats for a season | 5 |
-| `list_teams` | All teams with IDs, cities, names -- use to resolve team identity | 1 |
+| `list_teams` | All teams with IDs, cities, names: use to resolve team identity | 1 |
 
 ## Commands That Do NOT Exist
 
@@ -93,7 +93,7 @@ NHL standings require specific interpretation. Always apply these rules:
 
 **Goal differential (goalDiff):** Goals for minus goals against. A quick proxy for team quality beyond record.
 
-**Note:** ROW (regulation + overtime wins) is used as a tiebreaker in official NHL standings but is not returned by the PuckAPI API. Use wins and pointPct for comparisons.
+**Note:** ROW (regulation + overtime wins) is used as a tiebreaker in official NHL standings but is not returned by the PuckAPI MCP server. Use wins and pointPct for comparisons.
 
 **Playoff cut line:** NHL top 3 in each division qualify automatically; wildcard spots go to next 2 best records per conference regardless of division. A team can be 4th in their division but still make playoffs via wildcard.
 
@@ -106,11 +106,11 @@ If the user asks about schedule difficulty:
 
 ### Step 5: Identify trends
 
-For trend questions ("they've been hot lately"), pull `get_team_stats` for two windows -- full season and last N games -- and compare goalsForPerGame, goalsAgainstPerGame, corsiPct, and fenwickPct. Flag meaningful divergence.
+For trend questions ("they've been hot lately"), pull `get_team_stats` for two windows: full season and last N games: and compare goalsForPerGame, goalsAgainstPerGame, corsiPct, and fenwickPct. Flag meaningful divergence.
 
 ## Data Source
 
-**PuckAPI (default):** Use `nhl-puckapi-tools` endpoints above.
+**PuckAPI MCP server:** Use the `nhl-puckapi-tools` endpoints above.
 
 **Your own data:** If user provides standings or stats CSV:
 1. Verify required columns: `team`, `gp`, `wins`, `losses`, `ot_losses`, `points` for standings; `gf`, `ga` for stats
@@ -128,7 +128,14 @@ For trend questions ("they've been hot lately"), pull `get_team_stats` for two w
 | Two-team comparison | 10 | One `get_team_stats` call per team |
 | Full division comparison (8 teams) | 40 | One call per team for stats |
 
-**Cost note:** Standings are 2 credits for the full league snapshot. Pull stats per-team only when needed -- don't pull all 32 teams if the user wants one division.
+**Cost note:** Standings are 2 credits for the full league snapshot. Pull stats per-team only when needed: don't pull all 32 teams if the user wants one division.
+
+## Rules for numbers
+
+- Call `get_standings` and `get_team_stats` for every figure; never answer a record, rank or rate from memory.
+- Cite the tool call behind each number (for example "points and pointPct from `get_standings`").
+- State the season convention (`20252026` = 2025-26), the date of the snapshot and games played. Early-season samples (under about 20 games) get a small-sample warning.
+- If a team or stat is not returned, say "not enough data" instead of estimating.
 
 ## Anti-patterns
 
@@ -136,18 +143,18 @@ For trend questions ("they've been hot lately"), pull `get_team_stats` for two w
 |----------------|---------------|-----------------|
 | "Points are enough to compare teams" | Teams may have played different numbers of games mid-season | Use P% (points percentage) for fair comparison |
 | "Wins = wins, goal diff is a detail" | Goal differential and points percentage reveal team quality beyond win-loss record | Always report goalDiff and pointPct alongside points for standings questions |
-| "I'll pull team stats and derive standings" | Stats don't include standings context (division rank, wildcard position) | Pull `get_standings` directly; don't reconstruct what the API provides |
-| "The team is 8th -- they missed the playoffs" | NHL has wildcard; 4th-in-division can still qualify | Always check conference-wide wildcard standings before calling a team eliminated |
+| "I'll pull team stats and derive standings" | Stats don't include standings context (division rank, wildcard position) | Pull `get_standings` directly; don't reconstruct what the server provides |
+| "The team is 8th: they missed the playoffs" | NHL has wildcard; 4th-in-division can still qualify | Always check conference-wide wildcard standings before calling a team eliminated |
 | "SOS is too complex, I'll skip it" | Schedule difficulty materially affects record interpretation | At minimum, note whether the team has played an above/below average schedule |
 
 ## Output Format
 
 ### Single team snapshot
 ```
-[Team] -- [Season]
+[Team]: [Season]
 Record: [W-L-OT] | Points: [N] (pointPct: .XXX) | Goal Diff: [+/-N]
 Division rank: [N]th in [Division] | Conference rank: [N]th in [Conference]
-Playoff position: [In/Out/On bubble -- wildcard [N]]
+Playoff position: [In/Out/On bubble: wildcard [N]]
 
 Offense: [GF/G] goals/game ([Rank]th in league) | xGF: [N]
 Defense: [GA/G] goals allowed/game ([Rank]th in league) | xGA: [N]
@@ -156,7 +163,7 @@ Corsi%: [N]% | Fenwick%: [N]%
 
 ### Division standings table
 ```
-[Division] Standings -- [Date]
+[Division] Standings: [Date]
 Rank | Team | GP | W | L | OT | PTS | P% | Goal Diff
 1.   | ...
 ...
@@ -186,4 +193,4 @@ xGA         N           N
 | Want to build model features from team stats | Encode GF/G, GA/G, SOS as features | `feature-engineering` |
 | Want to know key players driving the stats | Break down by player | `nhl-player-scouting` |
 | Want goalie stats contributing to GA/G | Goalie-specific analysis | `nhl-goalie-analysis` |
-| Team has a favorable schedule ahead, want to find betting edges | Compare model vs market | `market-vs-model` |
+| Want to see how our team rating differs from the market price | Model vs market gap | `market-vs-model` |

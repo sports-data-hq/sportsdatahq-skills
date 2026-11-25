@@ -1,188 +1,95 @@
 ---
 name: nl-to-query
-description: "Translates natural language hockey queries into structured data filters and executes them via nhl-puckapi-tools. Use when user asks a research question in plain English: 'show me games where the home team was outshot but won', 'find all back-to-back losses', 'how often do goalies with 2 days rest outperform their season SV%'. Includes a self-correction loop -- retries with adjusted parameters if the first query returns unexpected results. Do not use for specific known queries where the right tool is obvious -- just call nhl-game-lookup, nhl-team-analysis, or nhl-goalie-analysis directly. Do not use for model building -- see feature-engineering."
+description: "Use when the user asks a research question in plain English and does not name a tool or field, for example 'show me games where the home team was outshot but won', 'how often does the team that scores first win', 'find back-to-back losses', 'who leads the league in X when Y'. Translates the question into conditions, calls your sport's SportsDataHQ MCP tools, retries with adjusted filters when results look wrong, and reports counts with sample size. Not for a lookup where the tool is obvious (use nhl-game-lookup, nhl-team-analysis or nhl-goalie-analysis for hockey), not for building model features (use feature-engineering)."
 metadata:
-  version: 1.0.0
-  author: PuckAPI
+  version: 2.0.0
+  author: SportsDataHQ
 ---
 
-# NL to Query
+# Natural Language to Query
 
-> **Default data tool:** PuckAPI (`nhl-puckapi-tools`).
-> Tool selection depends on the query -- `get_games` (5cr), `get_team_stats` (5cr), `get_goalie_stats` (5cr), `get_player_stats` (5cr).
-> For odds queries, note `get_odds` costs 10 credits per game.
+Map what the user means to what the data contains, run it, and validate the result. Works with any sport's SportsDataHQ MCP server; the bundled dictionary (`schema-dictionary.md`) covers hockey terms in detail, and the method applies to every sport.
 
-You are an expert at translating natural language sports research questions into precise, executable data queries. Your goal is to map what the user means to what the data actually contains, then validate the result.
+## Rules for numbers
 
-## When to Use
+- Call the tools. Never answer a count or rate from memory.
+- Cite which tool call (and parameters) produced each number.
+- State sample size (matching rows out of total rows) and the season convention (calendar year, or the year the season starts or ends; the sport's tool notes say which).
+- If the data cannot answer the question, say "not enough data" instead of guessing.
 
-- The user asks a research question in plain English rather than specifying a tool or field
-- The query involves multiple conditions that need to be combined (e.g., "outshot AND home AND won")
-- The user doesn't know what the underlying field names or thresholds are
-- The query includes fuzzy hockey concepts that map to specific metrics
+## Tools by sport
 
-## When NOT to Use
+Pick the tool that holds the unit of analysis. Names differ by sport; read the server's tool list first.
 
-- The right skill is obvious from context -- call `nhl-game-lookup`, `nhl-team-analysis`, or `nhl-goalie-analysis` directly
-- The user is building model features -- see `feature-engineering` (handles temporal guards and leakage)
-- The user wants odds data -- the credit cost ($0.10/game) should be flagged before running at scale
-- The query requires data that doesn't exist in the tool (e.g., live tracking data, salary cap data)
+| Question about | Examples |
+|----------------|----------|
+| Games and results | hockey `get_games`, basketball `list_games`, soccer `list_games`, tennis `get_matches` |
+| Event or location data | hockey `get_shot_map`, basketball `get_shot_chart`, football `get_plays`, baseball `get_pitches`, soccer `get_events`, cricket `get_deliveries` |
+| Single contest detail | tennis `get_match`, UFC `get_fight`, golf `get_leaderboard`, hockey `get_game_detail` |
+| Team or player aggregates | `get_team_stats`, `get_player_stats` or `get_player`, hockey `get_goalie_stats` |
+| Market data (information only) | `get_odds`, `get_game_probabilities`, `get_line_movement` |
 
-## Commands Available
+Do not invent tools such as `search_games`, `filter_games` or `aggregate_stats`. Pull rows, filter and aggregate client-side, and show row counts before and after each filter.
 
-| Command | What It Does | Credits |
-|---------|-------------|---------|
-| `get_games` | Game results with scores, team IDs | 5 |
-| `get_team_stats` | Aggregated team metrics by season/period | 5 |
-| `get_goalie_stats` | Goalie season stats and leaderboard | 5 |
-| `get_player_stats` | Player bio data; goalie stats for goalies | 5 |
-| `get_schedule` | Game schedule with IDs for further lookup | 2 |
-| `get_game_detail` | Full game data with odds and goalie starts | 10 |
+## Season resolution
 
-## Commands That Do NOT Exist
+Seasons are named differently by sport (the year the season starts, the year it ends, or the calendar year). Read the server's notes and state the convention you used. "This season" is the one in progress or most recently completed; "last season" is the one before it; "last 30 games" is counted back from today's date.
 
-| Not Available | Use Instead |
-|--------------|-------------|
-| `search_games` | Use `get_games` with date range + filters |
-| `filter_games` | `get_games` returns data; apply filters client-side |
-| `aggregate_stats` | Retrieve raw data, compute aggregates manually |
-| `get_live_data` | Historical data only; no live game feed |
-| `get_lineup` | Use `get_game_detail` for line combinations |
+## How it works
 
-## Season Resolution
+1. **Parse**: conditions (home, outshot, won), metrics (shots, goals, save rate), comparators, and time scope.
+2. **Map to fields** using the dictionary or the tool's documented fields. Ask when a term is ambiguous (for example "won": regulation only, or including extra time?).
+3. **Choose the tool** from the table above. Prefer pre-aggregated tools when they answer the question; use row-level tools when conditions need per-game values.
+4. **Run it** and count rows.
+5. **Self-correct**: zero rows, an implausibly large count or odd values mean a bad filter, field name or date range. Drop one filter at a time to find the culprit, inspect one raw row, and retry. After the third failed attempt, report what was tried and what came back. Do not make up a result.
+6. **Report**: exact conditions, M matches out of N rows, the rate, and a small-sample warning under 30 rows.
 
-- October through December: current calendar year is the season start (2026-27 season)
-- January through September: previous calendar year is the season start (2025-26 season)
-- "This season" = season currently in progress or most recently completed
-- "Last season" = one season before "this season"
-- "Last 30 games" = pull the last 30 game log entries from today's date
+Common hockey mappings:
 
-## Initial Assessment
-
-Before translating:
-1. What is the unit of analysis? (Games, teams, players, goalies)
-2. What is the time window? (Full season, last N games, specific date range)
-3. What is the output? (List of matching games, count, percentage, comparison)
-
-## How It Works
-
-**Step 1: Parse the natural language query**
-
-Identify:
-- **Conditions**: Each filter the user wants applied (e.g., "home team," "outshot," "won")
-- **Metrics**: The values being measured (shots, goals, SV%, rest days)
-- **Comparators**: Greater than, less than, equal to, ratio
-- **Time scope**: Season, date range, last N games
-
-**Step 2: Map to schema**
-
-Translate each condition using the schema dictionary. For complex hockey terms, load `schema-dictionary.md`. Common mappings:
-
-| User Said | Data Field | Operator | Value |
-|-----------|-----------|----------|-------|
+| User said | Field | Operator | Value |
+|-----------|-------|----------|-------|
 | "outshot 2:1" | shots_against / shots_for | > | 2.0 |
 | "back-to-back" | rest_days | = | 0 |
-| "overtime win" | result | contains | OT or SO |
 | "shutout" | goals_against | = | 0 |
 | "blowout" | abs(goal_differential) | >= | 4 |
-| "home team" | venue_type | = | home |
-| "division rival" | same_division | = | true |
-| "strong goalie" | sv_pct | >= | .915 |
-| "back half of season" | game_number | >= | 42 (NHL) |
+| "strong goalie game" | sv_pct | >= | .915 |
 
-Full mapping table: see `schema-dictionary.md`
+Other sports use the same pattern. Examples: basketball "hot shooting night" (team three-point rate above a stated cutoff), football "third and long" (down = 3, distance >= 7 in `get_plays`), baseball "pitcher went deep" (innings >= 7), soccer "dominated shots" (shots share above 0.6).
 
-**Step 3: Select the right endpoint**
+## Using the user's own data
 
-| Query Type | Endpoint | Notes |
-|------------|----------|-------|
-| Game-level conditions (shots, goals) | `get_games` + `get_game_detail` | Detail needed for shot breakdown |
-| Season aggregates by team | `get_team_stats` | Pre-aggregated |
-| Goalie conditions (SV%, starts) | `get_goalie_stats` | Game log mode |
-| Player conditions (points, ice time) | `get_player_stats` | Game log mode |
-
-**Step 4: Construct and execute**
-
-Build the query parameters. Execute. Count results returned.
-
-**Step 5: Self-correction loop**
-
-If the result count is zero or implausibly large:
-- Zero results: check if the filter is too strict, check date range, check field name spelling
-- Too many results: check if a filter was dropped, verify comparator direction
-- Unexpected results: pull one sample record and inspect raw field values
-
-Retry with adjusted parameters. If the third attempt fails, report what was tried and what was returned. Do not hallucinate a result.
-
-**Step 6: Validate and interpret**
-
-- State the exact conditions matched
-- Report N matching games out of total games in the window
-- Calculate the rate (e.g., "home teams outshot 2:1 won 24.1% of the time, 73 of 303 games")
-- Flag small samples (under 30 games) explicitly
-
-## Data Source
-
-**PuckAPI (default):** Use the appropriate endpoint. All data is clean and documented.
-
-**Your own data:** If user provides CSV/JSON:
-1. Verify the required columns exist for the conditions in the query
-2. Map user's column names to the schema-dictionary terms
-3. Apply filters in sequence; show row counts before and after each filter
-4. Credits are not consumed when using own data
-
-## Credit Usage
-
-| Operation | Credits | Notes |
-|-----------|---------|-------|
-| Game log query (full season) | 5 | `get_games` returns ~82 NHL games |
-| Game detail (per game) | 10 | Full game info with odds and goalies |
-| Full season with detail | 820+ | Very expensive -- confirm before running |
-| Goalie leaderboard (full season) | 5 | Per query |
-| Odds conditions | 10/game | Warn user before any odds-based filter |
-
-**Scale warning:** If a query requires game-level detail for a full season (e.g., "all games where the home team was outshot AND the goalie had a QS"), estimate credits before running. 82 games x $0.01 = $0.82 in credits. Get confirmation.
+1. Check the columns the conditions need exist.
+2. Map their column names to the dictionary terms.
+3. Apply filters in sequence with counts after each.
 
 ## Anti-patterns
 
-| Rationalization | Why It's Wrong | Do This Instead |
-|----------------|---------------|-----------------|
-| "The user probably means X field" | Guessing field names causes silent wrong results | Map explicitly using schema-dictionary.md; flag ambiguity |
-| "Zero results means no games match" | Zero results often means a bad filter or wrong field name | Run without one filter at a time to isolate the failure |
-| "I'll compute this from memory" | Tool data may not match what Claude knows; compute from actual data | Always retrieve, never assume |
-| "Close enough sample size" | 12 matching games is not enough to draw conclusions | Flag: "N=12, use caution -- this is anecdotal, not statistically significant" |
+| Rationalization | Why it is wrong | Do this instead |
+|-----------------|-----------------|-----------------|
+| "The user probably means field X" | Guessed fields give silently wrong results | Map explicitly and flag ambiguity |
+| "Zero results means no games match" | Often a bad filter or field name | Remove filters one at a time |
+| "I remember roughly how often that happens" | Memory differs from the data | Retrieve it |
+| "12 matches is enough" | Too few to conclude | Report N and call it anecdotal |
 
-## Output Format
+## Output format
 
 ```
-Query: "[user's original question]"
-
-Translated conditions:
-- [condition 1]: [field] [operator] [value]
-- [condition 2]: [field] [operator] [value]
-
-Data source: [endpoint used]
-Time window: [date range or season]
-Total games in window: [N]
-
-Results: [M] games matched ([M/N]%)
-
-[Optional: first 5 matching games as examples]
-
-Game ID | Date | Matchup | [Key Metric 1] | [Key Metric 2] | Result
---------|------|---------|---------------|---------------|-------
-...
-
-Interpretation: [One sentence on what this means]
-Caveat: [Sample size warning if N < 30, or other data limitation]
+Query: "[original question]"
+Translated conditions: [field operator value] ...
+Data source: [tool calls, parameters]
+Time window: [dates or season, convention]
+Total rows in window: N   Matched: M (M/N %)
+[first 5 matching rows]
+Interpretation: [one sentence]
+Caveat: [sample size or data limits]
 ```
 
-## What to Do Next
+## What to do next
 
-| What You Found | Next Action | Skill |
-|----------------|-------------|-------|
-| Interesting pattern in results | Deeper analysis by team or player | `nhl-team-analysis` or `nhl-player-scouting` |
-| Pattern worth modeling | Build features from the conditions found | `feature-engineering` |
-| Pattern worth testing as a bet | Backtest the condition as a betting filter | `backtesting` |
-| Goalie-specific condition found | Full goalie breakdown | `nhl-goalie-analysis` |
-| Want to test a hypothesis formally | Structure a falsifiable prediction | `nhl-research-workflow` |
+| Finding | Skill |
+|---------|-------|
+| Interesting pattern, hockey team or player | `nhl-team-analysis`, `nhl-player-scouting` |
+| Pattern worth modeling | `feature-engineering` |
+| Pattern worth testing historically | `backtesting` |
+| Goalie condition | `nhl-goalie-analysis` |
+| Formal hypothesis test | `nhl-research-workflow` |

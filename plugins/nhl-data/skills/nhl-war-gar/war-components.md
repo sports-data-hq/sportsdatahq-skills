@@ -36,7 +36,7 @@ Where `W = diag(w)` (diagonal weight matrix of shift durations) and `λ` is the 
 β = (X'WX + λI)^(-1) X'Wy
 ```
 
-In practice, solve with `sklearn.linear_model.Ridge` with `sample_weight=shift_durations`. Never invert the matrix directly -- use the solver.
+In practice, solve with `sklearn.linear_model.Ridge` with `sample_weight=shift_durations`. Never invert the matrix directly: use the solver.
 
 ### Why Ridge (Not Lasso, Not OLS)
 
@@ -50,7 +50,7 @@ In practice, solve with `sklearn.linear_model.Ridge` with `sample_weight=shift_d
 
 The ridge penalty `λ` controls how aggressively low-sample players are shrunk.
 
-### Published Values (Evolving Hockey / public research)
+### Published Values (public research)
 
 | Strength State | Target | Recommended λ | Notes |
 |---------------|--------|---------------|-------|
@@ -88,7 +88,7 @@ best_alpha = model.alpha_
 - **RAPM input:** 5v5 shifts, xGF per 60 as target
 - **Sign convention:** Positive = good (more offense generated)
 - **Typical range for full-season NHL starters:** -4 to +8 EVO GAR
-- **Evolving Hockey label:** EVO
+- **Common label:** EVO
 
 ### EV Defense (EVD)
 
@@ -96,7 +96,7 @@ best_alpha = model.alpha_
 - **RAPM input:** 5v5 shifts, xGA per 60 as target, **inverted** (multiply coefficient by -1 so positive = fewer goals against)
 - **Sign convention:** Positive = good (less offense allowed)
 - **Typical range:** -4 to +6 EVD GAR
-- **Evolving Hockey label:** EVD
+- **Common label:** EVD
 
 ### PP Contribution (PPO)
 
@@ -104,7 +104,7 @@ best_alpha = model.alpha_
 - **RAPM input:** PP shifts (5v4 + 5v3 + 4v3), xGF per 60 as target
 - **Sign convention:** Positive = good
 - **Typical range for PP-heavy forwards:** 0 to +5 PPO GAR. Non-PP players: ~0.
-- **Evolving Hockey label:** PPO
+- **Common label:** PPO
 
 ### PK Defense (PKD)
 
@@ -112,7 +112,7 @@ best_alpha = model.alpha_
 - **RAPM input:** SH shifts (4v5 + 3v5 + 3v4), xGA per 60 as target, inverted
 - **Sign convention:** Positive = good (fewer goals allowed on PK)
 - **Typical range for PK specialists:** 0 to +3 PKD GAR
-- **Evolving Hockey label:** PKD
+- **Common label:** PKD
 
 ### Penalties Drawn (PD)
 
@@ -120,7 +120,7 @@ best_alpha = model.alpha_
 - **RAPM input:** All states, penalty-drawn events per 60 as target
 - **Conversion:** Penalties drawn → PP opportunities → xG value of those opportunities (~0.2 xG per PP)
 - **Sign convention:** Positive = good
-- **Evolving Hockey label:** PD
+- **Common label:** PD
 
 ### Penalties Taken (PT)
 
@@ -128,7 +128,7 @@ best_alpha = model.alpha_
 - **RAPM input:** All states, penalty-taken events per 60 as target
 - **Conversion:** Same as PD but sign is negative (giving away PP = hurts team)
 - **Sign convention:** Negative = more penalties taken = bad
-- **Evolving Hockey label:** PT
+- **Common label:** PT
 
 ---
 
@@ -166,8 +166,7 @@ goals_per_win = 1 / (dW_dGF * games)
 ```
 
 **Published values:**
-- Evolving Hockey: ~6.0 goals per WAR
-- Dom Luszczyszyn (The Athletic): ~5.5 goals per WAR
+- Public models range from about 5.5 to 6.0 goals per WAR
 - This skill uses 6.0 as the baseline; note which assumption is in use.
 
 ### Practical WAR Calculation
@@ -183,7 +182,7 @@ player_war = player_gar / GOALS_PER_WAR
 
 ## Market Rate: Dollars per WAR
 
-The market rate is derived from the relationship between AAV and WAR for players who signed as unrestricted free agents (UFAs). Restricted free agents (RFAs) sign below market -- exclude from the derivation.
+The market rate is derived from the relationship between AAV and WAR for players who signed as unrestricted free agents (UFAs). Restricted free agents (RFAs) sign below market: exclude from the derivation.
 
 ### Methodology
 
@@ -223,19 +222,16 @@ surplus_value = market_value - actual_cost
 
 ---
 
-## Comparison to Evolving Hockey Public Values
-
-Evolving Hockey publishes GAR components for all NHL skaters each season. Use these as ground truth for validation.
+## Validating Your Output
 
 **How to validate your RAPM output:**
-1. Compute correlation between your EVO values and Evolving Hockey's EVO for all qualifying players. Target r > 0.85.
+1. Split the sample by season or by odd and even games and correlate each player's component values across the halves. Stable components correlate well; noisy ones do not.
 2. Compare top-10 and bottom-10 players by total WAR. Major outliers signal a data or implementation error.
 3. Check that your team-level WAR totals correlate with actual team standings points (r > 0.70).
 
 **Expected discrepancies:**
-- Your single-season RAPM will be noisier than EH's multi-season estimates
-- EH may use different ridge penalty values (not fully public)
-- Different xG models produce different RAPM values; document which xG source was used
+- Single-season RAPM is noisier than multi-season estimates
+- Different xG models produce different RAPM values; document which xG model was used
 
 ---
 
@@ -247,9 +243,9 @@ Evolving Hockey publishes GAR components for all NHL skaters each season. Use th
 | PP | 50 minutes | ~80 shifts |
 | PK | 50 minutes | ~80 shifts |
 
-Players below these thresholds have RAPM estimates dominated by the ridge penalty (they're essentially assigned replacement level). Flag these players explicitly -- do not report their component values as meaningful.
+Players below these thresholds have RAPM estimates dominated by the ridge penalty (they're essentially assigned replacement level). Flag these players explicitly: do not report their component values as meaningful.
 
 For a full season:
 - Top-6 forwards: ~800-1,000 minutes of 5v5 TOI. Well above threshold.
-- Bottom-6 forwards: ~300-500 minutes. Marginal -- single-season estimates are noisy.
+- Bottom-6 forwards: ~300-500 minutes. Marginal: single-season estimates are noisy.
 - AHL callup who played 5 games: likely below threshold for most components.
