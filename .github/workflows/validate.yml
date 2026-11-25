@@ -1,0 +1,22 @@
+name: validate skills
+on: [push, pull_request]
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Manifests are valid JSON
+        run: |
+          for f in .claude-plugin/marketplace.json .cursor-plugin/marketplace.json .agents/plugins/marketplace.json gemini-extension.json catalog.json plugins/*/.claude-plugin/plugin.json plugins/*/.mcp.json plugins/*/skills/*/evals/evals.json; do
+            python -c "import json,sys; json.load(open(sys.argv[1]))" "$f" || { echo "bad JSON: $f"; exit 1; }
+          done
+      - name: Skills (frontmatter, house rules, real tool names)
+        run: python scripts/validate.py
+      - name: Claude Code plugin validation
+        run: |
+          npm install -g @anthropic-ai/claude-code >/dev/null 2>&1
+          claude plugin validate .
+          for p in plugins/*; do claude plugin validate "$p"; done

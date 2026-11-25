@@ -30,16 +30,21 @@ This is a public, open-source repository. Every commit, file, and message is vis
 ## Repo Structure
 
 ```
-claude-sports-analytics/
-├── plugins/sports-analytics-core/skills/   # sport-agnostic skills
-├── plugins/nhl-data/skills/                # hockey skills (nhl-puckapi-tools has endpoints.md)
-└── docs/                                   # Glossaries, routing, season logic
+sportsdatahq-skills/
+├── .claude-plugin/marketplace.json        # one marketplace: sportsdatahq
+├── plugins/sports-analytics-core/skills/  # sport-agnostic skills
+├── plugins/<sport>-data/skills/           # nhl, nfl, nba, mlb, soccer, tennis, golf, mma, cricket
+│   └── <league>-<task>/SKILL.md + evals/evals.json
+├── scripts/validate.py                    # run before every PR (CI runs it)
+└── docs/                                  # glossaries, routing, season logic
 ```
+
+New skills: name them `<league>-<task>`, use only tools that exist on that sport's API (scripts/tools.json), add evals (three task checks, ten trigger queries, ten near-miss negatives), and run `python scripts/validate.py`.
 
 ## Key Facts
 
-- Two plugin folders: `plugins/sports-analytics-core` (13 sport-agnostic skills) and `plugins/nhl-data` (15 hockey skills)
-- MCP server at mcp.puckapi.com/mcp
+- Ten plugins: `sports-analytics-core` plus one per sport, each wired to its API's MCP server (mcp.<brand>.com/mcp)
+- Hockey facts below apply to `nhl-data`
 - Data starts from the 2010-11 season. 16 completed seasons plus the one in progress. Do not claim 2008-09; it is not there
 - 32 active NHL teams (includes Utah Hockey Club, not Arizona Coyotes)
 - Odds are information only. Skills show prices, implied and fair probability, line movement
