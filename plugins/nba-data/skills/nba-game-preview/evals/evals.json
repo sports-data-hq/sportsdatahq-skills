@@ -1,0 +1,12 @@
+{
+  "skill": "nba-game-preview",
+  "tasks": [
+    {"prompt": "Preview Celtics at Knicks tonight", "expect": ["get_schedule then get_team_stats for both teams", "pace and net rating with games played", "market probability labelled as the market's"]},
+    {"prompt": "Break down Liberty vs Aces", "expect": ["league wnba passed", "calendar-year season", "injuries for both teams"]},
+    {"prompt": "Who's out for the Nuggets game and what's the line?", "expect": ["get_injuries", "spread and total reported", "no pick"]}
+  ],
+  "triggers": {
+    "should": ["preview Celtics vs Knicks", "break down tonight's Lakers game", "who's out for the Nuggets", "pace and efficiency matchup Bucks Heat", "NBA game preview", "what's the line on Warriors Suns", "college basketball preview Duke UNC", "matchup breakdown Thunder Mavs", "WNBA preview Liberty Aces", "is tonight's Knicks game a mismatch"],
+    "should_not": ["LeBron points prop history", "who gets minutes with Embiid out", "NFL game preview", "NBA standings", "build an NBA win probability model", "list NBA teams", "shot chart for Curry", "NHL preview tonight", "explain net rating", "fantasy basketball waiver adds"]
+  }
+}

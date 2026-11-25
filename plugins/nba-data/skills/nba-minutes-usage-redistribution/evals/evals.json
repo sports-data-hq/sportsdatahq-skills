@@ -1,0 +1,12 @@
+{
+  "skill": "nba-minutes-usage-redistribution",
+  "tasks": [
+    {"prompt": "Embiid is out. Who gets the minutes for the Sixers?", "expect": ["get_injuries and get_player_games for Embiid", "with vs without split with game counts", "beneficiaries named with evidence"]},
+    {"prompt": "How did the Knicks play without Brunson this season?", "expect": ["list_games used to split games", "n with and without shown", "small-sample warning if under 4"]},
+    {"prompt": "Fantasy pickup now that Tatum is out?", "expect": ["teammate minutes and FGA change", "no betting language", "Data line"]}
+  ],
+  "triggers": {
+    "should": ["Embiid out who gets minutes", "usage without Luka", "who starts if Tatum sits", "fantasy pickup with the injury NBA", "how did the Knicks do without Brunson", "who benefits from Ja being out", "minutes redistribution Celtics", "Lakers rotation without LeBron", "WNBA who replaces Caitlin Clark minutes", "usage bump with the starter out"],
+    "should_not": ["LeBron points prop", "preview Celtics Knicks", "NFL who gets targets with the WR out", "NBA standings", "explain usage rate", "shot chart for Curry", "NBA trade rumors", "build a minutes projection model", "who won last night", "NHL line combinations"]
+  }
+}
