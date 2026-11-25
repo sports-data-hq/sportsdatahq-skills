@@ -39,7 +39,7 @@ sportsdatahq-skills/
 └── docs/                                  # glossaries, routing, season logic
 ```
 
-New skills: name them `<league>-<task>`, use only tools that exist on that sport's API (scripts/tools.json), add evals (three task checks, ten trigger queries, ten near-miss negatives), and run `python scripts/validate.py`.
+New skills: name them `<league>-<task>`, use only tools that exist on that sport's API (scripts/tools.json), add evals (three task checks, ten trigger queries, ten near-miss negatives), and run `python scripts/validate.py` and `python scripts/catalog.py`.
 
 ## Key Facts
 

@@ -2,14 +2,6 @@
  "generated_from": "plugins/*/skills/*/SKILL.md",
  "skills": [
   {
-   "name": "backtesting",
-   "plugin": "sports-analytics-core",
-   "description": "Use when the user asks to backtest a model, check whether a model really works historically, test it on past seasons, get confidence intervals, see if accuracy is fading, or compare the model to the market's closing probabilities. Walk-forward only; refuses in-sample testing. Reports sample size, an interval and a per-season breakdown. Not for tracking live predictions (use prediction-tracker), not for how our probability differs from the market today (use market-vs-model), not for training (use model-building), not for fold mechanics alone (use walk-forward-validation).",
-   "reads_live_data": false,
-   "writes": false,
-   "moves_money": false
-  },
-  {
    "name": "cricket-chase-win-probability",
    "plugin": "cricket-data",
    "description": "Use when the user wants the win probability of a cricket run chase or how it swung: 'what are the chances of this chase', 'win probability at the 15th over', 'how did the match turn', 'was the chase ever in doubt', 'the biggest swing of the innings', 'what does the model give the chasing side'. Reports our win probability through the second innings (get_win_probability), the swings between overs, the required rate, and compares it with the market's view as information. Not for a pre-match preview (see cricket-match-preview), phase stats (see cricket-phase-analysis) or ground effects (see cricket-venue-effects).",
@@ -20,7 +12,7 @@
   {
    "name": "cricket-match-preview",
    "plugin": "cricket-data",
-   "description": "Use when the user wants a preview of a cricket match in any format: 'preview India vs Australia ODI', 'IPL preview MI vs CSK', 'who's favored in the Big Bash tonight', 'how does this ground play', 'T20 World Cup match preview'. Produces a one-page report: team ratings in the format and our pregame win probability (T20 and international ODI), venue profile (par scores, toss and batting-first record), recent results, key players' form, and the market's prices. Not for ball-by-ball replays (call get_deliveries) or modeling (see model-building).",
+   "description": "Use when the user wants a cricket match preview in any format, or how a ground plays before a match: 'preview India vs Australia ODI', 'IPL preview MI vs CSK', 'PSL match breakdown', 'who's favored in the Big Bash tonight', 'how does this ground play', 'T20 World Cup match preview'. Produces a one-page report: format ratings and our pregame win probability (T20 and international ODI), venue profile, recent results, key players' form and the market's prices. Not for ball-by-ball replays (call get_deliveries) or modeling (see model-building).",
    "reads_live_data": true,
    "writes": false,
    "moves_money": false
@@ -38,30 +30,6 @@
    "plugin": "cricket-data",
    "description": "Use when the user wants to know how a cricket ground plays or whether the venue changes a match: 'how does Wankhede play', 'par score at Chepauk', 'should teams bat first here', 'is the ground helping spin', 'chasing record at this venue', 'do big scores happen at Dubai', 'toss decisions at this ground'. Reports innings totals, batting-first and chasing results, toss choices and phase scoring for a ground and format, with match counts. Not for a match preview (see cricket-match-preview), a chase's probability curve (see cricket-chase-win-probability) or phase stats for a player (see cricket-phase-analysis).",
    "reads_live_data": true,
-   "writes": false,
-   "moves_money": false
-  },
-  {
-   "name": "data-pipeline",
-   "plugin": "sports-analytics-core",
-   "description": "Use when the user wants to automate a sports model: run predictions every morning, set up a cron job or GitHub Action, store predictions in a database, version models, retrain on a schedule or get alerted when accuracy drifts. Covers pulls through any sport's SportsDataHQ MCP server. Not for one-off lookups (use your sport's lookup skill or nl-to-query), not for building the model (use model-building), not for historical testing (use backtesting), not for grading logged predictions (use prediction-tracker).",
-   "reads_live_data": false,
-   "writes": false,
-   "moves_money": false
-  },
-  {
-   "name": "elo-engineering",
-   "plugin": "sports-analytics-core",
-   "description": "Use when the user asks to build Elo ratings, rate teams or players, tune K-factor or home advantage, carry ratings across seasons, add margin-of-victory, or mentions Fading, Form or Component Elo. Works for team sports and for tennis, golf, UFC and cricket player or fighter ratings. Not for general feature construction (use feature-engineering), not for a full model (use model-building), not for plain team stats (use nhl-team-analysis for hockey or your sport's stats tools), not for season simulation (use nhl-playoff-simulation).",
-   "reads_live_data": false,
-   "writes": false,
-   "moves_money": false
-  },
-  {
-   "name": "feature-engineering",
-   "plugin": "sports-analytics-core",
-   "description": "Use when the user asks to prepare data for a model, build rolling averages or recent-form features, add rest days or back-to-back flags, adjust for strength of schedule, build starter or goalkeeper quality features, use Elo as an input, or check features for leakage. Enforces shift(1) before any rolling calculation. Not for looking up raw stats (use your sport's lookup skill such as nhl-game-lookup or nhl-team-analysis), not for explaining hockey metrics (use nhl-advanced-stats), not for expected goals features (use nhl-xg-model), not for training (use model-building).",
-   "reads_live_data": false,
    "writes": false,
    "moves_money": false
   },
@@ -90,17 +58,9 @@
    "moves_money": false
   },
   {
-   "name": "market-vs-model",
-   "plugin": "sports-analytics-core",
-   "description": "Use when the user asks how our probability differs from the market's, whether the model disagrees with the odds, who the market likes more than the model does, or whether the model beats the closing line. Covers model vs market gap, fair (no-margin) probability, closing-line comparison as a measure of model quality, and how large a sample must be before a gap means anything. Odds are information only: no stake sizing, no wagering advice. Not for raw odds lookup (use odds-market-analysis, or nhl-odds-explorer for hockey), not for checking model accuracy over history (use backtesting), not for calibrating probabilities (use probability-calibration).",
-   "reads_live_data": true,
-   "writes": false,
-   "moves_money": false
-  },
-  {
    "name": "mlb-game-preview",
    "plugin": "mlb-data",
-   "description": "Use when the user wants a preview of one MLB or college baseball game: 'preview Yankees vs Red Sox', 'break down tonight's Dodgers game', 'how does this pitcher match up', 'what's the run line and total', 'who's hot for the Mets series'. Produces a one-page report: records and run differential, team offense and run prevention, our Elo ratings, the starters' arsenals when known, the line and what it implies. Not for regression screens or pitcher skill changes (other mlb- skills) or model building (see model-building).",
+   "description": "Use when the user wants an MLB game preview or a college baseball game breakdown: 'MLB game preview', 'preview Yankees vs Red Sox', 'break down tonight's Dodgers game', 'what's the line for the Astros game', 'how does Skubal match up tonight', 'who has the edge in pitching tonight', 'series preview'. Produces a one-page report: records and run differential, offense and run prevention, our Elo, the starters' arsenals when known, the line and what it implies. Not for regression screens (other mlb- skills) or model building (see model-building).",
    "reads_live_data": true,
    "writes": false,
    "moves_money": false
@@ -130,10 +90,26 @@
    "moves_money": false
   },
   {
-   "name": "model-building",
-   "plugin": "sports-analytics-core",
-   "description": "Use when the user wants to build a prediction model for game or match outcomes, train a classifier, choose between logistic regression, random forest or XGBoost, tune hyperparameters, see which features matter or combine models. Always walk-forward; refuses k-fold. Works for any sport. Not for building features (use feature-engineering), not for checking probability quality (use probability-calibration), not for fold design alone (use walk-forward-validation), not for expected goals models (use nhl-xg-model), not for comparing output with market probabilities (use market-vs-model).",
-   "reads_live_data": false,
+   "name": "ufc-elo-baseline",
+   "plugin": "mma-data",
+   "description": "Use when the user wants a ratings-only baseline for a UFC fight: 'what does Elo say about this fight', 'baseline probability for Jones vs Aspinall', 'how strong is each fighter by rating', 'who is the highest rated lightweight', 'did the rating see that upset coming', 'rating gap between the two'. Converts the pre-fight rating gap into an expected win probability, compares it with the market as information and shows the rating history. Refuses to use in-fight stats from the fight being predicted (leakage). Not for a full fight preview (see ufc-fight-preview), a fighter's profile (see ufc-fighter-profile) or model building (see model-building).",
+   "reads_live_data": true,
+   "writes": false,
+   "moves_money": false
+  },
+  {
+   "name": "ufc-fight-preview",
+   "plugin": "mma-data",
+   "description": "Use when the user wants a UFC, PFL or Bellator fight preview or matchup breakdown: 'preview Jones vs Aspinall', 'break down the main event', 'who wins this UFC fight', 'striker vs wrestler, who has the edge', 'how does he finish fights', 'is the favorite justified in this fight', 'fight night card preview'. Produces a one-page report: records by method, striking and grappling rates for and against, our Elo, recent opposition and the moneylines. Not for career stat leaderboards (call get_leaders) or modeling (see model-building).",
+   "reads_live_data": true,
+   "writes": false,
+   "moves_money": false
+  },
+  {
+   "name": "ufc-fighter-profile",
+   "plugin": "mma-data",
+   "description": "Use when the user wants to know who a UFC fighter is in numbers: 'profile of Islam Makhachev', 'how does Topuria fight', 'what is his record by method', 'strikes landed per minute for Pereira', 'is he a finisher', 'recent opposition for Chandler', 'does he wrestle'. Reports bio, record by method, career rates per 15 minutes with fight time counted, recent fights and rating history. Not for a specific fight's preview (see ufc-fight-preview), a ratings baseline (see ufc-elo-baseline) or stat leaderboards (call get_leaders).",
+   "reads_live_data": true,
    "writes": false,
    "moves_money": false
   },
@@ -148,7 +124,7 @@
   {
    "name": "nba-minutes-usage-redistribution",
    "plugin": "nba-data",
-   "description": "Use when an NBA or WNBA player is out or limited and the user asks who benefits: 'Embiid is out, who gets the minutes', 'how does usage change without Luka', 'who starts if Tatum sits', 'fantasy pickup with the injury', 'how did the Knicks play without Brunson'. Measures what happened in games the player missed (minutes, shots, usage per teammate) against games he played, with sample sizes. Not for prop lines (see nba-player-props-research) or a game preview (see nba-game-preview).",
+   "description": "Use when an NBA or WNBA player is out or limited and the user asks who benefits: 'Embiid is out, who gets the minutes', 'who starts if Tatum sits', 'how did the Knicks do without Brunson', 'usage bump with the starter out', 'how does usage change without Luka', 'fantasy pickup with the injury'. Compares minutes, shots and usage per teammate in games the player missed against games he played, with sample sizes. Not for prop lines (see nba-player-props-research) or a game preview (see nba-game-preview).",
    "reads_live_data": true,
    "writes": false,
    "moves_money": false
@@ -354,6 +330,86 @@
    "moves_money": false
   },
   {
+   "name": "soccer-match-preview",
+   "plugin": "soccer-data",
+   "description": "Use when the user wants a preview of one soccer (football) match in any covered league: 'preview Arsenal vs Chelsea', 'break down the Clasico', 'what should I know about the Inter match', 'MLS preview LAFC vs Galaxy', 'Champions League preview'. Produces a one-page report: table position and form, our club Elo, xG for and against, lineups when out, the three-way line and what it implies. Not for one match's shot-by-shot xG story (see soccer-xg-breakdown) or modeling (see model-building).",
+   "reads_live_data": true,
+   "writes": false,
+   "moves_money": false
+  },
+  {
+   "name": "soccer-season-simulation",
+   "plugin": "soccer-data",
+   "description": "Use when the user wants simulated odds for how a league season finishes: 'who wins the league', 'chance of finishing top four', 'relegation odds', 'simulate the rest of the season', 'how likely is Arsenal to win the title', 'what are Spurs' chances of Europe'. Runs a Monte Carlo of the remaining fixtures from our club Elo ratings, the current table and a stated draw and home-advantage assumption, and reports finishing-position probabilities with the method. Not for one match (see soccer-match-preview), shot quality (see soccer-xg-breakdown) or a club's style (see soccer-team-style-profile).",
+   "reads_live_data": true,
+   "writes": false,
+   "moves_money": false
+  },
+  {
+   "name": "soccer-team-style-profile",
+   "plugin": "soccer-data",
+   "description": "Use when the user wants to know how a soccer club plays: 'what is Brighton's style', 'how does Arsenal build up', 'do they press high', 'who counter-attacks', 'compare Liverpool and City styles', 'does this team take shots from distance', 'is it a possession team'. Profiles possession, shot volume and quality, set pieces, discipline and where shots come from, for and against, relative to the league, with the formulas stated. Not for one match's xG story (see soccer-xg-breakdown), match previews (see soccer-match-preview) or finishing positions (see soccer-season-simulation).",
+   "reads_live_data": true,
+   "writes": false,
+   "moves_money": false
+  },
+  {
+   "name": "soccer-xg-breakdown",
+   "plugin": "soccer-data",
+   "description": "Use when the user wants the expected-goals story of a soccer match, club or player: 'xG breakdown of Arsenal Chelsea', 'did City deserve to win', 'who created the best chances', 'Liverpool shots conceded this season', 'shot map for Saka', 'is Haaland over-performing his xG'. Shows shots with location, outcome and our xG, the xG race, big chances, and finishing over or under expected with sample size. Not for pre-match previews (see soccer-match-preview).",
+   "reads_live_data": true,
+   "writes": false,
+   "moves_money": false
+  },
+  {
+   "name": "backtesting",
+   "plugin": "sports-analytics-core",
+   "description": "Use when the user asks to backtest a model, check whether a model really works historically, test it on past seasons, get confidence intervals, see if accuracy is fading, or compare the model to the market's closing probabilities. Walk-forward only; refuses in-sample testing. Reports sample size, an interval and a per-season breakdown. Not for tracking live predictions (use prediction-tracker), not for how our probability differs from the market today (use market-vs-model), not for training (use model-building), not for fold mechanics alone (use walk-forward-validation).",
+   "reads_live_data": false,
+   "writes": false,
+   "moves_money": false
+  },
+  {
+   "name": "data-pipeline",
+   "plugin": "sports-analytics-core",
+   "description": "Use when the user wants to automate a sports model: run predictions every morning, set up a cron job or GitHub Action, store predictions in a database, version models, retrain on a schedule or get alerted when accuracy drifts. Covers pulls through any sport's SportsDataHQ MCP server. Not for one-off lookups (use your sport's lookup skill or nl-to-query), not for building the model (use model-building), not for historical testing (use backtesting), not for grading logged predictions (use prediction-tracker).",
+   "reads_live_data": false,
+   "writes": false,
+   "moves_money": false
+  },
+  {
+   "name": "elo-engineering",
+   "plugin": "sports-analytics-core",
+   "description": "Use when the user asks to build Elo ratings, rate teams or players, tune K-factor or home advantage, carry ratings across seasons, add margin-of-victory, or mentions Fading, Form or Component Elo. Works for team sports and for tennis, golf, UFC and cricket player or fighter ratings. Not for general feature construction (use feature-engineering), not for a full model (use model-building), not for plain team stats (use nhl-team-analysis for hockey or your sport's stats tools), not for season simulation (use nhl-playoff-simulation).",
+   "reads_live_data": false,
+   "writes": false,
+   "moves_money": false
+  },
+  {
+   "name": "feature-engineering",
+   "plugin": "sports-analytics-core",
+   "description": "Use when the user asks to prepare data for a model, build rolling averages or recent-form features, add rest days or back-to-back flags, adjust for strength of schedule, build starter or goalkeeper quality features, use Elo as an input, or check features for leakage. Enforces shift(1) before any rolling calculation. Not for looking up raw stats (use your sport's lookup skill such as nhl-game-lookup or nhl-team-analysis), not for explaining hockey metrics (use nhl-advanced-stats), not for expected goals features (use nhl-xg-model), not for training (use model-building).",
+   "reads_live_data": false,
+   "writes": false,
+   "moves_money": false
+  },
+  {
+   "name": "market-vs-model",
+   "plugin": "sports-analytics-core",
+   "description": "Use when the user asks how our probability differs from the market's, whether the model disagrees with the odds, who the market likes more than the model does, or whether the model beats the closing line. Covers model vs market gap, fair (no-margin) probability, closing-line comparison as a measure of model quality, and how large a sample must be before a gap means anything. Odds are information only: no stake sizing, no wagering advice. Not for raw odds lookup (use odds-market-analysis, or nhl-odds-explorer for hockey), not for checking model accuracy over history (use backtesting), not for calibrating probabilities (use probability-calibration).",
+   "reads_live_data": true,
+   "writes": false,
+   "moves_money": false
+  },
+  {
+   "name": "model-building",
+   "plugin": "sports-analytics-core",
+   "description": "Use when the user wants to build a prediction model for game or match outcomes, train a classifier, choose between logistic regression, random forest or XGBoost, tune hyperparameters, see which features matter or combine models. Always walk-forward; refuses k-fold. Works for any sport. Not for building features (use feature-engineering), not for checking probability quality (use probability-calibration), not for fold design alone (use walk-forward-validation), not for expected goals models (use nhl-xg-model), not for comparing output with market probabilities (use market-vs-model).",
+   "reads_live_data": false,
+   "writes": false,
+   "moves_money": false
+  },
+  {
    "name": "nl-to-query",
    "plugin": "sports-analytics-core",
    "description": "Use when the user asks a research question in plain English and does not name a tool or field, for example 'show me games where the home team was outshot but won', 'how often does the team that scores first win', 'find back-to-back losses', 'who leads the league in X when Y'. Translates the question into conditions, calls your sport's SportsDataHQ MCP tools, retries with adjusted filters when results look wrong, and reports counts with sample size. Not for a lookup where the tool is obvious (use nhl-game-lookup, nhl-team-analysis or nhl-goalie-analysis for hockey), not for building model features (use feature-engineering).",
@@ -386,38 +442,6 @@
    "moves_money": false
   },
   {
-   "name": "soccer-match-preview",
-   "plugin": "soccer-data",
-   "description": "Use when the user wants a preview of one soccer (football) match in any covered league: 'preview Arsenal vs Chelsea', 'break down the Clasico', 'what should I know about the Inter match', 'MLS preview LAFC vs Galaxy', 'Champions League preview'. Produces a one-page report: table position and form, our club Elo, xG for and against, lineups when out, the three-way line and what it implies. Not for one match's shot-by-shot xG story (see soccer-xg-breakdown) or modeling (see model-building).",
-   "reads_live_data": true,
-   "writes": false,
-   "moves_money": false
-  },
-  {
-   "name": "soccer-season-simulation",
-   "plugin": "soccer-data",
-   "description": "Use when the user wants simulated odds for how a league season finishes: 'who wins the league', 'chance of finishing top four', 'relegation odds', 'simulate the rest of the season', 'how likely is Arsenal to win the title', 'what are Spurs' chances of Europe'. Runs a Monte Carlo of the remaining fixtures from our club Elo ratings, the current table and a stated draw and home-advantage assumption, and reports finishing-position probabilities with the method. Not for one match (see soccer-match-preview), shot quality (see soccer-xg-breakdown) or a club's style (see soccer-team-style-profile).",
-   "reads_live_data": true,
-   "writes": false,
-   "moves_money": false
-  },
-  {
-   "name": "soccer-team-style-profile",
-   "plugin": "soccer-data",
-   "description": "Use when the user wants to know how a soccer club plays: 'what is Brighton's style', 'how does Arsenal build up', 'do they press high', 'who counter-attacks', 'compare Liverpool and City styles', 'does this team take shots from distance', 'is it a possession team'. Profiles possession, shot volume and quality, set pieces, discipline and where shots come from, for and against, relative to the league, with the formulas stated. Not for one match's xG story (see soccer-xg-breakdown), match previews (see soccer-match-preview) or finishing positions (see soccer-season-simulation).",
-   "reads_live_data": true,
-   "writes": false,
-   "moves_money": false
-  },
-  {
-   "name": "soccer-xg-breakdown",
-   "plugin": "soccer-data",
-   "description": "Use when the user wants the expected-goals story of a soccer match or a club's or player's shots: 'xG breakdown of Arsenal Chelsea', 'did City deserve to win', 'shot map for Saka this season', 'who created the best chances', 'is Haaland over-performing his xG'. Shows shots with location, outcome and our xG, the xG race, big chances, and finishing over or under expected with sample size. Not for pre-match previews (see soccer-match-preview).",
-   "reads_live_data": true,
-   "writes": false,
-   "moves_money": false
-  },
-  {
    "name": "sports-data-preflight",
    "plugin": "sports-analytics-core",
    "description": "Use before any analysis that joins, compares or aggregates sports data across games, players, seasons or leagues: resolving a player or team to its id, checking which season a date belongs to, confirming a league is the right one (NHL vs PWHL, MLB vs college baseball, Premier League vs Championship), spotting duplicates, and deciding whether there is enough data to answer. Use when the user says 'compare', 'over the last N games', 'this season', 'career', 'trend', or names a player whose id you do not have yet. Not for a single lookup (call the tool directly) or for modeling itself (see model-building).",
@@ -434,54 +458,6 @@
    "moves_money": false
   },
   {
-   "name": "tennis-head-to-head",
-   "plugin": "tennis-data",
-   "description": "Use when the user asks about two tennis players' history against each other: 'Sinner vs Alcaraz head to head', 'who leads the rivalry', 'how has he done against lefties', 'do they split on clay', 'has he ever beaten him', 'is the head to head meaningful here'. Shows the record, by surface and round, every meeting's score, and sets it against current ratings and rankings with the caveat that ratings usually beat head-to-head. Not for a full match preview (see tennis-match-preview), a draw simulation (see tennis-tournament-simulation) or rankings lists (call get_rankings).",
-   "reads_live_data": true,
-   "writes": false,
-   "moves_money": false
-  },
-  {
-   "name": "tennis-match-preview",
-   "plugin": "tennis-data",
-   "description": "Use when the user wants a preview of one ATP or WTA singles match: 'preview Sinner vs Alcaraz', 'who wins Swiatek vs Gauff on clay', 'break down tonight's match', 'how do they match up on grass', 'head to head and form'. Produces a one-page report: our overall and surface Elo with the pregame win probability, surface records, recent form, the head to head with its caveat, and the market's prices. Not for full tournament draws (use get_tournament directly) or modeling (see model-building).",
-   "reads_live_data": true,
-   "writes": false,
-   "moves_money": false
-  },
-  {
-   "name": "tennis-tournament-simulation",
-   "plugin": "tennis-data",
-   "description": "Use when the user wants title chances for a tennis tournament from the draw: 'who wins Wimbledon', 'simulate the US Open draw', 'chance Sinner reaches the final', 'how tough is Alcaraz's quarter', 'odds of an upset in the first round', 'WTA 1000 draw simulation'. Simulates the draw with our surface Elo ratings, states the method and reports round-by-round probabilities. Not for one match (see tennis-match-preview), a head-to-head record (see tennis-head-to-head) or a finished tournament's results (call get_tournament).",
-   "reads_live_data": true,
-   "writes": false,
-   "moves_money": false
-  },
-  {
-   "name": "ufc-elo-baseline",
-   "plugin": "mma-data",
-   "description": "Use when the user wants a ratings-only baseline for a UFC fight: 'what does Elo say about this fight', 'baseline probability for Jones vs Aspinall', 'how strong is each fighter by rating', 'who is the highest rated lightweight', 'did the rating see that upset coming', 'rating gap between the two'. Converts the pre-fight rating gap into an expected win probability, compares it with the market as information and shows the rating history. Refuses to use in-fight stats from the fight being predicted (leakage). Not for a full fight preview (see ufc-fight-preview), a fighter's profile (see ufc-fighter-profile) or model building (see model-building).",
-   "reads_live_data": true,
-   "writes": false,
-   "moves_money": false
-  },
-  {
-   "name": "ufc-fight-preview",
-   "plugin": "mma-data",
-   "description": "Use when the user wants a preview of a UFC (or PFL, Bellator) fight or card: 'preview Jones vs Aspinall', 'break down the main event', 'who wins this fight', 'striking vs wrestling matchup', 'how do they finish fights'. Produces a one-page report: records by method, per-15-minute striking and grappling rates for and against, our Elo, physical profile, recent opposition, and the moneylines. Not for career stat leaderboards (call get_leaders) or modeling (see model-building).",
-   "reads_live_data": true,
-   "writes": false,
-   "moves_money": false
-  },
-  {
-   "name": "ufc-fighter-profile",
-   "plugin": "mma-data",
-   "description": "Use when the user wants to know who a UFC fighter is in numbers: 'profile of Islam Makhachev', 'how does Topuria fight', 'what is his record by method', 'strikes landed per minute for Pereira', 'is he a finisher', 'recent opposition for Chandler', 'does he wrestle'. Reports bio, record by method, career rates per 15 minutes with fight time counted, recent fights and rating history. Not for a specific fight's preview (see ufc-fight-preview), a ratings baseline (see ufc-elo-baseline) or stat leaderboards (call get_leaders).",
-   "reads_live_data": true,
-   "writes": false,
-   "moves_money": false
-  },
-  {
    "name": "visualization",
    "plugin": "sports-analytics-core",
    "description": "Use when the user wants a chart, plot, graph, picture or shareable image of an analysis, for example 'plot the calibration', 'make a matchup card', 'chart the model against the market', 'visualize that', 'make this look good for a post'. Renders output from another skill as matplotlib/seaborn code or a terminal chart. Not for pulling or exploring data (use nl-to-query, or nhl-game-lookup for hockey), not for the analysis itself (run the relevant skill first, then come back here).",
@@ -494,6 +470,30 @@
    "plugin": "sports-analytics-core",
    "description": "Use when the user asks how to validate or test a sports prediction model, whether k-fold or a random train/test split is okay, why accuracy fell on new data, whether the model is overfit, or whether a result is statistically significant. Gives the time-ordered (walk-forward) method with per-season results, baselines and intervals, and redirects k-fold on time-ordered data. Not for historical strategy simulations (use backtesting), not for building the model (use model-building), not for calibrating probabilities (use probability-calibration).",
    "reads_live_data": false,
+   "writes": false,
+   "moves_money": false
+  },
+  {
+   "name": "tennis-head-to-head",
+   "plugin": "tennis-data",
+   "description": "Use when the user asks about two tennis players' history against each other: 'Sinner vs Alcaraz head to head', 'who leads the rivalry', 'how has he done against lefties', 'do they split on clay', 'has he ever beaten him', 'is the head to head meaningful here'. Shows the record, by surface and round, every meeting's score, and sets it against current ratings and rankings with the caveat that ratings usually beat head-to-head. Not for a full match preview (see tennis-match-preview), a draw simulation (see tennis-tournament-simulation) or rankings lists (call get_rankings).",
+   "reads_live_data": true,
+   "writes": false,
+   "moves_money": false
+  },
+  {
+   "name": "tennis-match-preview",
+   "plugin": "tennis-data",
+   "description": "Use when the user wants a tennis match preview or matchup analysis for any ATP or WTA singles match: 'preview Sinner vs Alcaraz', 'break down tonight's tennis match', 'US Open quarterfinal preview', 'Wimbledon semifinal breakdown', 'how do they match up on grass', 'who wins Swiatek vs Gauff on clay', 'tennis matchup analysis'. Produces a one-page report: our surface Elo and pregame win probability, surface records, form, head to head with its caveat, and the market's prices. Not for rankings lists or full draws (call the tools directly) or modeling (see model-building).",
+   "reads_live_data": true,
+   "writes": false,
+   "moves_money": false
+  },
+  {
+   "name": "tennis-tournament-simulation",
+   "plugin": "tennis-data",
+   "description": "Use when the user wants title chances for a tennis tournament from the draw: 'who wins Wimbledon', 'simulate the US Open draw', 'chance Sinner reaches the final', 'how tough is Alcaraz's quarter', 'odds of an upset in the first round', 'WTA 1000 draw simulation'. Simulates the draw with our surface Elo ratings, states the method and reports round-by-round probabilities. Not for one match (see tennis-match-preview), a head-to-head record (see tennis-head-to-head) or a finished tournament's results (call get_tournament).",
+   "reads_live_data": true,
    "writes": false,
    "moves_money": false
   }
