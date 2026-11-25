@@ -1,18 +1,16 @@
 ---
 name: nhl-war-gar
-description: "Builds WAR (Wins Above Replacement) and GAR (Goals Above Replacement) from scratch using RAPM ridge regression on shift-level data. Use when user asks about WAR, GAR, RAPM, player value metrics, wins above replacement, contract surplus value, JFresh-style player cards, or all-in-one player evaluation. Do not use for simple player stats lookup -- see nhl-player-scouting. Do not use for goalie evaluation -- goalies use GSAA not WAR, see nhl-goalie-analysis. Do not use for team-level performance -- see nhl-team-analysis."
+description: "Use when the user asks about WAR, GAR, RAPM, wins above replacement, how valuable a player really is, whether a contract is good value, or wants a player card with component breakdown. Builds RAPM ridge regression on shift data from the PuckAPI MCP server (get_shifts, get_plays). Not for simple stat lookups (use nhl-player-scouting). Not for goalies, who use GSAx (use nhl-goalie-analysis). Not for team standings or form (use nhl-team-analysis). Not for game prediction (use model-building)."
 metadata:
-  version: 1.0.0
-  author: PuckAPI
+  version: 2.0.0
+  author: SportsDataHQ
 ---
 
 # WAR/GAR Decomposition
 
-> **Default data tool:** PuckAPI (`nhl-puckapi-tools`).
-> Use `get_game_detail` for game-level data (10 credits per game) and `get_player_stats` for player biographical data (5 credits).
-> Note: SDH `get_game_detail` returns game info, odds, and goalie starts -- NOT shift-level data. For shift-level data, use the NHL API or public sources (Natural Stat Trick, hockey-reference).
-> Shift-level data is also available free from the NHL API and from public sources (Natural Stat Trick, hockey-reference) -- no credits consumed for those sources.
-> For user's own shift data CSV/JSON: skip the tool, work with the file directly.
+> **Data:** the PuckAPI MCP server (`nhl-puckapi-tools`).
+> Use `get_shifts` (10 credits per game) for who was on the ice, `get_plays` (10 credits) for shot events with locations, `get_situation_time` (10 credits per game) for exact 5v5, power-play and shorthanded time, and `get_player_stats` (5 credits) for player bio data.
+> For the user's own shift data CSV/JSON, work with the file directly.
 
 You are an expert in advanced hockey player evaluation. Your goal is to compute WAR and GAR components for NHL skaters using RAPM (Regularized Adjusted Plus-Minus) ridge regression, then translate those into contract surplus value analysis and JFresh-style player cards.
 
@@ -21,23 +19,26 @@ You are an expert in advanced hockey player evaluation. Your goal is to compute 
 - User asks about WAR, GAR, RAPM, or wins above replacement for hockey players
 - User wants to evaluate player value beyond box score stats
 - User asks about contract surplus value or cap efficiency
-- User wants to reproduce or extend Evolving Hockey's WAR/GAR methodology
+- User wants to reproduce or extend a public WAR/GAR methodology
 - User wants to build a JFresh-style player card (radar chart of GAR components)
 - User asks about regularized adjusted plus-minus or ridge regression for player evaluation
 
 ## When NOT to Use
 
-- Simple player stats lookup without modeling -- see `nhl-player-scouting`
-- Goalie evaluation -- goalies use GSAA (Goals Saved Above Average), not WAR. See `nhl-goalie-analysis`
-- Team-level performance and standings analysis -- see `nhl-team-analysis`
-- Game prediction or betting models (WAR is a player evaluation metric, not a game prediction feature directly) -- see `model-building` or `feature-engineering`
+- Simple player stats lookup without modeling: see `nhl-player-scouting`
+- Goalie evaluation: goalies use GSAA (Goals Saved Above Average), not WAR. See `nhl-goalie-analysis`
+- Team-level performance and standings analysis: see `nhl-team-analysis`
+- Game prediction (WAR is a player evaluation metric, not a game prediction feature directly): see `model-building` or `feature-engineering`
 
 ## Commands Available
 
 | Command | What It Does | Credits |
 |---------|-------------|---------|
-| `get_game_detail` | Game metadata, team info, odds records, and goalie starts | 10 |
+| `get_shifts` | Shift-by-shift on-ice data per game | 10 |
+| `get_plays` | Shot and penalty events with locations | 10 |
+| `get_situation_time` | Exact 5v5 / power-play / shorthanded time per team | 10 |
 | `get_games` | Game list for bulk shift data pulls | 5 |
+| `get_game_detail` | Game metadata and goalie starts | 10 |
 | `get_player_stats` | Player biographical data, salary reference | 5 |
 | `get_team_stats` | Team-level validation of RAPM outputs | 5 |
 
@@ -45,25 +46,20 @@ You are an expert in advanced hockey player evaluation. Your goal is to compute 
 
 | Not Available | Use Instead |
 |--------------|-------------|
-| `get_shift_data` | Use the NHL API or public sources (Natural Stat Trick, hockey-reference) for shift-level data |
+| `get_shift_data` | Use `get_shifts` |
 | `get_rapm` | No pre-computed RAPM. Run the ridge regression yourself |
 | `get_war` | No pre-computed WAR. Compute from GAR components |
-| `get_player_contract` | Pull AAV from CapFriendly or PuckPedia externally; not in PuckAPI |
-| `get_on_ice_stats` | Use the NHL API or public sources for on-ice data; not available in PuckAPI |
+| `get_player_contract` | Not available; ask the user for contract figures (AAV) |
+| `get_on_ice_stats` | Build on-ice totals from `get_shifts` and `get_plays` |
 
 ## Data Source
 
-**PuckAPI:** `get_game_detail` returns game metadata, team info, odds records, and goalie starts -- NOT shift-level data. For the shift-level data required by RAPM, use the NHL API or public sources below.
-
-**Free alternatives (recommended for volume):**
-- Natural Stat Trick (`naturalstattrick.com`): exports on-ice data by player, season, strength state. No credits.
-- Hockey Reference (`hockey-reference.com`): player game logs. No credits.
-- Evolving Hockey (`evolving-hockey.com`): publicly posts GAR component values for validation. No credits.
+**PuckAPI MCP server:** `get_shifts` returns who was on the ice shift by shift, which is the input RAPM needs. `get_plays` supplies the shot events (with locations for xG) and penalties, and `get_situation_time` gives strength-state time for per-60 rates. Contract figures are not in the server; ask the user for them.
 
 **Your own data:** If user provides shift-level CSV:
 1. Verify required columns: `game_id`, `player_id`, `is_home` (binary), `strength_state`, `shift_duration_seconds`, `goals_for`, `goals_against`, `corsi_for`, `corsi_against`, `xg_for`, `xg_against`
 2. Verify each row represents one player's contribution to one shift
-3. Flag missing strength state -- RAPM must be run separately per state
+3. Flag missing strength state: RAPM must be run separately per state
 4. Note: credits are not consumed
 
 ## Initial Assessment
@@ -99,7 +95,7 @@ rapm_model.fit(X_shifts, y_goals_per_60, sample_weight=shift_durations)
 player_rapm = dict(zip(player_ids, rapm_model.coef_))
 ```
 
-The ridge penalty (alpha) shrinks each player's coefficient toward zero. This is necessary because players with limited ice time have too little data to produce stable estimates -- regularization pulls them toward the league mean.
+The ridge penalty (alpha) shrinks each player's coefficient toward zero. This is necessary because players with limited ice time have too little data to produce stable estimates: regularization pulls them toward the league mean.
 
 ### Step 1: Prepare the Shift Matrix
 
@@ -135,14 +131,14 @@ sample_weight = shift['shift_duration_seconds']  # longer shifts weighted more
 
 Run separate regressions for each combination:
 
-| GAR Component | Strength State | Target | Public Model Equivalent |
+| GAR Component | Strength State | Target | Common Label |
 |---------------|---------------|--------|------------------------|
-| EV Offense | 5v5 | xGF per 60 | Evolving Hockey EVO |
-| EV Defense | 5v5 | xGA per 60 (inverted) | Evolving Hockey EVD |
-| PP Contribution | PP (5v4, 5v3) | xGF per 60 | Evolving Hockey PPO |
-| PK Contribution | SH (4v5, 3v5) | xGA per 60 (inverted) | Evolving Hockey PKD |
-| Penalties Drawn | All states | PD per 60 | Evolving Hockey PD |
-| Penalties Taken | All states | PT per 60 (inverted) | Evolving Hockey PT |
+| EV Offense | 5v5 | xGF per 60 | common label EVO |
+| EV Defense | 5v5 | xGA per 60 (inverted) | common label EVD |
+| PP Contribution | PP (5v4, 5v3) | xGF per 60 | common label PPO |
+| PK Contribution | SH (4v5, 3v5) | xGA per 60 (inverted) | common label PKD |
+| Penalties Drawn | All states | PD per 60 | common label PD |
+| Penalties Taken | All states | PT per 60 (inverted) | common label PT |
 
 ```python
 components = {}
@@ -163,7 +159,7 @@ Sum the components for each player. Weight each component by its contribution to
 
 ```python
 # GAR = weighted sum of components
-# Weights vary slightly by model; Evolving Hockey weights are public
+# Weights vary slightly by model; public models publish their weights
 EV_O_WEIGHT = 1.0   # reference weight
 EV_D_WEIGHT = 1.0
 PP_WEIGHT   = 0.65  # PP time is partial; adjust by average PP fraction
@@ -197,15 +193,15 @@ GOALS_PER_WAR = 6.0  # empirically ~6 goals = 1 win in NHL
 player_war = player_gar / GOALS_PER_WAR
 ```
 
-See `war-components.md` for the full derivation of `goals_per_war` and comparison to Evolving Hockey's published conversion.
+See `war-components.md` for the full derivation of `goals_per_war` and comparison to published conversions.
 
 ### Step 5: Contract Surplus Value
 
 ```python
 MARKET_RATE_PER_WAR = 1_400_000  # ~$1.4M per WAR (2025-26 market rate)
 
-# Pull AAV from external source (CapFriendly / PuckPedia)
-player_aav = external_salary_lookup(player_id)
+# AAV supplied by the user (not available from the MCP server)
+player_aav = user_supplied_aav[player_id]
 
 # Project WAR over contract remaining
 contract_years_remaining = 3  # from contract data
@@ -226,7 +222,7 @@ adjusted_war = player_war * age_adjustment.get(player_age, 1.0)
 
 ### Step 6: Player Card Output (JFresh-Style)
 
-A JFresh-style player card shows the component breakdown on a radar chart. Six axes: EV Offense, EV Defense, PP, PK, Penalties Drawn, Penalties Taken. The chart immediately shows where a player's value comes from -- a defensive specialist looks different from an offensive dynamo.
+A JFresh-style player card shows the component breakdown on a radar chart. Six axes: EV Offense, EV Defense, PP, PK, Penalties Drawn, Penalties Taken. The chart immediately shows where a player's value comes from: a defensive specialist looks different from an offensive dynamo.
 
 ```python
 import matplotlib.pyplot as plt
@@ -257,12 +253,20 @@ See `visualization` skill for full chart template.
 
 | Operation | Credits | Notes |
 |-----------|---------|-------|
-| `get_game_detail` per game | 10 | Game metadata, odds, and goalie starts per game |
-| Full NHL regular season | ~13,120 | 1,312 games x 10 credits per game |
-| `get_player_stats` | 5 | Per player biographical lookup |
-| Free alternative (Natural Stat Trick) | 0 | Recommended for historical volume |
+| `get_shifts` per game | 10 | Needed for every game in the sample |
+| `get_plays` per call | 10 | Shot events and penalties |
+| `get_situation_time` per game | 10 | Strength-state time |
+| Full NHL regular season of shifts | ~13,120 | 1,312 games x 10 credits |
+| `get_player_stats` | 5 | Per player lookup |
 
-**Practical recommendation:** Use the free NHL/Natural Stat Trick data sources for historical RAPM building. Reserve PuckAPI credits for game-level data (results, odds) not available freely.
+**Practical recommendation:** A full-season RAPM is expensive. Agree a game or season scope with the user before pulling, start with one season, and cache what you pull.
+
+## Rules for numbers
+
+- Call the tools for every on-ice figure; never quote a WAR, GAR or RAPM value from memory.
+- Cite which tool call (`get_shifts`, `get_plays`, `get_situation_time`) produced each input.
+- State the sample: games and minutes per player, the season convention (`20252026` = 2025-26) and the ridge alpha. Report intervals for RAPM estimates.
+- Players under about 200 minutes: say "not enough data" instead of ranking them.
 
 ## Anti-patterns
 
@@ -270,7 +274,7 @@ See `visualization` skill for full chart template.
 |----------------|---------------|-----------------|
 | "I'll use raw +/- instead of RAPM" | Raw +/- is entirely driven by teammates and opponents; a bad player on a good team looks great | Use RAPM; the whole point is to isolate individual contribution |
 | "One season of data is enough for stable RAPM" | 1-season RAPM has high variance for any player under 1,000 minutes; estimates oscillate year-to-year | Use 3 seasons minimum; report confidence intervals |
-| "I don't need the ridge penalty -- OLS works fine" | Without regularization, players with few shifts get extreme coefficients; the matrix is near-singular | Always use Ridge; select alpha via cross-validation or published benchmarks |
+| "I don't need the ridge penalty: OLS works fine" | Without regularization, players with few shifts get extreme coefficients; the matrix is near-singular | Always use Ridge; select alpha via cross-validation or published benchmarks |
 | "Use raw goals as the RAPM target" | Goals are too sparse per shift; extreme variance drowns signal | Use xG per 60 as the target; map to goals via xG-to-goals calibration |
 | "WAR is additive with teammates" | WAR is not a linear decomposition of team wins; two 4-WAR players don't guarantee 8 wins of value together | WAR estimates individual marginal contribution; team synergies are separate |
 | "Contract surplus is straightforward at age 35" | Aging curve means past WAR is a poor predictor of future WAR for players 32+ | Apply aging curve adjustment; note the uncertainty explicitly |

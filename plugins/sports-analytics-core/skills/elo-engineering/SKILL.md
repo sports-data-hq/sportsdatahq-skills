@@ -1,63 +1,50 @@
 ---
 name: elo-engineering
-description: "Builds multi-variant Elo rating systems for sports prediction. Use when user asks about Elo ratings, rating systems, team strength, K-factor, home field advantage, season carryover, margin-of-victory adjustments, or mentions 'Fading Elo', 'Form Elo', 'Component Elo'. Do not use for general feature construction -- see feature-engineering instead. Do not use for team stats without ratings -- see nhl-team-analysis instead."
+description: "Use when the user asks to build Elo ratings, rate teams or players, tune K-factor or home advantage, carry ratings across seasons, add margin-of-victory, or mentions Fading, Form or Component Elo. Works for team sports and for tennis, golf, UFC and cricket player or fighter ratings. Not for general feature construction (use feature-engineering), not for a full model (use model-building), not for plain team stats (use nhl-team-analysis for hockey or your sport's stats tools), not for season simulation (use nhl-playoff-simulation)."
 metadata:
-  version: 1.0.0
-  author: PuckAPI
+  version: 2.0.0
+  author: SportsDataHQ
 ---
 
 # Elo Engineering
 
-> **Default data tool:** PuckAPI (`nhl-puckapi-tools`).
-> Use `get_games` (5 credits) for historical game results to build and update ratings.
-> Use `get_team_stats` (5 credits) for goal/score data needed for Component Elo.
-> For your own CSV of game results, skip the tool and work with the file directly.
+You are an expert in Elo rating construction. The goal is to build, tune and export multi-variant Elo systems that serve as model features or as standalone win-probability estimates.
 
-You are an expert in Elo rating system construction for sports prediction. Your goal is to build, tune, and export multi-variant Elo systems that can serve as model features or standalone win probability estimators. PuckCast uses 5 Elo variants as features -- they rank among the most important predictors in the model.
+## Data
+
+Call your sport's SportsDataHQ MCP tools for historical results: get_games or list_games (hockey, football, basketball, baseball, soccer), get_matches (tennis), get_event and get_fighter_fights (UFC), get_leaderboard (golf), get_schedule where a server has no games list. Several servers also expose their own ratings (get_ratings); those are the server's published ratings, useful as a cross-check against your own build, not a substitute for it.
+
+Own data: required columns are game_id, date, home_team, away_team, home_score, away_score. Sort ascending by date. Flag games with missing scores; do not silently drop.
+
+## Rules for numbers
+
+- Call the tools. Never recall results or ratings from memory.
+- Cite which tool call supplied the games behind each rating table.
+- State the sample size (games processed per team) and the season convention (2025 = which season) used for carryover.
+- If a team or player has too few games for a stable rating, say "not enough data" and mark the rating provisional.
 
 ## When to Use
 
-- User wants to build an Elo rating system from scratch
-- User wants to add Elo-based features to an existing model
-- User asks about K-factor tuning, home advantage, or season regression
-- User wants to track team momentum or recent form
-- User needs separate offensive/defensive strength ratings
+- Build an Elo rating system from scratch
+- Add Elo-based features to an existing model
+- Tune K-factor, home advantage or season regression
+- Track team momentum or recent form
+- Separate offensive and defensive strength ratings
 
 ## When NOT to Use
 
-- Adding non-Elo features to a model -- see `feature-engineering`
-- Comparing team stats without building ratings -- see `nhl-team-analysis`
-- Training a full prediction model -- see `model-building`
-- Running season simulations -- see `nhl-playoff-simulation`
-
-## Commands Available
-
-| Command | What It Does | Credits |
-|---------|-------------|---------|
-| `get_games` | Historical results for building ratings | 5/query |
-| `get_team_stats` | Goals for/against for Component Elo | 5/query |
-| `get_standings` | Current season context | 2/query |
-
-## Commands That Do NOT Exist
-
-| Not Available | Use Instead |
-|--------------|-------------|
-| `get_elo_ratings` | Build ratings from `get_games` results |
-| `get_team_strength` | Use `get_team_stats` + compute Elo |
-| `get_historical_ratings` | Rebuild from game logs with carryover |
+- Non-Elo features: use `feature-engineering`
+- Comparing team stats without ratings: use `nhl-team-analysis` (hockey) or your sport's stats tools
+- Training a full prediction model: use `model-building`
+- Season simulations: use `nhl-playoff-simulation` (hockey)
 
 ## Initial Assessment
 
 Before building, establish:
-1. Which sport? (determines K-factor, HFA, carryover defaults -- see `parameter-reference.md`)
+1. Which sport? (determines K-factor, HFA, carryover defaults; see `parameter-reference.md`)
 2. How many seasons of history are available?
 3. Single Elo variant or all 5? (all 5 recommended for model features)
-
-## Data Source
-
-**PuckAPI (default):** Use `get_games` with season and league filters. Returns home team, away team, final score, game date.
-
-**Your own data:** Required columns: `game_id`, `date`, `home_team`, `away_team`, `home_score`, `away_score`. Sort ascending by date before processing. Flag games with missing scores -- do not silently drop.
+4. Team sport (home/away) or individual sport (two competitors, surface or venue effects)?
 
 ## The 5 Variants
 
@@ -72,7 +59,7 @@ new_away_elo = away_elo + K * MOV_multiplier * ((1 - actual) - (1 - expected_hom
 ```
 
 - `actual` = 1 (home win), 0 (away win), 0.5 (tie/OT loss handled by sport)
-- `HFA` = home field advantage in Elo points (NHL default: 35)
+- `HFA` = home field advantage in Elo points (hockey default: 35; see parameter-reference.md for other sports)
 - Initialize all teams at 1500
 
 ### 2. Fading Elo
@@ -111,14 +98,14 @@ off_update = K_component * (actual_goals_for - expected_goals_for)
 def_update = K_component * (actual_goals_against - expected_goals_against)
 ```
 
-- Requires goal data: use `get_team_stats` or score columns from `get_games`
-- K_component is typically smaller than standard K (NHL: 6-8)
+- Requires scoring data from the games list or team stats tools
+- K_component is typically smaller than standard K (hockey: 6-8)
 - Outputs 4 ratings per team: home_off, home_def, away_off, away_def
 - Combine into win probability: use logistic function on (home_off + away_def) - (away_off + home_def)
 
 ### 5. Flat-K Elo
 
-Standard Elo with fixed K-factor -- no margin-of-victory adjustment, no adaptation. Simpler and sometimes competitive when training data is limited.
+Standard Elo with fixed K-factor: no margin-of-victory adjustment, no adaptation. Simpler and sometimes competitive when training data is limited.
 
 ```
 new_elo = elo + K_flat * (actual - expected)
@@ -130,7 +117,7 @@ new_elo = elo + K_flat * (actual - expected)
 
 ## Margin-of-Victory Adjustment
 
-Apply to Standard, Fading, and Component variants. Prevents a 5-0 blowout from updating ratings as much as a 5-0 game when the true gap is extreme.
+Apply to Standard, Fading, and Component variants. Prevents a blowout from moving ratings far more than a narrow win when the true gap is already large.
 
 ```
 MOV_multiplier = ln(abs(score_diff) + 1) * (2.2 / (win_elo_diff * 0.001 + 2.2))
@@ -148,12 +135,12 @@ Grid search to minimize log loss on held-out historical data.
 
 **Parameters to tune (Standard Elo):**
 - K-factor: test [5, 10, 15, 20, 25]
-- HFA: test [20, 35, 50, 65, 80] (NHL) or sport-appropriate range
+- HFA: test a range around the sport's default in parameter-reference.md (hockey: 20 to 80)
 - MOV cap: test [1.5, 1.8, 2.0]
 
 **Process:**
 1. Train on seasons 1 through N-2
-2. Validate on season N-1 (never season N -- future data)
+2. Validate on season N-1 (never season N, which is future data)
 3. Report log loss and Brier score on validation set
 4. Pick params with lowest log loss; break ties by Brier score
 5. Retrain on seasons 1 through N-1, apply to current season
@@ -168,7 +155,7 @@ At the start of each new season, blend each team's end-of-season rating toward 1
 new_season_elo = carryover * end_elo + (1 - carryover) * 1500
 ```
 
-- NHL carryover: 0.88 (12% regression)
+- Hockey carryover: 0.88 (12% regression)
 - Higher regression for sports with more offseason change (see `parameter-reference.md` for other sports)
 
 **Expansion teams:** Initialize at 1380-1400 (below mean) to reflect unknown quality.
@@ -185,11 +172,11 @@ new_season_elo = carryover * end_elo + (1 - carryover) * 1500
 | Rationalization | Why It's Wrong | Do This Instead |
 |----------------|---------------|-----------------|
 | "Initialize all teams at 1000 for simplicity" | Scale doesn't matter, but 1500 is conventional and matches published benchmarks you'll want to compare against | Use 1500. Deviation gains nothing. |
-| "Use the same K for all sports" | NHL teams play 82 games; other sports have very different schedules. K must reflect game frequency and score variance. | Use sport-specific defaults in parameter-reference.md. Tune from there. |
+| "Use the same K for all sports" | Sports differ in games per season and score variance. K must reflect both. | Use sport-specific defaults in parameter-reference.md. Tune from there. |
 | "Skip MOV adjustment to keep it simple" | Without MOV, a 6-1 blowout and a 2-1 win shift ratings identically. Signal is lost. | Implement the logarithmic MOV multiplier. It's 3 lines of code. |
-| "One Elo variant is enough" | PuckCast's feature importance shows each variant captures different signal. Standard and Form are often the top two features. | Build all 5. Use feature selection to prune later if needed. |
-| "Don't regress ratings between seasons" | A team that went 60-22 in 2023 is not the same team in 2024. Over-confident carry-forward pollutes predictions. | Apply carryover. NHL uses 0.88 -- 12% regression. Other sports regress even more. |
-| "Use end-of-season ratings for next season's opening day" | Without regression, teams that had lucky seasons (high PDO) stay overrated. | Apply carryover formula on day 1 of the new season. |
+| "One Elo variant is enough" | Each variant captures different signal; Standard and Form are often the two most useful. | Build all 5. Use feature selection to prune later if needed. |
+| "Don't regress ratings between seasons" | Last season's best team is not the same team this season. Over-confident carry-forward pollutes predictions. | Apply carryover. Hockey uses 0.88 (12% regression); sports with more roster churn regress more. |
+| "Use end-of-season ratings for next season's opening day" | Without regression, teams that had lucky seasons stay overrated. | Apply carryover formula on day 1 of the new season. |
 
 ## Output Format
 
@@ -198,8 +185,8 @@ For each variant, produce a ratings table:
 ```
 team         | elo_standard | elo_fading | elo_form | elo_off | elo_def | elo_flat | as_of_date
 -------------|-------------|------------|----------|---------|---------|----------|----------
-Buffalo Sabres| 1487.3      | 1491.2     | 1502.1   | 1495.6  | 1478.9  | 1489.1   | 2026-05-01
-Toronto Leafs | 1534.8      | 1529.4     | 1518.7   | 1541.2  | 1528.3  | 1532.0   | 2026-05-01
+Team A| 1487.3      | 1491.2     | 1502.1   | 1495.6  | 1478.9  | 1489.1   | 2026-05-01
+Team B | 1534.8      | 1529.4     | 1518.7   | 1541.2  | 1528.3  | 1532.0   | 2026-05-01
 ```
 
 For model features: output as one row per game with home/away ratings as of game date.
@@ -212,4 +199,4 @@ For model features: output as one row per game with home/away ratings as of game
 | Ratings built, want a full model | Train on Elo + other features | `model-building` |
 | Model trained, need to verify calibration | Check probability output quality | `probability-calibration` |
 | Want to simulate playoff bracket | Use Elo to seed simulations | `nhl-playoff-simulation` |
-| Elo accuracy unclear | Backtest against market odds | `backtesting` |
+| Elo accuracy unclear | Backtest against the market's no-margin probabilities | `backtesting` |

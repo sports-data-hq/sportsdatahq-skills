@@ -1,4 +1,4 @@
-# Chart Templates -- PuckAPI Skills
+# Chart Templates: SportsDataHQ Skills
 
 > Level 3 reference. Zero context cost until loaded.
 > These are copy-paste matplotlib/seaborn templates. Replace the DATA SECTION placeholders with actual values from the relevant skill output.
@@ -11,12 +11,12 @@ Source skill: `probability-calibration`
 Input: bin midpoints, actual win rates, bin sample sizes
 
 ```python
-# Calibration Curve -- Built with PuckAPI Skills
+# Calibration Curve: Built with SportsDataHQ Skills
 import matplotlib.pyplot as plt
 import matplotlib.patches as patches
 import numpy as np
 
-# DATA SECTION -- paste from probability-calibration output
+# DATA SECTION: paste from probability-calibration output
 bin_midpoints = [0.05, 0.15, 0.25, 0.35, 0.45, 0.55, 0.65, 0.75, 0.85, 0.95]
 actual_rates  = [0.04, 0.13, 0.22, 0.31, 0.47, 0.54, 0.66, 0.74, 0.87, 0.94]
 bin_counts    = [12,   28,   41,   55,   67,   71,   58,   43,   29,   11 ]
@@ -53,7 +53,7 @@ ax.set_ylim(0, 1)
 ax.legend(loc='upper left', fontsize=10)
 ax.grid(True, alpha=0.3)
 
-fig.text(0.99, 0.01, 'Built with PuckAPI Skills',
+fig.text(0.99, 0.01, 'Built with SportsDataHQ Skills',
          ha='right', va='bottom', fontsize=8, color='gray')
 
 plt.tight_layout()
@@ -63,63 +63,63 @@ plt.show()
 
 ---
 
-## 2. Equity Curve with Drawdown Bands
+## 2. Cumulative Model Advantage over the Market
 
 Source skill: `backtesting` or `prediction-tracker`
-Input: sequential P&L in units (one value per bet)
+Input: per-prediction log-loss advantage, market log loss minus model log loss (one value per graded prediction, same events for both)
 
 ```python
-# Equity Curve -- Built with PuckAPI Skills
+# Cumulative Model Advantage: Built with SportsDataHQ Skills
 import matplotlib.pyplot as plt
 import matplotlib.gridspec as gridspec
 import numpy as np
 
-# DATA SECTION -- paste pnl_units column from prediction-tracker or backtesting
-pnl_units = [0.91, -1.0, 0.91, 0.91, -1.0, -1.0, 0.91, 0.91, -1.0, 0.91]
+# DATA SECTION: paste per-event (market_log_loss - model_log_loss) from prediction-tracker or backtesting
+advantage = [0.02, -0.05, 0.03, 0.01, -0.04, -0.02, 0.06, 0.02, -0.03, 0.04]
 # END DATA SECTION
 
-cumulative = np.cumsum(pnl_units)
+cumulative = np.cumsum(advantage)
 peak = np.maximum.accumulate(cumulative)
 drawdown = cumulative - peak
-bet_nums = np.arange(1, len(pnl_units) + 1)
+event_nums = np.arange(1, len(advantage) + 1)
 
 fig = plt.figure(figsize=(12, 7))
 gs = gridspec.GridSpec(2, 1, height_ratios=[3, 1], hspace=0.05)
 
-# Equity curve (top panel)
+# Cumulative advantage (top panel)
 ax1 = fig.add_subplot(gs[0])
-ax1.plot(bet_nums, cumulative, color='#16A34A', linewidth=2.5, label='Equity', zorder=3)
+ax1.plot(event_nums, cumulative, color='#16A34A', linewidth=2.5, label='Cumulative advantage', zorder=3)
 ax1.axhline(y=0, color='black', linewidth=1, alpha=0.5, linestyle='--')
-ax1.fill_between(bet_nums, cumulative, 0,
+ax1.fill_between(event_nums, cumulative, 0,
                  where=(cumulative >= 0), alpha=0.1, color='#16A34A')
-ax1.fill_between(bet_nums, cumulative, 0,
+ax1.fill_between(event_nums, cumulative, 0,
                  where=(cumulative < 0), alpha=0.1, color='#DC2626')
-ax1.set_ylabel('Cumulative P&L (units)', fontsize=11)
-ax1.set_title('Equity Curve', fontsize=14, fontweight='bold')
+ax1.set_ylabel('Cumulative log-loss advantage over market', fontsize=11)
+ax1.set_title('Model vs Market, Cumulative', fontsize=14, fontweight='bold')
 ax1.grid(True, alpha=0.3)
 ax1.legend(fontsize=10)
 ax1.set_xticklabels([])
 
 # Drawdown (bottom panel)
 ax2 = fig.add_subplot(gs[1])
-ax2.fill_between(bet_nums, drawdown, 0, alpha=0.6, color='#DC2626')
-ax2.plot(bet_nums, drawdown, color='#DC2626', linewidth=1)
+ax2.fill_between(event_nums, drawdown, 0, alpha=0.6, color='#DC2626')
+ax2.plot(event_nums, drawdown, color='#DC2626', linewidth=1)
 ax2.axhline(y=0, color='black', linewidth=1, alpha=0.5)
-ax2.set_ylabel('Drawdown', fontsize=10)
-ax2.set_xlabel('Bet Number', fontsize=11)
+ax2.set_ylabel('Drop from peak', fontsize=10)
+ax2.set_xlabel('Prediction number', fontsize=11)
 ax2.grid(True, alpha=0.3)
 
 # Annotate key stats
 max_dd = drawdown.min()
 total_return = cumulative[-1]
-ax1.text(0.02, 0.95, f'Total: {total_return:+.2f}u | Max DD: {max_dd:.2f}u',
+ax1.text(0.02, 0.95, f'Total: {total_return:+.3f} | Largest drop: {max_dd:.3f} | n = {len(advantage)}',
          transform=ax1.transAxes, fontsize=10, va='top',
          bbox=dict(boxstyle='round', facecolor='white', alpha=0.8))
 
-fig.text(0.99, 0.01, 'Built with PuckAPI Skills',
+fig.text(0.99, 0.01, 'Built with SportsDataHQ Skills',
          ha='right', va='bottom', fontsize=8, color='gray')
 
-plt.savefig('equity-curve.png', dpi=150, bbox_inches='tight')
+plt.savefig('model-advantage.png', dpi=150, bbox_inches='tight')
 plt.show()
 ```
 
@@ -131,11 +131,11 @@ Source skill: `nhl-team-analysis` or `nhl-game-preview`
 Input: two teams, 6-8 metrics each, league averages
 
 ```python
-# Team Comparison Radar -- Built with PuckAPI Skills
+# Team Comparison Radar: Built with SportsDataHQ Skills
 import matplotlib.pyplot as plt
 import numpy as np
 
-# DATA SECTION -- paste from nhl-team-analysis or nhl-game-preview
+# DATA SECTION: paste from nhl-team-analysis or nhl-game-preview
 team_a_name = 'Buffalo Sabres'
 team_b_name = 'Toronto Maple Leafs'
 metrics = ['CF%', 'xGF%', 'PP%', 'PK%', 'GF/GP', 'GA/GP']
@@ -174,7 +174,7 @@ ax.set_title(f'{team_a_name} vs {team_b_name}', fontsize=13,
              fontweight='bold', pad=20)
 ax.legend(loc='upper right', bbox_to_anchor=(1.3, 1.1), fontsize=10)
 
-fig.text(0.99, 0.01, 'Built with PuckAPI Skills',
+fig.text(0.99, 0.01, 'Built with SportsDataHQ Skills',
          ha='right', va='bottom', fontsize=8, color='gray')
 
 plt.tight_layout()
@@ -187,15 +187,15 @@ plt.show()
 ## 4. Matchup Card
 
 Source skill: `nhl-game-preview`
-Input: team names, key stats, goalie names/stats, odds
+Input: team names, key stats, goalie names/stats, market fair probability
 
 ```python
-# Matchup Card -- Built with PuckAPI Skills
+# Matchup Card: Built with SportsDataHQ Skills
 import matplotlib.pyplot as plt
 import matplotlib.patches as mpatches
 import numpy as np
 
-# DATA SECTION -- paste from nhl-game-preview output
+# DATA SECTION: paste from nhl-game-preview output
 game_date = '2026-05-01'
 away_team  = 'Buffalo Sabres'
 home_team  = 'Toronto Maple Leafs'
@@ -216,8 +216,8 @@ home_goalie = 'Joseph Woll'
 home_sv  = '.911'
 home_gaa = '2.88'
 
-away_ml = '+120'
-home_ml = '-140'
+away_fair = '41.5%'   # market fair probability (get_game_probabilities)
+home_fair = '58.5%'
 total   = '6.0'
 # END DATA SECTION
 
@@ -225,7 +225,7 @@ fig, axes = plt.subplots(1, 2, figsize=(14, 7))
 fig.patch.set_facecolor('#F8FAFC')
 
 def draw_team_panel(ax, team_name, abbr, goalie, sv_pct, gaa,
-                    vals, other_vals, higher_better, ml_odds, side):
+                    vals, other_vals, higher_better, fair_prob, side):
     ax.set_facecolor('#F8FAFC')
     ax.set_xlim(0, 1)
     ax.set_ylim(0, 1)
@@ -237,7 +237,7 @@ def draw_team_panel(ax, team_name, abbr, goalie, sv_pct, gaa,
             fontsize=32, fontweight='bold', color=color)
     ax.text(0.5, 0.88, team_name, ha='center', va='top',
             fontsize=11, color='#374151')
-    ax.text(0.5, 0.82, f'ML: {ml_odds}', ha='center', va='top',
+    ax.text(0.5, 0.82, f'Market fair: {fair_prob}', ha='center', va='top',
             fontsize=13, fontweight='bold', color='#111827')
 
     ax.axhline(0.79, color='#E5E7EB', linewidth=1)
@@ -262,14 +262,14 @@ def draw_team_panel(ax, team_name, abbr, goalie, sv_pct, gaa,
         y -= 0.08
 
 draw_team_panel(axes[0], away_team, away_abbr, away_goalie, away_sv, away_gaa,
-                away_vals, home_vals, higher_is_better, away_ml, 'away')
+                away_vals, home_vals, higher_is_better, away_fair, 'away')
 draw_team_panel(axes[1], home_team, home_abbr, home_goalie, home_sv, home_gaa,
-                home_vals, away_vals, higher_is_better, home_ml, 'home')
+                home_vals, away_vals, higher_is_better, home_fair, 'home')
 
 fig.suptitle(f'{away_abbr} @ {home_abbr}  |  {game_date}  |  {game_time}  |  O/U {total}',
              fontsize=13, fontweight='bold', y=0.02, color='#374151')
 
-fig.text(0.99, 0.01, 'Built with PuckAPI Skills',
+fig.text(0.99, 0.01, 'Built with SportsDataHQ Skills',
          ha='right', va='bottom', fontsize=8, color='gray')
 
 plt.tight_layout(rect=[0, 0.05, 1, 1])
@@ -285,11 +285,11 @@ Source skill: `model-building`
 Input: list of model probabilities (one per prediction)
 
 ```python
-# Prediction Confidence Histogram -- Built with PuckAPI Skills
+# Prediction Confidence Histogram: Built with SportsDataHQ Skills
 import matplotlib.pyplot as plt
 import numpy as np
 
-# DATA SECTION -- paste model probability output (home team win probability)
+# DATA SECTION: paste model probability output (home team win probability)
 probabilities = [0.42, 0.61, 0.55, 0.38, 0.72, 0.49, 0.53, 0.67, 0.44, 0.58]
 # END DATA SECTION
 
@@ -323,7 +323,7 @@ ax.text(0.02, 0.95, f'Favors Away: {below_50} ({below_50/len(probabilities):.0%}
 ax.text(0.98, 0.95, f'Favors Home: {above_50} ({above_50/len(probabilities):.0%})',
         transform=ax.transAxes, fontsize=10, va='top', ha='right', color='#16A34A')
 
-fig.text(0.99, 0.01, 'Built with PuckAPI Skills',
+fig.text(0.99, 0.01, 'Built with SportsDataHQ Skills',
          ha='right', va='bottom', fontsize=8, color='gray')
 
 plt.tight_layout()
@@ -336,46 +336,39 @@ plt.show()
 ## 6. Season Performance Timeline
 
 Source skill: `prediction-tracker` or `backtesting`
-Input: dates, rolling metric values (accuracy, ROI, CLV)
+Input: dates, rolling metric values (accuracy, Brier, log loss, share moved toward model)
 
 ```python
-# Season Performance Timeline -- Built with PuckAPI Skills
+# Season Performance Timeline: Built with SportsDataHQ Skills
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 
-# DATA SECTION -- paste from prediction-tracker or backtesting
+# DATA SECTION: paste from prediction-tracker or backtesting
 dates = pd.date_range('2025-10-01', periods=30, freq='3D')
-roi_rolling = [0.01, 0.02, -0.01, 0.03, 0.05, 0.04, 0.06, 0.03, 0.08,
-               0.07, 0.09, 0.06, 0.10, 0.08, 0.11, 0.09, 0.12, 0.10,
-               0.08, 0.07, 0.09, 0.11, 0.10, 0.12, 0.14, 0.13, 0.15,
-               0.14, 0.16, 0.15]
-window_size = 20  # rolling window (number of bets)
-breakeven_rate = 0.0  # 0% ROI = breakeven
+brier_rolling = [0.236, 0.241, 0.239, 0.244, 0.238, 0.235, 0.240, 0.237, 0.233, 0.236,
+                 0.239, 0.241, 0.238, 0.234, 0.237, 0.240, 0.236, 0.235, 0.238, 0.237]
+market_brier_rolling = [0.234, 0.238, 0.237, 0.240, 0.236, 0.235, 0.238, 0.236, 0.234, 0.235,
+                        0.237, 0.239, 0.237, 0.234, 0.236, 0.238, 0.235, 0.235, 0.237, 0.236]
+window_size = 20  # rolling window (number of predictions)
 # END DATA SECTION
 
-roi = np.array(roi_rolling)
-std = np.std(roi) * np.ones(len(roi))
+brier = np.array(brier_rolling)
+market = np.array(market_brier_rolling)
 
 fig, ax = plt.subplots(figsize=(12, 6))
 
-ax.plot(dates, roi, color='#2563EB', linewidth=2.5, label=f'Rolling ROI ({window_size}-bet)')
-ax.fill_between(dates, roi - std, roi + std, alpha=0.15, color='#2563EB')
-ax.axhline(y=breakeven_rate, color='black', linewidth=1.5,
-           linestyle='--', alpha=0.6, label='Breakeven')
-ax.fill_between(dates, roi, breakeven_rate,
-                where=(roi >= breakeven_rate), alpha=0.1, color='#16A34A')
-ax.fill_between(dates, roi, breakeven_rate,
-                where=(roi < breakeven_rate), alpha=0.1, color='#DC2626')
+ax.plot(dates, brier, color='#2563EB', linewidth=2.5, label=f'Model rolling Brier ({window_size}-prediction window)')
+ax.plot(dates, market, color='#6B7280', linewidth=2, linestyle='--', label='Closing market rolling Brier')
+ax.axhline(y=0.25, color='black', linewidth=1, linestyle=':', alpha=0.5, label='No-skill (0.25)')
 
 ax.set_xlabel('Date', fontsize=12)
-ax.set_ylabel('Rolling ROI', fontsize=12)
+ax.set_ylabel('Brier score (lower is better)', fontsize=12)
 ax.set_title('Season Performance Timeline', fontsize=14, fontweight='bold')
-ax.yaxis.set_major_formatter(plt.FuncFormatter(lambda y, _: f'{y:.1%}'))
 ax.legend(fontsize=10)
 ax.grid(True, alpha=0.3)
 
-fig.text(0.99, 0.01, 'Built with PuckAPI Skills',
+fig.text(0.99, 0.01, 'Built with SportsDataHQ Skills',
          ha='right', va='bottom', fontsize=8, color='gray')
 
 plt.tight_layout()
@@ -391,11 +384,11 @@ Source skill: `nhl-war-gar`
 Input: player name, team, component values, comparison baseline
 
 ```python
-# Player Card -- Built with PuckAPI Skills
+# Player Card: Built with SportsDataHQ Skills
 import matplotlib.pyplot as plt
 import numpy as np
 
-# DATA SECTION -- paste from nhl-war-gar output
+# DATA SECTION: paste from nhl-war-gar output
 player_name = 'Tage Thompson'
 player_team = 'Buffalo Sabres'
 position    = 'C'
@@ -440,11 +433,11 @@ ax.set_yticks([25, 50, 75])
 ax.set_yticklabels(['', 'Avg', ''], fontsize=8, color='gray')
 ax.grid(True, alpha=0.3)
 
-ax.set_title(f'{player_name} — {player_team}\n{position} | {season} | WAR: {total_war:+.1f}',
+ax.set_title(f'{player_name}, {player_team}\n{position} | {season} | WAR: {total_war:+.1f}',
              fontsize=12, fontweight='bold', pad=20)
 ax.legend(loc='upper right', bbox_to_anchor=(1.3, 1.1), fontsize=9)
 
-fig.text(0.99, 0.01, 'Built with PuckAPI Skills',
+fig.text(0.99, 0.01, 'Built with SportsDataHQ Skills',
          ha='right', va='bottom', fontsize=8, color='gray')
 
 plt.tight_layout()
@@ -460,7 +453,7 @@ For terminal-only output (no Python required).
 
 ### Horizontal Bar Comparison
 ```
-[Away Team] vs [Home Team] -- Key Stats
+[Away Team] vs [Home Team]: Key Stats
 ========================================
 CF% (5v5):  BUF [██████████] 53.2%
             TOR [████████  ] 47.8%
@@ -474,30 +467,25 @@ xGF%:       BUF [██████████] 55.1%
 Green = better vs league avg (50.0%)
 ```
 
-### Text Equity Curve
+### Text Cumulative Advantage
 ```
-Equity (units)
-+4 |                          *
-+3 |                    *   *
-+2 |             *    *
-+1 |      *   *
- 0 |*  *
--1 |
-   +----------------------------> Bet #
-   1    5    10   15   20   25
-Running: +3.8u | Max DD: -1.2u
+Cumulative log-loss advantage over market
++0.4 |                          *
++0.3 |                    *   *
++0.2 |             *    *
++0.1 |      *   *
+ 0.0 |*  *
+-0.1 |
+     +----------------------------> Prediction #
+     1    5    10   15   20   25
+Total: +0.38 | Largest drop: -0.12 | n = 25
 ```
 
-### Win Rate Significance Table
+### Accuracy with Interval
 ```
-Current Record: 31W-22L (58.5% win rate)
-Breakeven: 52.4% at avg -110 odds
-Sample: 53 bets
-
-Significance:
-  p-value: 0.041  [SIGNIFICANT at 95%]
-  Confidence interval: 45.1% -- 71.9%
-  Min bets for 95% CI at 58.5%: ~160
-
-Status: EDGE LIKELY -- continue tracking
+Resolved predictions: 53 (season convention: [..])
+Accuracy: 58.5% (31 of 53)
+95% interval: 45.1% to 71.9%
+Model Brier: 0.236   Market closing Brier: 0.234
+Paired difference interval includes zero: not enough data to separate them
 ```

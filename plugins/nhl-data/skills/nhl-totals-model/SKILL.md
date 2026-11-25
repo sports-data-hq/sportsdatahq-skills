@@ -1,35 +1,35 @@
 ---
 name: nhl-totals-model
-description: "Builds over/under prediction models for NHL game totals using pace, special teams, goalie matchup, and contextual features. Use when user asks about totals modeling, over/under prediction, predicting total goals, goal scoring rates, or NHL scoring trends. Do not use for moneyline or spread prediction -- see model-building. Do not use for player-level goal props -- see nhl-player-props-research. Do not use for exploring current odds lines -- see nhl-odds-explorer."
+description: "Use when the user asks to model NHL game totals, predict total goals, how many goals a game will have, over/under probability, scoring pace, or whether a goalie matchup changes scoring. Builds a calibrated total-goals distribution from the PuckAPI MCP server and compares it to the market total as a probability gap. Not for who wins or the puck line (use model-building). Not for player goal or point props (use nhl-player-props-research). Not for just viewing current lines (use nhl-odds-explorer)."
 metadata:
-  version: 1.0.0
-  author: PuckAPI
+  version: 2.0.0
+  author: SportsDataHQ
 ---
 
 # Totals Modeling
 
-> **Default data tool:** PuckAPI (`nhl-puckapi-tools`).
+> **Data:** the PuckAPI MCP server (`nhl-puckapi-tools`).
 > Use `get_team_stats` for pace and special teams rates (5 credits), `get_goalie_stats` for starter quality (5 credits), `get_games` for historical game totals (5 credits), `get_odds` for market line context (10 credits).
-> For user's own CSV/JSON: skip the tool, work with the file directly.
+> For the user's own CSV/JSON, work with the file directly.
 
-You are an expert in hockey over/under prediction. Your goal is to build a calibrated totals model that estimates the probability distribution of total goals in an NHL game, then compare that to the market line to find over/under edges.
+You are an expert in hockey over/under prediction. Your goal is to build a calibrated totals model that estimates the probability distribution of total goals in an NHL game, then compare it to the market total to show how our probability differs from the market probability. Odds are information only: no stake sizing, no advice to wager.
 
 ## When to Use
 
 - User asks about over/under modeling or totals prediction
 - User wants to predict how many goals will be scored in a game
 - User asks about NHL scoring rates, pace metrics, or goal environment
-- User wants to find over or under value in the betting market
+- User wants to see how the model total differs from the market total
 - User asks about goalie matchup effects on scoring
 - User asks about the "under bias" at 5.5+
 
 ## When NOT to Use
 
-- Predicting which team wins -- see `model-building`
-- Spread / puck-line prediction -- see `model-building` (totals and spreads share some features but are separate models)
-- Player-level goal/point props -- see `nhl-player-props-research`
-- Exploring current odds lines without modeling -- see `nhl-odds-explorer`
-- Analyzing team offensive/defensive quality in isolation -- see `nhl-team-analysis`
+- Predicting which team wins: see `model-building`
+- Spread / puck-line prediction: see `model-building` (totals and spreads share some features but are separate models)
+- Player-level goal/point props: see `nhl-player-props-research`
+- Exploring current odds lines without modeling: see `nhl-odds-explorer`
+- Analyzing team offensive/defensive quality in isolation: see `nhl-team-analysis`
 
 ## Commands Available
 
@@ -39,7 +39,8 @@ You are an expert in hockey over/under prediction. Your goal is to build a calib
 | `get_team_stats` | Shots per 60, scoring rate, PP%, PK% | 5 |
 | `get_goalie_stats` | Starter SV%, GAA, GSAA, recent form | 5 |
 | `get_standings` | Win/loss records for SOS context | 2 |
-| `get_odds` | Market over/under line and vig | 10 |
+| `get_odds` | Market total line and prices (information only) | 10 |
+| `get_game_probabilities` | Market implied and fair (no-margin) probability for a game | 5 |
 | `get_head_to_head` | Historical scoring in prior matchups | 10 |
 
 ## Commands That Do NOT Exist
@@ -49,24 +50,24 @@ You are an expert in hockey over/under prediction. Your goal is to build a calib
 | `get_game_totals` | Use `get_games` and sum home + away goals |
 | `get_pace_stats` | Compute from `get_team_stats` (shots per 60 is a pace proxy) |
 | `get_scoring_environment` | Compute from `get_games` rolling averages per team |
-| `get_goalie_starter` | Use `get_goalie_stats` -- most recent starter inference from recent start dates |
+| `get_goalie_starter` | Use `get_goalie_stats`: most recent starter inference from recent start dates |
 | `get_venue_stats` | Not available; compute home-game averages from `get_games` filtered by location |
 
 ## Data Source
 
-**PuckAPI (default):** Pull `get_games` for historical game log with total goals. Pull `get_team_stats` for pace and special teams. Pull `get_goalie_stats` for both starting goalies.
+**PuckAPI MCP server:** Pull `get_games` for historical game log with total goals. Pull `get_team_stats` for pace and special teams. Pull `get_goalie_stats` for both starting goalies.
 
 **Your own data:** If user provides CSV/JSON:
 1. Verify required columns: `game_date`, `home_team`, `away_team`, `home_goals`, `away_goals` (to compute total), `home_starter_sv_pct`, `away_starter_sv_pct`, `home_shots_per_60`, `away_shots_per_60`, `home_pp_pct`, `away_pp_pct`, `home_pk_pct`, `away_pk_pct`
 2. Verify ISO 8601 date format
-3. Flag missing goalie data -- goalie features are the highest-value signal and cannot be silently imputed
+3. Flag missing goalie data: goalie features are the highest-value signal and cannot be silently imputed
 4. Note: credits are not consumed
 
 ## Initial Assessment
 
 Before building, establish:
 1. What is the target? (total goals, or binary over/under at a specific line like 5.5?)
-2. What market is the user modeling? (DraftKings, FanDuel, Pinnacle, or multiple books?)
+2. Which market total is the comparison point? (the consensus from `get_game_probabilities`, or one book from `get_odds`)
 3. How many seasons of data are available? (totals models need 3+ seasons for stable goalie coefficients)
 
 ## How It Works
@@ -93,7 +94,7 @@ df['over_6_0'] = (df['total_goals'] > 6.0).astype(int)
 
 Build both a regression target (total goals) and binary classification targets (over/under at each line). They inform each other during validation.
 
-### Step 2: Feature Set -- Pace Metrics
+### Step 2: Feature Set: Pace Metrics
 
 Pull `get_team_stats` for both teams. Apply `.shift(1)` before any rolling calculation.
 
@@ -114,20 +115,20 @@ df['expected_total_simple'] = df['home_gf_roll10'] + df['away_ga_roll10']
 # also compute: away_gf_roll10 + home_ga_roll10
 ```
 
-### Step 3: Feature Set -- Special Teams
+### Step 3: Feature Set: Special Teams
 
 PP% for both teams + PK% for both teams. These interact:
 
 ```python
 # Net PP effect on scoring rate
-df['home_pp_edge'] = df['home_pp_pct_roll10'] - df['away_pk_pct_roll10']
-df['away_pp_edge'] = df['away_pp_pct_roll10'] - df['home_pk_pct_roll10']
-df['combined_pp_quality'] = df['home_pp_edge'] + df['away_pp_edge']
+df['home_pp_gap'] = df['home_pp_pct_roll10'] - df['away_pk_pct_roll10']
+df['away_pp_gap'] = df['away_pp_pct_roll10'] - df['home_pk_pct_roll10']
+df['combined_pp_quality'] = df['home_pp_gap'] + df['away_pp_gap']
 ```
 
 Power play opportunities per game (not just conversion rate): a team that draws more penalties gives more scoring chances regardless of PP%.
 
-### Step 4: Feature Set -- Goalie Matchup
+### Step 4: Feature Set: Goalie Matchup
 
 This is the highest-leverage feature group. Goalie quality variance accounts for a larger share of total goals prediction than any other single input.
 
@@ -149,7 +150,7 @@ df['home_starter_confirmed'] = 1 if starter announced, 0 if uncertain
 
 **If starter is unconfirmed:** Use team backup SV% as a downside scenario. Weight predictions toward higher-scoring outcomes when starter is uncertain.
 
-### Step 5: Feature Set -- Contextual Factors
+### Step 5: Feature Set: Contextual Factors
 
 **Back-to-back effect:**
 ```python
@@ -166,13 +167,13 @@ df['games_into_season'] = game number (1-82) within the season
 df['early_season'] = (df['games_into_season'] <= 20).astype(int)
 ```
 
-Early-season games produce more goals -- goalies aren't sharp, defensive systems aren't set. This effect diminishes after ~game 20.
+Early-season games produce more goals: goalies aren't sharp, defensive systems aren't set. This effect diminishes after ~game 20.
 
 **Head-to-head scoring history:** Use `get_head_to_head` for last 5 meetings. High-scoring rivalry vs defensive rivalry carries predictive signal, though it's weaker than pace and goalie matchup.
 
 ### Step 6: Train the Totals Model
 
-Use XGBoost or LightGBM. Regression target preferred over binary classification -- regression gives you the full probability distribution.
+Use XGBoost or LightGBM. Regression target preferred over binary classification: regression gives you the full probability distribution.
 
 ```python
 from xgboost import XGBRegressor
@@ -196,19 +197,17 @@ predicted_total = model.predict(X_game)[0]
 prob_over_5_5 = 1 - poisson.cdf(5, mu=predicted_total)  # P(goals >= 6)
 ```
 
-### Step 7: Calibration and the Under Bias
+### Step 7: Calibration and the 5.5 Pattern
 
-**Documented market inefficiency:** Games with total set at 5.5 go under more than the market implies. This has been documented in public NHL betting research (though its persistence varies by season and book).
-
-Test this in your data:
+**Hypothesis to test, not assume:** games with the total set at 5.5 may go under more often than the market-implied probability says. Its persistence varies by season, so test it in your data and report it by season:
 ```python
 line_55_games = df[abs(df['market_line'] - 5.5) < 0.1]
 actual_over_rate = line_55_games['over_5_5'].mean()
 implied_over_rate = 1 - line_55_games['implied_under_prob'].mean()
-edge = actual_over_rate - implied_over_rate  # negative = under edge
+gap = actual_over_rate - implied_over_rate  # negative = unders happened more than the market probability implied
 ```
 
-If the pattern holds in your walk-forward validation, it's real signal. If it only shows up in-sample, it's noise.
+Use the fair (no-margin) probability from `get_game_probabilities` for the implied rate. Report the sample size and an interval for each season. If the pattern holds across seasons in walk-forward validation, it is a real signal about the market. If it only shows up in-sample, it is noise.
 
 **Calibration check:** Bin predicted probabilities into deciles. Check that games in the "60-70% over" bucket actually go over 60-70% of the time. Use isotonic regression or Platt scaling if calibration is off.
 
@@ -232,27 +231,34 @@ For totals, the key metric is **RMSE on total goals** and **calibrated Brier sco
 | `get_games` per season | 5 | Full season game log |
 | `get_team_stats` per team | 5 | 32 teams = 160 credits |
 | `get_goalie_stats` per goalie | 5 | ~60 starters per season = 300 credits |
-| `get_odds` per game | 10 | Only needed for edge calculation |
+| `get_odds` per game | 10 | Only needed for the market comparison |
 | Full training dataset (3 seasons, no odds) | ~1,395 | Games + team stats + goalies |
-| Adding odds for edge detection (3 seasons) | ~3,936 | ~1,312 games/season * 10 |
+| Adding odds for the market comparison (3 seasons) | ~3,936 | ~1,312 games/season * 10 |
+
+## Rules for numbers
+
+- Call the PuckAPI tools for every game, rate and line; never quote totals or goalie numbers from memory.
+- Cite which tool call produced each number (`get_games` for totals, `get_odds` or `get_game_probabilities` for market figures).
+- State the sample size (games per line, per season), an interval for each rate, and the season convention (`20252026` = 2025-26).
+- If goalie or odds data is missing for a game, say "not enough data" for that game instead of guessing.
 
 ## Anti-patterns
 
 | Rationalization | Why It's Wrong | Do This Instead |
 |----------------|---------------|-----------------|
 | "I'll use the same features as my moneyline model" | Pace metrics matter here; team quality metrics matter there. Overlap exists but the feature importance ranking is different | Build totals features explicitly; validate feature importance separately |
-| "Goalie data is annoying -- I'll skip it" | Goalie matchup is the highest-leverage feature in totals prediction; skipping it caps your ceiling | Pull `get_goalie_stats` and derive starter feature even if it requires extra calls |
+| "Goalie data is annoying: I'll skip it" | Goalie matchup is the highest-leverage feature in totals prediction; skipping it caps your ceiling | Pull `get_goalie_stats` and derive starter feature even if it requires extra calls |
 | "k-fold cross-validation is standard" | NHL game totals are time-series data; k-fold leaks future seasons into training | Walk-forward by season only |
-| "Calibration doesn't matter for totals" | Miscalibrated totals probabilities produce wrong over/under edge estimates, leading to bad bets | Calibrate separately from moneyline; binomial confidence intervals on each line |
-| "One model handles all lines" | 5.0 vs 6.5 totals markets have different over rates and different inefficiency patterns | Validate at each line separately; consider line-specific adjustments |
-| "Under bias at 5.5 is permanent" | Market inefficiencies disappear when books notice them | Re-test every season; treat as signal with decay, not a permanent edge |
+| "Calibration doesn't matter for totals" | Miscalibrated totals probabilities produce a misleading model vs market gap | Calibrate separately from moneyline; binomial confidence intervals on each line |
+| "One model handles all lines" | 5.0 vs 6.5 totals markets have different over rates and different patterns | Validate at each line separately; consider line-specific adjustments |
+| "The 5.5 pattern is permanent" | Market patterns fade when prices adjust | Re-test every season; treat it as a signal with decay |
 
 ## Output Format
 
 The totals model produces:
 
 1. **Game-level predictions**: `predicted_total_goals` (float), `prob_over_5` (float), `prob_over_5_5` (float), `prob_over_6` (float), `prob_over_6_5` (float).
-2. **Edge report** (if odds pulled): predicted probability minus market implied probability for each line. Positive = over edge. Negative = under edge.
+2. **Model vs market gap** (if odds pulled): our probability minus the market fair probability for each line. Positive means our model gives the over a higher probability than the market does; negative means lower. This describes the difference, not an instruction.
 3. **Model performance**: RMSE on total goals, Brier score at each line, calibration curve per line.
 4. **Feature importance**: ranked list showing which features drove total goals predictions in walk-forward test folds.
 
@@ -260,9 +266,9 @@ The totals model produces:
 
 | What You Found | Next Action | Skill |
 |----------------|-------------|-------|
-| Totals model built, want to find over/under value | Compare predicted probabilities vs market | `market-vs-model` |
-| Need better features -- goalie data is weak | Pull and clean goalie starter data | `feature-engineering` |
-| Want to combine totals output with daily workflow | Add totals to daily betting card | `nhl-daily-slate` |
+| Totals model built, want to compare with the market | Model vs market gap | `market-vs-model` |
+| Need better features: goalie data is weak | Pull and clean goalie starter data | `feature-engineering` |
+| Want totals in the daily workflow | Add totals to the daily slate | `nhl-daily-slate` |
 | Calibration is off | Recalibrate using isotonic regression | `probability-calibration` |
-| Want to backtest totals edge historically | Simulate bankroll on historical over/under bets | `backtesting` |
-| Suspect under bias is real -- want to validate | Test the pattern in walk-forward | `walk-forward-validation` |
+| Want to backtest the totals model | Score predictions by season with sample sizes and intervals | `backtesting` |
+| Suspect under bias is real: want to validate | Test the pattern in walk-forward | `walk-forward-validation` |

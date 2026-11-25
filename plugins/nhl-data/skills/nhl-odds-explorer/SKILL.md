@@ -1,204 +1,118 @@
 ---
 name: nhl-odds-explorer
-description: "Multi-book odds comparison, best price identification, vig calculation, line shopping, and line movement analysis for NHL. Use when user asks about current odds, best line, which book has the best price, how lines have moved, sharp money, steam moves, or sportsbook comparison. Do not use for devigging or implied probability math -- see odds-market-analysis. Do not use for comparing model output vs market -- see market-vs-model. Do not use for game results -- see nhl-game-lookup."
+description: "Use when the user asks for NHL odds, what the lines are, how books compare, the margin (vig) in a market, how a line has moved, steam or sharp movement, or what the market probability is. Compares prices across books, converts to implied and fair (no-margin) probability, and reads line movement. Odds are information only: no stakes and no wagering advice. Not for devigging theory or closing-line quality (use odds-market-analysis), comparing a model with the market (use market-vs-model) or game results (use nhl-game-lookup)."
 metadata:
-  version: 1.0.0
-  author: PuckAPI
+  version: 2.0.0
+  author: SportsDataHQ
 ---
 
-# Odds Explorer
+# NHL Odds Explorer
 
-> **Default data tool:** PuckAPI (`nhl-puckapi-tools`).
-> Use `get_odds` for current multi-book odds (10 credits per game).
-> Use `get_line_movement` for opening-to-closing line history (25 credits per game).
-> For historical odds in a backtest, see `backtesting` -- costs 10 credits per game.
+> **Data:** the PuckAPI MCP server (`nhl-puckapi-tools`).
+> Tools: `get_odds` (10 credits), `get_game_probabilities` (5), `get_line_movement` (25), `get_market_odds` (10), `get_alt_lines` (10), `get_schedule` (2).
 
-You are an expert in sports betting markets. Your goal is to help users find the best available price, understand what vig they're paying, and read line movement for market signals.
+You are an expert in how betting markets price hockey. Show what the books are posting, what probability those prices imply, how much margin they carry and how the lines moved. Prices are information about the market. This skill does not recommend wagers or size stakes.
 
 ## When to Use
 
-- Finding the best moneyline, spread, or total price across books for a specific game
-- Calculating vig and understanding what you're giving up
-- Identifying which book consistently has the best price on a team or market type
-- Tracking how a line moved from open to current, and what that signals
-- Explaining American odds to a new user
+- Current moneyline, puck line or total across books
+- How the books compare on one game, and how wide the spread between them is
+- The margin (vig) in a market
+- The market's implied and fair probability
+- How a line moved from open to now
+- Explaining American odds
 
 ## When NOT to Use
 
-- Devigging odds to get true implied probabilities -- see `odds-market-analysis`
-- Comparing model probability vs market price to find edge -- see `market-vs-model`
-- Looking up final scores or game results -- see `nhl-game-lookup`
-- Historical odds for backtesting -- see `backtesting`
+- Devigging methods, closing-line comparison or calibration of prices: `odds-market-analysis`
+- Comparing a model's probability with the market: `market-vs-model`
+- Results and schedules: `nhl-game-lookup`
+- Historical odds for testing: `backtesting`
 
-## Commands Available
+## Tools
 
-| Command | What It Does | Credits |
-|---------|-------------|---------|
-| `get_odds` | Current odds across all books for one game | 10 |
-| `get_line_movement` | Full opening-to-closing line history for one game | 25 |
+| Tool | What it does | Credits |
+|------|-------------|---------|
+| `get_odds` | Current odds across books for one game | 10 |
+| `get_game_probabilities` | Market implied and fair probability averaged across books | 5 |
+| `get_line_movement` | Opening-to-latest line history for one game | 25 |
+| `get_market_odds` | Period and regulation-result lines, opening and closing by book | 10 |
+| `get_alt_lines` | Alternate puck lines and totals, each book's ladder (from 2023-24) | 10 |
+| `get_schedule` | Find the game first if you have no game ID | 2 |
 
-## Commands That Do NOT Exist
+Not available: public betting percentages and live in-game odds. Odds and props are pre-game only.
 
-| Not Available | Use Instead |
-|--------------|-------------|
-| `get_live_odds` | Use `get_odds` with today's date -- data reflects current available lines |
-| `get_historical_lines` | Use `backtesting` skill with `get_odds` for past dates |
-| `get_best_book` | Derive from `get_odds` output by comparing all returned books |
-| `get_public_betting_percentage` | Not available -- infer from line movement direction using `get_line_movement` |
-| `get_closing_line` | Use `get_line_movement` -- closing line is the final entry in the movement log |
+## Rules for numbers
 
-## Season Resolution
-
-- October through December: current calendar year is the season start (2026-27 season)
-- January through September: previous calendar year is the season start (2025-26 season)
-- NHL regular season: October to April. Playoffs: April to June.
-- "Tonight's games" = games with today's date
-
-## Sportsbook Abbreviations
-
-| Abbreviation | Book |
-|-------------|------|
-| DK | DraftKings |
-| FD | FanDuel |
-| MGM | BetMGM |
-| ESPN | ESPN BET |
-| CZAR | Caesars |
-| PINN | Pinnacle |
-| BET365 | Bet365 |
-| HARD | Hard Rock Bet |
-| BARSTOOL | Barstool / Penn |
-| POINTS | PointsBet |
-
-## Initial Assessment
-
-Before starting, understand:
-1. Which game or slate? (One game, all games tonight, a specific team)
-2. Which market? (Moneyline, puck line, total, or all three)
-3. Is line movement needed, or just current best price? (10cr vs 25cr decision)
+- Call the tools. Never answer from memory.
+- Cite which tool call produced each price or probability.
+- State how many books are in the comparison, the capture time of the lines and the season convention (the tools name an NHL season by the year it starts).
+- If a market has too few books or no lines, write "not enough data" instead of guessing.
 
 ## How It Works
 
-**Step 1: Confirm game identity**
+1. **Find the game.** If the user names teams without a game ID, call `get_schedule` first.
+2. **Pull prices.** `get_odds` for the game. Use `get_game_probabilities` for the cross-book fair probability.
+3. **Compare books.** For each market (moneyline, puck line, total) list each book's price and the range. Report which book posts the highest and lowest price for each side as a fact about the market. This is price comparison as information, not a pointer to where to wager.
+4. **Margin.** For a two-way market:
+   ```
+   implied(favorite) = |ml| / (|ml| + 100)       (negative moneyline)
+   implied(underdog) = 100 / (ml + 100)          (positive moneyline)
+   margin = implied_a + implied_b - 1
+   fair_a = implied_a / (implied_a + implied_b)
+   ```
+   Report the margin per book and the fair probability. Method detail lives in `odds-market-analysis`.
+5. **Line movement (on request).** `get_line_movement`: opening line, latest line, direction and size. A move of 10 or more cents on a moneyline, or half a goal on a total, is notable. Report what moved and when. Do not claim to know who caused it.
+6. **Lead with the finding**, then the table.
 
-If the user asks about a team or matchup without a specific game ID, call `get_schedule` (2 credits) to get the game ID first. This prevents pulling odds for the wrong game.
+## Reading American odds
 
-**Step 2: Pull current odds**
+- Negative (-150): the favorite. Implied probability 60%.
+- Positive (+130): the underdog. Implied probability 43.5%.
+- The two sides of a market add to more than 100%: the excess is the margin.
+- Fair probability removes that margin so the two sides add to 100%.
 
-Call `get_odds` for the target game(s). Returns odds from all available books.
+## Credit usage
 
-**Step 3: Find the best price**
+| Operation | Credits |
+|-----------|---------|
+| One game, all books | 10 |
+| Fair probability across books | 5 |
+| Line movement, one game | 25 |
+| Odds for a whole slate | 10 per game |
 
-For each market type (ML, spread, total):
-- Identify the best price for each side independently
-- A bettor on the home team should look at home ML across all books
-- Best price = highest moneyline number for favorites (less negative), highest for underdogs (more positive)
-
-**Step 4: Calculate vig**
-
-Vig = the juice the book charges. Formula for a two-sided market:
-
-```
-Implied prob home = 1 / (1 + 10^(home_ml / 100))  [if favorite, negative ml]
-Implied prob away = 1 / (1 + 10^(-away_ml / 100)) [if underdog, positive ml]
-Vig = (implied_home + implied_away - 1) x 100%
-```
-
-Standard vig is ~4.5% on moneylines. Reduced-juice books (Pinnacle) run ~2-2.5%. Show the vig so users know what they're paying.
-
-**Step 5: Line movement (if requested)**
-
-Call `get_line_movement`. Parse the movement log:
-- Opening line vs. current line
-- Direction: did the line move toward or away from the favorite?
-- Magnitude: moves of 1.5+ points on spreads, or 10+ cents on MLs, are significant
-- Reverse line movement: line moves against majority of public bets = sharp money indicator
-- Steam move: sudden, fast movement across multiple books within minutes = coordinated sharp action
-
-**Step 6: Present findings**
-
-Lead with the actionable insight (best price, significant movement), then show the full table. Do not bury the lede in a table with no interpretation.
-
-## Reading American Odds (Teach This)
-
-When a user appears unfamiliar with American odds format:
-
-- **Negative odds** (-150): bet $150 to win $100. The team is favored.
-- **Positive odds** (+130): bet $100 to win $130. The team is the underdog.
-- **Even money** (+100 or -100): equal risk and reward.
-- **Converting to implied probability:** -150 = 60% chance. +130 = 43.5% chance.
-- The two sides of a market add up to more than 100% -- that's the vig.
-
-## Data Source
-
-**PuckAPI (default):** Use `get_odds` and `get_line_movement`. Data covers major US sportsbooks.
-
-**Your own odds data:** If user provides a CSV of odds:
-1. Verify columns: `game_id`, `book`, `market` (ML/spread/total), `home_odds`, `away_odds`, `timestamp`
-2. Check timestamp format -- line movement analysis requires chronological ordering
-3. Credits are not consumed when using own data
-
-## Credit Usage
-
-| Operation | Credits | Notes |
-|-----------|---------|-------|
-| Odds snapshot (one game) | 10 | All books, all markets |
-| Line movement (one game) | 25 | Full open-to-close history |
-| Odds for full tonight's slate | 10 x N games | 15-game NHL night = 150 credits |
-| Line movement for full slate | 25 x N games | Use selectively; most expensive call |
-| Schedule lookup (game ID) | 2 | Do this first if no game ID |
-
-**Credit guidance:** For a single-game best-price lookup, total cost is 10-12 credits. For a sharp-money analysis with movement, 35 credits. Do not pull line movement on entire slates without user awareness of the cost.
+Say the cost before pulling line movement for more than one game.
 
 ## Anti-patterns
 
-| Rationalization | Why It's Wrong | Do This Instead |
-|----------------|---------------|-----------------|
-| "All books have similar prices, doesn't matter" | 1-3% ROI difference is the margin between profitable and losing | Show the spread; let the user decide it doesn't matter |
-| "Line moved toward favorites, so bet favorites" | Line movement direction alone is not a signal -- volume matters | Show magnitude and speed; flag if it looks like sharp vs public |
-| "Pinnacle is always best" | Pinnacle has the sharpest lines but often limited US availability and no bonuses | Include it as a reference line; note availability caveat |
-| "The vig is small, ignore it" | Paying 4.8% vig vs 2.5% costs $2,300 per $100k wagered | Always show vig; it compounds over a season |
+| Rationalization | Why it is wrong | Do this instead |
+|----------------|----------------|-----------------|
+| "The line moved toward the favorite, so the favorite is right" | Direction alone says nothing about cause or outcome | Report size and timing only |
+| "All books are the same" | Prices differ and the spread is itself informative | Show the range |
+| "The margin is small, skip it" | Margin changes the implied probability | Show it and the fair probability |
+| "Say where to play it" | This skill reports information | Report prices and probabilities |
 
 ## Output Format
 
-**Best price output:**
 ```
-[Away Team] @ [Home Team] -- [Date]
+[Away] @ [Home]: [Date] (lines captured [time], [N] books)
 
-Moneyline Best Prices:
-  [Away Team]: +XXX @ [BOOK] | Range: +XXX (BOOK) to +XXX (BOOK)
-  [Home Team]: -XXX @ [BOOK] | Range: -XXX (BOOK) to -XXX (BOOK)
-  Market vig: X.X% (avg across books)
+Moneyline: [Away] +XXX to +XXX (range) | [Home] -XXX to -XXX
+  Fair probability (avg across books): [Away] XX.X% | [Home] XX.X%
+  Margin: X.X% average
 
-Puck Line (±1.5):
-  [Away Team] +1.5: -XXX @ [BOOK]
-  [Home Team] -1.5: +XXX @ [BOOK]
+Puck line (+/-1.5): [Away] ... | [Home] ...
+Total (O/U X.X): Over ... | Under ...
 
-Total (O/U X.5):
-  Over: -XXX @ [BOOK]
-  Under: -XXX @ [BOOK]
+Line movement: open -> latest, size, time of largest move
+Sources: get_odds, get_game_probabilities[, get_line_movement]
 ```
 
-**Line movement output:**
-```
-Line Movement -- [Away] @ [Home]
+## What to do next
 
-Moneyline:
-  Open:    [Away] +XXX / [Home] -XXX  ([Time])
-  Current: [Away] +XXX / [Home] -XXX  ([Time])
-  Move:    [Away] moved X cents [toward/away from] favorite
-
-Notable moves:
-  [Time]: Sharp move -- [description of fast multi-book movement]
-
-Signal: [Sharp money on Home / Public on Away / No clear signal]
-```
-
-## What to Do Next
-
-| What You Found | Next Action | Skill |
-|----------------|-------------|-------|
-| Best price identified | Convert to true probability, remove vig | `odds-market-analysis` |
-| Have a model probability | Compare model vs market to find edge | `market-vs-model` |
-| Want full game context before betting | Game preview with team and goalie data | `nhl-game-preview` |
-| Sharp movement on a game | Research why -- check injury reports and team context | `nhl-game-lookup` |
-| Want to track bets placed | Log with best price taken | `prediction-tracker` |
+| Want | Skill |
+|------|-------|
+| Remove margin and score closing lines | `odds-market-analysis` |
+| Compare our probability with the market's | `market-vs-model` |
+| Full game context | `nhl-game-preview` |
+| The whole slate | `nhl-daily-slate` |

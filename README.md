@@ -5,7 +5,7 @@
 <br>
 <br>
 
-**Turn Claude into a hockey analyst.** 28 free skills covering NHL analytics,<br>betting methodology, and predictive modeling. No code to install.
+**Turn Claude into a hockey analyst.** 28 free skills covering NHL analytics,<br>market analysis, and predictive modeling. No code to install.
 
 <br>
 
@@ -27,9 +27,9 @@ Claude: [loads nhl-xg-model skill → walks you through feature selection,
 ```
 
 ```
-You:    "What's the edge on tonight's Sabres game?"
-Claude: [loads nhl-odds-explorer + market-vs-model → pulls live odds from the books PuckAPI tracks,
-         compares to your model's probabilities, calculates EV, sizes the bet]
+You:    "How does our win probability for tonight's Sabres game differ from the market?"
+Claude: [loads nhl-odds-explorer + market-vs-model → pulls the odds PuckAPI holds,
+         removes the margin, shows the model vs market gap with sample sizes]
 ```
 
 ## Python
@@ -69,7 +69,7 @@ Or install them as a Claude Code plugin:
 /plugin install puckapi-skills@puckapi
 ```
 
-**2. Connect live NHL data** (optional — 500 free credits):
+**2. Connect live NHL data** (optional - 500 free credits):
 
 ```bash
 claude mcp add puckapi \
@@ -77,16 +77,16 @@ claude mcp add puckapi \
   "https://mcp.puckapi.com/mcp?key=YOUR_API_KEY"
 ```
 
-<sub>Get your free key at <a href="https://puckapi.com">puckapi.com</a>. Skills also work with your own CSV/JSON files — no API key needed.</sub>
+<sub>Get your free key at <a href="https://puckapi.com">puckapi.com</a>. Skills also work with your own CSV/JSON files - no API key needed.</sub>
 
 **3. Ask Claude anything:**
 
 ```
-"Analyze the Maple Leafs' season — record, Corsi, xG, special teams"
+"Analyze the Maple Leafs' season - record, Corsi, xG, special teams"
 "Help me build a game prediction model"
 "Pull tonight's lines and flag any movement"
 "Compare McDavid and MacKinnon across every stat"
-"Backtest my betting strategy over the last 3 seasons"
+"Backtest my model over the last 3 seasons, with intervals and a per-season breakdown"
 ```
 
 The `sports-skill-router` skill routes your request to the right 2-3 skills automatically.
@@ -96,7 +96,7 @@ The `sports-skill-router` skill routes your request to the right 2-3 skills auto
 ## Skills
 
 <details open>
-<summary><strong>Data Exploration</strong> — 7 skills</summary>
+<summary><strong>Data Exploration</strong> - 7 skills</summary>
 
 <br>
 
@@ -106,26 +106,26 @@ The `sports-skill-router` skill routes your request to the right 2-3 skills auto
 | `nhl-team-analysis` | Standings, advanced stats, strength of schedule, power rankings. |
 | `nhl-player-scouting` | Player search, comparison, NHLe translation, career trajectory. |
 | `nhl-goalie-analysis` | GSAA, xSV%, high-danger save rate, workload tracking. |
-| `nhl-odds-explorer` | Multi-book odds comparison, best price, line movement detection. |
+| `nhl-odds-explorer` | Multi-book price comparison, implied and fair probability, line movement. |
 | `nl-to-query` | Translates natural language questions into structured data queries. |
 | `nhl-game-preview` | Full pre-game breakdown: matchup, goalies, trends, odds, prediction. |
 
 </details>
 
 <details>
-<summary><strong>Hockey Analytics</strong> — 2 skills</summary>
+<summary><strong>Hockey Analytics</strong> - 2 skills</summary>
 
 <br>
 
 | Skill | What It Does |
 |-------|-------------|
-| `nhl-advanced-stats` | Corsi, Fenwick, xG, PDO, RAPM, WAR — definitions, context, proper usage. |
+| `nhl-advanced-stats` | Corsi, Fenwick, xG, PDO, RAPM, WAR - definitions, context, proper usage. |
 | `nhl-xg-model` | Build an expected goals model from scratch. Feature engineering through calibration. |
 
 </details>
 
 <details>
-<summary><strong>Modeling Methodology</strong> — 7 skills</summary>
+<summary><strong>Modeling Methodology</strong> - 7 skills</summary>
 
 <br>
 
@@ -142,36 +142,36 @@ The `sports-skill-router` skill routes your request to the right 2-3 skills auto
 </details>
 
 <details>
-<summary><strong>Betting</strong> — 5 skills</summary>
+<summary><strong>Markets and Evaluation</strong> - 5 skills</summary>
 
 <br>
 
 | Skill | What It Does |
 |-------|-------------|
-| `market-vs-model` | Expected value, Kelly criterion sizing, closing line value tracking. |
-| `backtesting` | Walk-forward historical strategy simulation with realistic constraints. |
-| `nhl-daily-slate` | Full slate analysis with edge rankings. Requires your model's probabilities. |
-| `prediction-tracker` | Log predictions, track P&L, CLV, and test for statistical significance. |
-| `visualization` | Calibration plots, edge distributions, player cards, correlation matrices. |
+| `market-vs-model` | How our probability differs from the market's fair probability, with closing-line comparison. |
+| `backtesting` | Walk-forward historical model evaluation with sample sizes, intervals and per-season results. |
+| `nhl-daily-slate` | Tonight's slate: odds, fair probabilities and the model vs market gap for each game. |
+| `prediction-tracker` | Log predictions, grade them with Brier score and calibration, compare to the closing line. |
+| `visualization` | Calibration plots, gap distributions, player cards, correlation matrices. |
 
 </details>
 
 <details>
-<summary><strong>Advanced Models</strong> — 4 skills</summary>
+<summary><strong>Advanced Models</strong> - 4 skills</summary>
 
 <br>
 
 | Skill | What It Does |
 |-------|-------------|
-| `nhl-totals-model` | Over/under prediction. Pace metrics, Poisson distribution, under bias. |
-| `nhl-player-props-research` | Player prop projections. TOI-first architecture, same-game parlay correlation. |
+| `nhl-totals-model` | Game total prediction. Pace metrics, Poisson distribution, model vs market gap. |
+| `nhl-player-props-research` | Player prop projections. TOI-first architecture, correlation between props. |
 | `nhl-war-gar` | RAPM ridge regression, component GAR, contract surplus valuation. |
-| `nhl-playoff-simulation` | Monte Carlo bracket simulation. Series pricing, path probabilities. |
+| `nhl-playoff-simulation` | Monte Carlo bracket simulation. Series win probabilities, path probabilities. |
 
 </details>
 
 <details>
-<summary><strong>Workflow + Infrastructure</strong> — 3 skills</summary>
+<summary><strong>Workflow + Infrastructure</strong> - 3 skills</summary>
 
 <br>
 
@@ -179,7 +179,7 @@ The `sports-skill-router` skill routes your request to the right 2-3 skills auto
 |-------|-------------|
 | `sports-skill-router` | Routes your request to the right skills automatically. Start here. |
 | `nhl-research-workflow` | 4 patterns for hypothesis testing: explore, model, validate, deploy. |
-| `nhl-puckapi-tools` | MCP tool router. 15 endpoints, credit tracking, BYOD data support. |
+| `nhl-puckapi-tools` | MCP tool router. 28 tools, credit tracking, your-own-data support. |
 
 </details>
 
@@ -258,7 +258,7 @@ The same kind of skills pack, wired to each sport's own data API:
 | Doc | Contents |
 |-----|----------|
 | [`hockey-glossary.md`](docs/hockey-glossary.md) | Corsi, Fenwick, xG, PDO, RAPM, WAR |
-| [`betting-glossary.md`](docs/betting-glossary.md) | Odds formats, vig, devigging, Kelly, CLV |
+| [`market-glossary.md`](docs/market-glossary.md) | Odds formats, vig, fair probability, line movement, closing line |
 | [`tool-routing.md`](docs/tool-routing.md) | Decision tree for picking the right data source |
 | [`season-logic.md`](docs/season-logic.md) | NHL season IDs, game ID format, lockout handling |
 
@@ -268,7 +268,7 @@ The same kind of skills pack, wired to each sport's own data API:
 
 Found an issue with a skill? Have a methodology improvement? PRs welcome.
 
-Skills are markdown files in `skills/[name]/SKILL.md`. Each skill has a consistent structure — follow the existing patterns.
+Skills are markdown files in `skills/[name]/SKILL.md`. Each skill has a consistent structure - follow the existing patterns.
 
 ---
 

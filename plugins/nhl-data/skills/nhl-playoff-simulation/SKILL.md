@@ -1,19 +1,19 @@
 ---
 name: nhl-playoff-simulation
-description: "Monte Carlo playoff and season simulator for NHL. Use when user asks about playoff odds, championship probability, making the playoffs, division race odds, season simulation, bracket simulation, or how likely a team is to win the Stanley Cup. Do not use for single game prediction -- see model-building or nhl-game-preview. Do not use for team stats without simulation -- see nhl-team-analysis. Do not use for player-level analysis -- see nhl-player-scouting."
+description: "Use when the user asks about playoff odds, a team's chances to make the playoffs, who wins the division, Stanley Cup probability, how likely a team is to win the Cup, a season simulation or a bracket simulation. Runs a Monte Carlo season and playoff simulator on PuckAPI standings and schedule. Not for one game's win probability (use model-building or nhl-game-preview). Not for team stats without a simulation (use nhl-team-analysis). Not for player questions (use nhl-player-scouting)."
 metadata:
-  version: 1.0.0
-  author: PuckAPI
+  version: 2.0.0
+  author: SportsDataHQ
 ---
 
 # Playoff Simulation
 
-> **Default data tool:** PuckAPI (`nhl-puckapi-tools`) for current standings and remaining schedule.
-> Use `get_standings` (2 credits) and `get_games` (5 credits) for remaining schedule.
-> Elo ratings as input: use `elo-engineering` to build, or bring your own rating system.
-> For your own data (CSV of standings + ratings), skip the tool and work with the file directly.
+> **Data:** the PuckAPI MCP server (`nhl-puckapi-tools`) for current standings and remaining schedule.
+> Use `get_standings` (2 credits) and `get_schedule` (2 credits) or `get_games` (5 credits) for the remaining schedule.
+> Elo ratings as input: use `elo-engineering` to build them, or bring your own rating system.
+> For your own CSV of standings and ratings, work with the file directly.
 
-You are an expert in Monte Carlo season and playoff simulation. Your goal is to take any team rating system, simulate thousands of futures, and produce probability distributions for every meaningful outcome: playoff berths, division titles, championship odds, and draft position. PuckCast runs 10,000 iterations nightly; the methodology here produces the same class of output.
+You are an expert in Monte Carlo season and playoff simulation. Your goal is to take any team rating system, simulate thousands of futures, and produce probability distributions for every meaningful outcome: playoff berths, division titles, championship odds, and draft position. The methodology here produces the same class of output as a nightly 10,000-iteration run.
 
 ## When to Use
 
@@ -26,17 +26,18 @@ You are an expert in Monte Carlo season and playoff simulation. Your goal is to 
 
 ## When NOT to Use
 
-- Single game win probability -- see `model-building` or `nhl-game-preview`
-- Team evaluation without simulation context -- see `nhl-team-analysis`
-- Player-level analysis or valuation -- see `nhl-player-scouting`
-- Running Elo ratings from scratch -- see `elo-engineering` first, then bring ratings here
+- Single game win probability: see `model-building` or `nhl-game-preview`
+- Team evaluation without simulation context: see `nhl-team-analysis`
+- Player-level analysis or valuation: see `nhl-player-scouting`
+- Running Elo ratings from scratch: see `elo-engineering` first, then bring ratings here
 
 ## Commands Available
 
 | Command | What It Does | Credits |
 |---------|-------------|---------|
 | `get_standings` | Current standings, points, record | 2 |
-| `get_games` | Remaining schedule for all teams | 5 |
+| `get_schedule` | Upcoming games (1-30 day window) | 2 |
+| `get_games` | Past results and remaining schedule for all teams | 5 |
 | `get_team_stats` | Goal data for Pythagorean ratings | 5 |
 
 ## Commands That Do NOT Exist
@@ -57,14 +58,14 @@ Before simulating, establish:
 
 ## Data Source
 
-**PuckAPI (default):** Pull current standings with `get_standings`, remaining schedule with `get_games` filtered to future dates.
+**PuckAPI MCP server:** Pull current standings with `get_standings`, remaining schedule with `get_games` filtered to future dates.
 
 **Your own data:** Required inputs:
 1. Ratings table: `team`, `rating` (Elo or equivalent), `home_rating_boost` (optional)
 2. Remaining schedule: `home_team`, `away_team`, `game_date`
 3. Current standings: `team`, `points`, `gp`, `wins`, `losses` (sport-specific columns)
 
-Flag missing data -- do not silently drop teams from the simulation.
+Flag missing data: do not silently drop teams from the simulation.
 
 ## How It Works
 
@@ -221,6 +222,13 @@ def check_convergence(results_1k, results_10k, threshold=0.01):
 - "Remaining games" = all games on the schedule with `game_date > today`
 - If playoffs have already started, simulate only remaining rounds, not the regular season
 
+## Rules for numbers
+
+- Call the PuckAPI tools for standings, schedule and ratings inputs; never fill them from memory.
+- Cite which tool call produced each input (for example "standings from `get_standings`, season 20252026").
+- State the iteration count, the number of games remaining and the season convention (`20252026` = 2025-26) with every table.
+- Report probabilities below 5% with the iteration count that supports them. If inputs are missing or too few games are known, say "not enough data" instead of guessing.
+
 ## Anti-patterns
 
 | Rationalization | Why It's Wrong | Do This Instead |
@@ -228,8 +236,8 @@ def check_convergence(results_1k, results_10k, threshold=0.01):
 | "1,000 iterations is enough" | A team at 5% championship odds has high variance at 1,000 iterations; the estimate can swing 2-3% just from sampling noise | Run 10,000 minimum; 100,000 for low-probability events |
 | "Win probability is just current win%" | Win% doesn't account for strength of schedule or remaining schedule difficulty | Use Elo or Pythagorean ratings, not raw win% |
 | "Home advantage doesn't matter in playoffs" | NHL home advantage is ~35 Elo points. Over a 7-game series with 2-2-1-1-1 format, home ice advantage compounds meaningfully. | Use the 35-point HFA in all playoff games; give it to the higher seed. |
-| "Tiebreakers don't matter -- they're rare" | At the boundary of playoff spots, tiebreakers fire on 5-15% of simulated seasons | Implement ROW tiebreaker for NHL -- it affects the playoff probability bands meaningfully |
-| "More iterations is always better" | Beyond 100,000, runtime cost exceeds precision gain | 100,000 is ceiling; 10,000 is floor; match to stakes and compute budget |
+| "Tiebreakers don't matter, they're rare" | At the boundary of playoff spots, tiebreakers fire on 5-15% of simulated seasons | Implement ROW tiebreaker for NHL: it affects the playoff probability bands meaningfully |
+| "More iterations is always better" | Beyond 100,000, runtime cost exceeds precision gain | 100,000 is ceiling; 10,000 is floor; match to compute budget |
 | "One rating system is sufficient" | A single Elo variant misses different signals (recent form vs cumulative quality) | Run simulations with 2-3 rating variants; report the range as uncertainty bounds |
 
 ## Output Format
@@ -262,6 +270,6 @@ Anaheim Ducks      | 41%         | 87%
 |----------------|-------------|-------|
 | Simulation complete, want charts | Probability path charts over the season | `visualization` |
 | Ratings feel off, want to improve | Build better Elo system | `elo-engineering` |
-| Want to bet on futures using these odds | Compare simulation to market futures | `nhl-odds-explorer` |
+| Want to compare simulation output with market prices | Show how our probability differs from the market probability | `market-vs-model` |
 | Want to backtest simulation accuracy | Test prior-season simulations vs outcomes | `backtesting` |
 | Want to preview a specific playoff matchup | Single-series matchup analysis | `nhl-game-preview` |

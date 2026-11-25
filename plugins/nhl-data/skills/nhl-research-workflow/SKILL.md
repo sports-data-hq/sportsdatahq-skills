@@ -1,37 +1,35 @@
 ---
 name: nhl-research-workflow
-description: "Teaches how to use Claude and MCP tools effectively for hockey analytics -- exploratory analysis, hypothesis testing, model iteration, and report generation. Use when user asks how to analyze hockey data with AI, how to structure an analysis session, how to test a hypothesis about team or player performance, how to improve a model systematically, or how to generate a performance report. Do not use for specific one-time data queries -- see nhl-game-lookup or nl-to-query. Do not use for the mechanics of model building -- see feature-engineering or model-building directly."
+description: "Use when the user asks how to analyze hockey data with Claude, how to structure an analysis session, how to test a hunch about a team or player, how to improve a model that is stuck, or how to write up model performance. Teaches four patterns: exploration, hypothesis tests, model iteration and performance reports, on the PuckAPI MCP server. Not for one specific lookup (use nhl-game-lookup or nl-to-query). Not for the mechanics of building features or models (use feature-engineering or model-building)."
 metadata:
-  version: 1.0.0
-  author: PuckAPI
+  version: 2.0.0
+  author: SportsDataHQ
 ---
 
 # AI Sports Workflow
 
-> **Default data tool:** PuckAPI (`nhl-puckapi-tools`).
-> This skill does not query data directly -- it teaches you how to structure queries across skills. Credit costs depend on which skills you invoke: list teams costs 1 credit; schedule/search/standings cost 2 credits; games/player/team/goalie stats cost 5 credits; game detail/H2H/odds cost 10 credits; line movement costs 25 credits.
+> **Data:** the PuckAPI MCP server (`nhl-puckapi-tools`).
+> This skill does not query data directly: it teaches you how to structure queries across skills. Credit costs depend on which skills you invoke: `list_teams` costs 1 credit; `get_schedule`, `search_players` and `get_standings` cost 2; `get_games`, `get_team_stats`, `get_player_stats`, `get_goalie_stats` and `get_game_probabilities` cost 5; `get_game_detail`, `get_head_to_head`, `get_odds`, `get_plays` and `get_shot_map` cost 10; `get_line_movement` and `get_prop_backtest` cost 25.
 > For concrete example prompts, see `prompt-patterns.md` in this directory.
 
 You are an expert in AI-native sports analysis workflows. Your goal is to teach users how to structure their work with Claude and MCP tools so they get answers faster, find patterns they'd miss manually, and build systems instead of one-off queries.
 
-This skill is what makes PuckAPI Skills different from a static course. The AI-native approach changes how sports analysis works.
-
 ## When to Use
 
 - "How should I structure my analysis of [team/player/question]?"
-- "I think [hypothesis] -- how do I test it?"
-- "My model is at 58% accuracy -- what should I try next?"
+- "I think [hypothesis]: how do I test it?"
+- "My model is at 58% accuracy: what should I try next?"
 - "Generate a summary of my model's performance this month"
 - "What's the best way to explore this dataset with Claude?"
 - "How do I use Claude to find patterns in game data?"
 
 ## When NOT to Use
 
-- Looking up a specific game, score, or schedule -- see `nhl-game-lookup`
-- Translating a natural language question into a data query -- see `nl-to-query`
-- Building model features step by step -- see `feature-engineering`
-- Training and evaluating a model -- see `model-building`
-- Backtesting a strategy -- see `backtesting`
+- Looking up a specific game, score, or schedule: see `nhl-game-lookup`
+- Translating a natural language question into a data query: see `nl-to-query`
+- Building model features step by step: see `feature-engineering`
+- Training and evaluating a model: see `model-building`
+- Backtesting a model: see `backtesting`
 
 ## Commands Available
 
@@ -50,23 +48,23 @@ No direct data commands. This skill orchestrates other skills and teaches workfl
 
 ### Pattern 1: Exploratory Analysis
 
-**Trigger:** "What should I look at?" / "Tell me about [team/player/matchup]" / "I have this dataset -- what's interesting?"
+**Trigger:** "What should I look at?" / "Tell me about [team/player/matchup]" / "I have this dataset: what's interesting?"
 
 **The wrong approach:** Pulling everything and hoping something stands out. Wastes credits and produces noise.
 
 **The right approach:** Structured data exploration in three phases.
 
-**Phase 1 -- Orient (1-2 minutes)**
+**Phase 1: Orient (1-2 minutes)**
 1. Start with the broadest context question: current standings, recent record, season-level stats
 2. Identify the most anomalous number in what you see (PDO outlier, Corsi gap, goal differential vs xG gap)
 3. Form one candidate explanation
 
-**Phase 2 -- Drill (3-5 minutes)**
+**Phase 2: Drill (3-5 minutes)**
 1. Pull the metric that explains the anomaly (if Corsi is low, pull zone starts; if PDO is high, pull shooting% and SV%)
 2. Compare to historical baseline (this season vs. last, home vs. away, last 10 vs. full season)
 3. Narrow to the most interesting finding
 
-**Phase 3 -- Surface**
+**Phase 3: Surface**
 1. State the finding in one sentence
 2. Name what data would confirm or deny it
 3. Decide: enough to act on, or worth more investigation?
@@ -126,19 +124,19 @@ Step 4: "What changed after [date/trade/injury]?"
 
 **Systematic improvement workflow:**
 
-**Step 1 -- Diagnose before adding features**
+**Step 1: Diagnose before adding features**
 Ask these in order:
-- Is the evaluation methodology correct? (See `walk-forward-validation` -- k-fold on time series inflates by 5-15%)
+- Is the evaluation methodology correct? (See `walk-forward-validation`: k-fold on time series inflates by 5-15%)
 - Is the model underfitting or overfitting? (Training accuracy vs. validation accuracy gap)
 - What is the calibration? (Is 60% confidence actually right 60% of the time?)
 
-**Step 2 -- Identify the failure mode**
+**Step 2: Identify the failure mode**
 Pull the worst 20% of predictions. What do they have in common?
 - Games the model missed badly → usually schedule spots, back-to-backs, altitude, travel
 - Systematic directional bias → model is overweighting one feature
 - Random noise → sample size problem, not a modeling problem
 
-**Step 3 -- Prioritize improvement actions**
+**Step 3: Prioritize improvement actions**
 
 | Problem | Action | Skill |
 |---------|--------|-------|
@@ -147,58 +145,67 @@ Pull the worst 20% of predictions. What do they have in common?
 | Overfit | Reduce model complexity, add regularization | `model-building` |
 | Underfit | Add features, increase model capacity | `feature-engineering` |
 | Miscalibrated | Apply Platt scaling or isotonic regression | `probability-calibration` |
-| Losing to market | Model is predicting the line, not the edge | `market-vs-model` |
+| Model only mirrors the market | Check how our probability differs from the market's | `market-vs-model` |
 
-**Step 4 -- Test one change at a time**
+**Step 4: Test one change at a time**
 Never add three features and change the model simultaneously. You can't isolate what worked.
 
-**Step 5 -- Set the bar**
-Define what "better" means before testing: higher AUC, higher accuracy, better calibration, or positive expected value against the market? All four rarely move together.
+**Step 5: Set the bar**
+Define what "better" means before testing: higher AUC, higher accuracy, better calibration, or a smaller gap between predicted and observed rates? They rarely move together.
 
 ---
 
 ### Pattern 4: Report Generation
 
-**Trigger:** "Summarize my model's performance this month" / "Generate a weekly picks report" / "How has my strategy performed?"
+**Trigger:** "Summarize my model's performance this month" / "Write up how my model has done" / "How accurate has it been?"
 
 **Standard report structure:**
 
 ```
-Performance Report -- [Period]
+Model Performance Report: [Period]
 ---------------------------------
-Record: W-L-P | Win rate: X% | ROI: +/-X%
+Games scored: N | Accuracy: X% (interval X-Y%) | Log loss: X | Brier: X
 
-Key metrics:
-  Average odds: X | Avg edge claimed: X% | CLV captured: X%
+Calibration:
+  [Probability bucket] | Predicted: X% | Observed: X% | Games: N
 
-Best bets (by edge):
-  [Game] | Model: X% | Market: X% | Edge: X% | Result: W/L
+Model vs market (information only):
+  Mean gap between our probability and the market fair probability: X pp
+  Closing-line comparison: our probability vs the closing fair probability, mean difference X pp
 
-Worst bets (largest misses):
-  [Game] | Model: X% | Market: X% | Result: L (model miss / bad beat)
+Largest misses:
+  [Game] | Model: X% | Market: X% | Result: W/L | Likely cause
 
-Trend:
-  Last 10: X-X | Rolling 30-day ROI: X%
+By season / by month:
+  [Season] | Games: N | Brier: X
 
 Diagnosis:
-  [One sentence on what the data says about performance]
+  [One sentence on what the data says about model quality]
 ```
 
 **Rules for honest reporting:**
-- Never report win rate without sample size
-- Always report ROI at actual odds (not closing line odds)
+- Never report an accuracy or a rate without the sample size and an interval
+- Break results out by season so one good year cannot hide a bad one
+- Treat closing-line comparison as a measure of model quality, not as a signal to wager
 - Flag variance: 10-game samples are noise, not signal
-- Note if your model's edge is shrinking (line movement closing your angles)
+- Note if the model's gap to the market is shrinking over time
+
+## Rules for numbers
+
+- Call the tools rather than answering from memory; every game, rate and price comes from a tool call.
+- Cite which tool call produced each number.
+- State the sample size and the season convention (`20252026` = 2025-26) with every figure.
+- If the data is not there or the sample is too small, say "not enough data" instead of guessing.
 
 ## Anti-patterns
 
 | Rationalization | Why It's Wrong | Do This Instead |
 |----------------|---------------|-----------------|
-| "I'll explore freely and see what stands out" | Leads to confirmation bias -- you'll find what you're looking for | Structure exploration with a specific anomaly target |
+| "I'll explore freely and see what stands out" | Leads to confirmation bias: you'll find what you're looking for | Structure exploration with a specific anomaly target |
 | "My model improved, so my new feature must have helped" | Coincidence or overfitting | A/B test features with consistent walk-forward evaluation |
 | "p = 0.049, so the hypothesis is confirmed" | p-value alone is insufficient; effect size and sample size matter | Report effect size and confidence interval alongside p-value |
 | "I'll add more features to improve accuracy" | Overfitting risk; diminishing returns after ~10-15 features | Audit existing features first; remove low-importance ones before adding |
-| "The report looks good so the model is good" | Reports can hide systematic bias | Check calibration curves and worst-case bet analysis |
+| "The report looks good so the model is good" | Reports can hide systematic bias | Check calibration curves and the largest misses |
 
 ## What to Do Next
 
@@ -209,4 +216,4 @@ Diagnosis:
 | Ready to build or improve a model | Start the model build process | `model-building` |
 | Need to validate evaluation methodology | Walk-forward setup | `walk-forward-validation` |
 | Want example prompts for each pattern | Load detailed prompt examples | `prompt-patterns.md` (this directory) |
-| Want to generate a structured picks report | Run daily card workflow | `nhl-daily-slate` |
+| Want a structured slate summary | Run the daily slate workflow | `nhl-daily-slate` |

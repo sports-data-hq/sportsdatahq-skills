@@ -1,6 +1,8 @@
 # Feature Catalog
 
-> Level 3 reference. Loaded on demand -- zero context cost until accessed.
+> Worked example in hockey (PuckAPI tool names). The same pattern carries to other sports: see the mapping table below.
+
+> Level 3 reference. Loaded on demand, zero context cost until accessed.
 > All features are computed as home-minus-away differences unless marked as matchup-invariant.
 > All features require `.shift(1)` before rolling calculation. Leakage risk assumes shift was applied correctly.
 
@@ -9,9 +11,9 @@
 ## How to Read This Catalog
 
 - **Window**: The rolling N-game window used. "Season" = cumulative season-to-date.
-- **Raw endpoint**: The `nhl-puckapi-tools` call that provides the source data.
+- **Raw endpoint**: The MCP tool call that provides the source data (hockey names shown).
 - **Leakage risk**: LOW = safe with shift(1). MEDIUM = careful construction required. HIGH = do not use without explicit audit.
-- **Predictive value**: Based on PuckCast feature importance and published literature.
+- **Predictive value**: A rough prior from published work and typical feature importance. Verify on your own walk-forward folds and report the sample size.
 
 ---
 
@@ -19,13 +21,13 @@
 
 | Feature Name | Formula | Window | Raw Endpoint | Leakage Risk | Predictive Value |
 |-------------|---------|--------|-------------|-------------|-----------------|
-| `goals_for_roll5` | mean(goals_for[shift(1):]) | 5 games | `get_games` | LOW | HIGH -- captures hot streaks |
-| `goals_for_roll10` | mean(goals_for[shift(1):]) | 10 games | `get_games` | LOW | HIGH -- stable recent form |
-| `goals_for_roll20` | mean(goals_for[shift(1):]) | 20 games | `get_games` | LOW | HIGH -- smoothed trend |
-| `goals_for_roll40` | mean(goals_for[shift(1):]) | 40 games | `get_games` | LOW | MEDIUM -- regresses to mean |
+| `goals_for_roll5` | mean(goals_for[shift(1):]) | 5 games | `get_games` | LOW | HIGH: captures hot streaks |
+| `goals_for_roll10` | mean(goals_for[shift(1):]) | 10 games | `get_games` | LOW | HIGH: stable recent form |
+| `goals_for_roll20` | mean(goals_for[shift(1):]) | 20 games | `get_games` | LOW | HIGH: smoothed trend |
+| `goals_for_roll40` | mean(goals_for[shift(1):]) | 40 games | `get_games` | LOW | MEDIUM: regresses to mean |
 | `goals_against_roll10` | mean(goals_against[shift(1):]) | 10 games | `get_games` | LOW | HIGH |
-| `goal_diff_roll10` | goals_for_roll10 - goals_against_roll10 | 10 games | `get_games` | LOW | HIGH -- direct strength signal |
-| `season_goals_for` | cumsum(goals_for).shift(1) / games_played | Season | `get_team_stats` | MEDIUM | MEDIUM -- slow to update |
+| `goal_diff_roll10` | goals_for_roll10 - goals_against_roll10 | 10 games | `get_games` | LOW | HIGH: direct strength signal |
+| `season_goals_for` | cumsum(goals_for).shift(1) / games_played | Season | `get_team_stats` | MEDIUM | MEDIUM: slow to update |
 
 ---
 
@@ -33,10 +35,10 @@
 
 | Feature Name | Formula | Window | Raw Endpoint | Leakage Risk | Predictive Value |
 |-------------|---------|--------|-------------|-------------|-----------------|
-| `corsi_pct_roll10` | CF / (CF + CA), rolling | 10 games | `get_team_stats` | LOW | HIGH -- best single possession metric |
+| `corsi_pct_roll10` | CF / (CF + CA), rolling | 10 games | `get_team_stats` | LOW | HIGH: best single possession metric |
 | `corsi_pct_roll20` | CF / (CF + CA), rolling | 20 games | `get_team_stats` | LOW | HIGH |
-| `fenwick_pct_roll10` | FF / (FF + FA), rolling | 10 games | `get_team_stats` | LOW | HIGH -- like Corsi, excludes blocked shots |
-| `shots_for_roll10` | mean(shots_for[shift(1):]) | 10 games | `get_games` | LOW | MEDIUM -- volume proxy |
+| `fenwick_pct_roll10` | FF / (FF + FA), rolling | 10 games | `get_team_stats` | LOW | HIGH: like Corsi, excludes blocked shots |
+| `shots_for_roll10` | mean(shots_for[shift(1):]) | 10 games | `get_games` | LOW | MEDIUM: volume proxy |
 | `shots_against_roll10` | mean(shots_against[shift(1):]) | 10 games | `get_games` | LOW | MEDIUM |
 
 ---
@@ -45,10 +47,10 @@
 
 | Feature Name | Formula | Window | Raw Endpoint | Leakage Risk | Predictive Value |
 |-------------|---------|--------|-------------|-------------|-----------------|
-| `pdo_roll10` | (team_sv_pct + team_sh_pct) * 1000 | 10 games | `get_team_stats` | LOW | MEDIUM -- mean-reverts; high PDO = due for regression |
-| `sh_pct_roll10` | goals / shots_for, rolling | 10 games | `get_games` | LOW | LOW -- noisy, mean-reverts fast |
-| `sv_pct_roll10` | (shots_against - goals_against) / shots_against | 10 games | `get_games` | LOW | LOW -- mostly goalie signal |
-| `pdo_deviation` | pdo_roll10 - 1000 | 10 games | derived | LOW | MEDIUM -- negative = underperforming luck |
+| `pdo_roll10` | (team_sv_pct + team_sh_pct) * 1000 | 10 games | `get_team_stats` | LOW | MEDIUM: mean-reverts; high PDO = due for regression |
+| `sh_pct_roll10` | goals / shots_for, rolling | 10 games | `get_games` | LOW | LOW: noisy, mean-reverts fast |
+| `sv_pct_roll10` | (shots_against - goals_against) / shots_against | 10 games | `get_games` | LOW | LOW: mostly goalie signal |
+| `pdo_deviation` | pdo_roll10 - 1000 | 10 games | derived | LOW | MEDIUM: negative = underperforming luck |
 
 ---
 
@@ -58,7 +60,7 @@
 |-------------|---------|--------|-------------|-------------|-----------------|
 | `pp_pct_roll10` | PP goals / PP opportunities, rolling | 10 games | `get_team_stats` | LOW | MEDIUM |
 | `pk_pct_roll10` | 1 - (PK goals against / times shorthanded) | 10 games | `get_team_stats` | LOW | MEDIUM |
-| `net_pp_roll10` | pp_pct_roll10 - opp_pk_pct_roll10 | 10 games | derived | LOW | HIGH -- matchup-adjusted special teams |
+| `net_pp_roll10` | pp_pct_roll10 - opp_pk_pct_roll10 | 10 games | derived | LOW | HIGH: matchup-adjusted special teams |
 
 ---
 
@@ -66,11 +68,11 @@
 
 | Feature Name | Formula | Window | Raw Endpoint | Leakage Risk | Predictive Value |
 |-------------|---------|--------|-------------|-------------|-----------------|
-| `starter_sv_pct_ytd` | cumulative SV%, lagged | Season | `get_goalie_stats` | MEDIUM | HIGH -- best single goalie predictor |
-| `starter_sv_pct_roll5` | mean(SV%[shift(1):]) over last 5 starts | 5 starts | `get_goalie_stats` | LOW | HIGH -- recent form |
-| `starter_gsaa_ytd` | cumulative GSAA, lagged | Season | `get_goalie_stats` | MEDIUM | HIGH -- quality above average |
-| `starter_confirmed` | 1 if announced starter, 0 if uncertain | Game-day | `get_game_detail` | LOW | MEDIUM -- uncertainty penalty |
-| `goalie_starts_roll10` | starts in last 10 team games | 10 games | `get_goalie_stats` | LOW | LOW -- fatigue proxy |
+| `starter_sv_pct_ytd` | cumulative SV%, lagged | Season | `get_goalie_stats` | MEDIUM | HIGH: best single goalie predictor |
+| `starter_sv_pct_roll5` | mean(SV%[shift(1):]) over last 5 starts | 5 starts | `get_goalie_stats` | LOW | HIGH: recent form |
+| `starter_gsaa_ytd` | cumulative GSAA, lagged | Season | `get_goalie_stats` | MEDIUM | HIGH: quality above average |
+| `starter_confirmed` | 1 if announced starter, 0 if uncertain | Game-day | `get_game_detail` | LOW | MEDIUM: uncertainty penalty |
+| `goalie_starts_roll10` | starts in last 10 team games | 10 games | `get_goalie_stats` | LOW | LOW: fatigue proxy |
 
 **GSAA formula:**
 ```
@@ -86,11 +88,11 @@ Positive GSAA = better than average. Negative = worse than average.
 
 | Feature Name | Formula | Window | Raw Endpoint | Leakage Risk | Predictive Value |
 |-------------|---------|--------|-------------|-------------|-----------------|
-| `rest_days` | (game_date - prev_game_date).days - 1 | — | `get_games` dates | LOW | HIGH -- back-to-backs matter |
-| `back_to_back` | 1 if rest_days == 0 | — | derived | LOW | HIGH |
-| `rest_bucket` | categorical: b2b / 1day / 2day / 3plus | — | derived | LOW | HIGH |
-| `days_since_last_away` | days since last road game (home team) | — | `get_games` | LOW | LOW -- marginal |
-| `opp_back_to_back` | opponent's back_to_back flag | — | derived | LOW | HIGH -- opponent fatigue advantage |
+| `rest_days` | (game_date - prev_game_date).days - 1 | n/a | `get_games` dates | LOW | HIGH: back-to-backs matter |
+| `back_to_back` | 1 if rest_days == 0 | n/a | derived | LOW | HIGH |
+| `rest_bucket` | categorical: b2b / 1day / 2day / 3plus | n/a | derived | LOW | HIGH |
+| `days_since_last_away` | days since last road game (home team) | n/a | `get_games` | LOW | LOW: marginal |
+| `opp_back_to_back` | opponent's back_to_back flag | n/a | derived | LOW | HIGH: opponent fatigue advantage |
 
 ---
 
@@ -98,9 +100,9 @@ Positive GSAA = better than average. Negative = worse than average.
 
 | Feature Name | Formula | Window | Raw Endpoint | Leakage Risk | Predictive Value |
 |-------------|---------|--------|-------------|-------------|-----------------|
-| `pre_game_elo` | Elo rating before game (after last game update) | — | `elo-engineering` skill | LOW | HIGH |
-| `elo_diff` | home_elo - away_elo | — | derived | LOW | HIGH -- best single Elo feature |
-| `elo_win_prob` | logistic(elo_diff / 400) | — | derived | LOW | HIGH -- market comparison baseline |
+| `pre_game_elo` | Elo rating before game (after last game update) | n/a | `elo-engineering` skill | LOW | HIGH |
+| `elo_diff` | home_elo - away_elo | n/a | derived | LOW | HIGH: best single Elo feature |
+| `elo_win_prob` | logistic(elo_diff / 400) | n/a | derived | LOW | HIGH: market comparison baseline |
 
 See `elo-engineering` skill for calculation methodology and parameter choices.
 
@@ -116,7 +118,7 @@ See `elo-engineering` skill for calculation methodology and parameter choices.
 
 **Iterative SOS construction (required):**
 ```python
-# Never use simple opponent win% -- it underweights quality opponents
+# Never use simple opponent win%: it underweights quality opponents
 # Convergence typically reached in 10-20 iterations
 ratings = {team: win_pct for team in all_teams}
 for _ in range(20):
@@ -145,9 +147,9 @@ These features describe the matchup context, not individual team strength. Use a
 
 | Feature Name | Formula | Window | Raw Endpoint | Leakage Risk | Predictive Value |
 |-------------|---------|--------|-------------|-------------|-----------------|
-| `is_playoff` | 1 if playoff game | — | `get_games` | LOW | HIGH -- model behavior differs |
-| `month_of_season` | 1-7 (Oct=1, Apr=7) | — | game_date | LOW | LOW -- late-season urgency |
-| `division_rival` | 1 if same division | — | `list_teams` | LOW | LOW -- marginal home effect |
+| `is_playoff` | 1 if playoff game | n/a | `get_games` | LOW | HIGH: model behavior differs |
+| `month_of_season` | 1-7 (Oct=1, Apr=7) | n/a | game_date | LOW | LOW: late-season urgency |
+| `division_rival` | 1 if same division | n/a | `list_teams` | LOW | LOW: marginal home effect |
 
 ---
 
@@ -155,13 +157,28 @@ These features describe the matchup context, not individual team strength. Use a
 
 | Feature | Why Dangerous |
 |---------|---------------|
-| Current-game shots (as a feature for current game) | Leakage -- you don't know shots until the game ends |
+| Current-game shots (as a feature for current game) | Leakage: you don't know shots until the game ends |
 | Full-season SV% as static join | Leaks future games in the season |
 | Opponent standings position from final standings | Leaks end-of-season result |
 | Win streak including current game | Current game hasn't happened |
-| Any stat pulled for "today" and used for "today's prediction" | Always shift -- even today's morning skate data needs scrutiny |
+| Any stat pulled for "today" and used for "today's prediction" | Always shift, even today's morning skate data needs scrutiny |
 
 ---
+
+## Mapping to other sports
+
+| Sport | Rolling form | Rest and schedule | Quality of the key position | Shot or event quality | Tools to call |
+|-------|-------------|-------------------|-----------------------------|-----------------------|---------------|
+| Football | points and EPA per play, last N | days between games, bye week | quarterback efficiency | success rate from plays | get_games, get_team_stats, get_plays |
+| Basketball | net rating, pace, last N | back-to-backs, games in last 7 days | star availability | shot quality from shot chart | list_games, get_team_stats, get_shot_chart |
+| Baseball | runs for and against, last N | rest, travel | starting pitcher | pitch-level run value | get_games, get_team_stats, get_pitches |
+| Soccer | goals and xG for and against | days between matches, midweek fixtures | goalkeeper, lineup | shot location xG | list_games, get_team_stats, get_events |
+| Tennis | recent results, surface form | days since last match | opponent rank and rating | set and tiebreak history | get_matches, get_surface_splits, get_match |
+| Golf | strokes vs field, last N rounds | rounds in last 14 days | course history | hole-by-hole scoring | get_leaderboard, get_course_history |
+| UFC | recent finish and strike rates | days since last fight | opponent quality | round-by-round stats | get_fighter_fights, get_fight |
+| Cricket | runs and wickets, last N | days between matches | bowling attack | ball-by-ball data | get_deliveries |
+
+Tool names differ by server; read your server's tool list first. Every feature still needs shift(1).
 
 ## Recommended Minimal Feature Set (to Start)
 

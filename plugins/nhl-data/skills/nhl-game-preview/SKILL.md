@@ -1,245 +1,123 @@
 ---
 name: nhl-game-preview
-description: "Complete pre-game analysis for a single NHL (or other sport) matchup: team records, goalie matchup, key stats, odds snapshot, model edge, and head-to-head history in one shareable report. Use when user asks about a specific game tonight, matchup breakdown, game preview, pre-game analysis, who starts in goal, or wants a report on [Team A] vs [Team B]. Do not use for full slate analysis -- see nhl-daily-slate. Do not use for odds-only lookup -- see nhl-odds-explorer. Do not use for deep model building -- see model-building or feature-engineering."
+description: "Use when the user asks for a preview of one NHL game, a matchup breakdown, a pre-game report, 'Sabres vs Leafs tonight', who is in goal, or how two teams compare. Builds one report: records and rest, goalie matchup, key stats, odds snapshot with market (no-margin) probability, how our probability differs from the market's, and head-to-head. Odds are information only, no wagering advice. Not for the whole slate (use nhl-daily-slate), odds only (use nhl-odds-explorer), deep goalie work (use nhl-goalie-analysis), deep team work (use nhl-team-analysis) or model building (use model-building)."
 metadata:
-  version: 1.0.0
-  author: PuckAPI
+  version: 2.0.0
+  author: SportsDataHQ
 ---
 
-# Game Preview
+# NHL Game Preview
 
-> **Default data tool:** PuckAPI (`nhl-puckapi-tools`).
-> Uses `get_standings` + `get_team_stats` + `get_head_to_head` + `get_goalie_stats` + `get_odds`.
-> Credit cost per preview: ~34 credits (2+5+10+5+10+2).
-> For a full slate, use `nhl-daily-slate` instead -- pulling individual previews per game costs more.
+> **Data:** the PuckAPI MCP server (`nhl-puckapi-tools`).
+> Tools: `get_standings` (2), `get_schedule` (2), `get_team_stats` (5), `get_goalie_stats` (5), `get_game_probabilities` (5), `get_head_to_head` (10), `get_odds` (10), `get_game_detail` (10). Credits shown in brackets.
 
-You are an expert sports analyst. Your goal is to produce a complete, shareable pre-game report that replaces 30 minutes of manual research. This is the demo skill -- make it look like something worth screenshotting.
+You are a hockey analyst producing one complete, shareable pre-game report. Odds appear as information about what the market thinks. This skill does not recommend wagers or size stakes.
 
 ## When to Use
 
-- User asks for a game preview, breakdown, or matchup analysis for a specific game
-- User asks "who starts tonight" or wants goalie context for a game
-- User wants a shareable pre-game report for one matchup
-- User wants to know the odds, edge, and relevant stats for a single game before betting
-- User asks "[Team A] vs [Team B] tonight" in any form
+- A preview, breakdown or matchup report for one game
+- "Who's in goal tonight" or goalie context for a game
+- "[Team A] vs [Team B]" in any form
 
 ## When NOT to Use
 
-- Full slate analysis across all games tonight -- see `nhl-daily-slate`
-- Odds-only lookup without the full report -- see `nhl-odds-explorer`
-- Deep goalie stat analysis beyond matchup context -- see `nhl-goalie-analysis`
-- Deep team stat analysis beyond matchup context -- see `nhl-team-analysis`
-- Building or running a prediction model -- see `model-building` or `market-vs-model`
+- All games tonight: `nhl-daily-slate`
+- Odds only: `nhl-odds-explorer`
+- Deep goalie stats: `nhl-goalie-analysis`
+- Deep team stats: `nhl-team-analysis`
+- Building a model: `model-building`; comparing a model with the market: `market-vs-model`
 
-## Commands Available
+## Tools
 
-| Command | What It Does | Credits |
-|---------|-------------|---------|
-| `get_standings` | Current records, division standings, points percentage | 2 |
-| `get_team_stats` | 5v5 metrics, special teams, home/away splits | 5 |
-| `get_head_to_head` | Season series + last 5-10 historical meetings | 10 |
-| `get_goalie_stats` | Probable starter stats, SV%, GAA, recent form | 5 |
-| `get_odds` | Moneyline, puck line, total across books | 10 |
-| `get_schedule` | Confirm game time, rest days, back-to-back status | 2 |
+| Tool | Use | Credits |
+|------|-----|---------|
+| `get_standings` | Records, division rank, points percentage | 2 |
+| `get_schedule` | Game time, rest days, back-to-back | 2 |
+| `get_team_stats` | 5v5 metrics, special teams, splits | 5 |
+| `get_goalie_stats` | Goalie leaderboard stats: save percentage, GAA, GSAX | 5 |
+| `get_game_probabilities` | Market implied and fair (no-margin) probability, averaged across books | 5 |
+| `get_head_to_head` | Season series and recent meetings | 10 |
+| `get_odds` | Moneyline, puck line, total by book | 10 |
+| `get_game_detail` | One game with odds and starting goalies where available | 10 |
 
-## Commands That Do NOT Exist
+Not available: a ready-made preview, a pregame starter confirmation, an injury report. Compose from the calls above. If the tools do not show a confirmed starter, say so and tell the user to check team news.
 
-| Not Available | Use Instead |
-|--------------|-------------|
-| `get_game_preview` | Compose this manually from the 6 calls above |
-| `get_starter` | Use `get_goalie_stats` + `get_game_detail`; note pregame starters require beat reporter sources |
-| `get_live_odds` | Use `get_odds` with today's date |
-| `get_injury_report` | Not available via API; direct user to team injury report feeds |
-| `get_rest_days` | Derive from `get_schedule` using game dates |
+## Rules for numbers
 
-## Season Resolution
+- Call the tools. Never answer from memory.
+- Cite which tool call produced each number.
+- State the sample size (games played, number of head-to-head meetings) and the season convention (the tools name an NHL season by the year it starts; say which season you used).
+- If data is missing or the sample is too small, write "not enough data" instead of guessing.
 
-- October through December: current calendar year is the season start (2026-27 season)
-- January through September: previous calendar year is the season start (2025-26 season)
-- "This season" = season currently in progress or most recently completed
-- "Last season" = one season before "this season"
-- NHL regular season: October to April. Playoffs: April to June.
+## Season
 
-## Initial Assessment
-
-Before starting, understand:
-1. Which two teams? Confirm spelling and current team names (relocations happen).
-2. Does the user have a model? If yes, include the Model Edge section. If no, skip it.
-3. What is the game date? Default to today unless specified.
+October to December: the season starts in the current calendar year. January to September: it started the previous year. "This season" is the one in progress or most recently finished.
 
 ## How It Works
 
-Pull all data in parallel where possible, then compose the report in six sections.
+Pull the data in parallel where you can, then write six sections.
 
-### Step 1: Matchup Context
+1. **Matchup context.** `get_standings` for both teams: record (W-L-OTL), points percentage, division and conference rank, last-10 form if returned. `get_schedule` for rest days and back-to-back.
+2. **Goalie matchup.** `get_goalie_stats` for each team's likely starter: GP, GS, record, save percentage, GAA, GSAX if returned. Do not name tonight's starter unless a tool confirms it.
+3. **Key stats.** `get_team_stats` for both teams: Corsi%, Fenwick%, goals for and against per game, expected goals for and against, goal differential, points percentage. Flag any gap that is large compared with the league spread.
+4. **Odds snapshot.** `get_odds` and `get_game_probabilities`: moneyline, puck line and total, plus the market's fair (no-margin) probability for each side. If books differ by more than 5 cents on a moneyline, mention the disagreement as a fact about the market.
+5. **Model vs market gap (only if a model probability exists).** `get_predictions` gives our probability for games on today's slate, or use the user's own number. Report our probability, the market's fair probability and the difference in points. Say plainly that this describes how our probability differs from the market's, and that it is not an instruction to wager. If there is no model probability, write "Model vs market gap: no model probability supplied".
+6. **Head-to-head.** `get_head_to_head`: season series and last 5 to 10 meetings. Under 5 meetings, state "not enough data to read a trend".
 
-Call `get_standings` for both teams. Pull:
-- Current record (W-L-OTL), points, points percentage
-- Division rank and conference rank
-- Recent form: last 10 games record (W-L-OTL in last 10 if available, else compute from game log)
-- Rest status: derive from `get_schedule` -- days since last game, back-to-back flag
+## Credit usage
 
-Call `get_head_to_head` for season series between the two teams this season.
-
-### Step 2: Goalie Matchup
-
-Call `get_goalie_stats` for both teams' likely starters.
-
-Pull: GP, GS, W-L-OTL, SV%, GAA, SO, last 5 starts SV%.
-
-If both goalies have faced each other: pull from `get_head_to_head` output.
-
-Note: the API shows post-game confirmed starters only. For pregame starter, explicitly tell the user to check beat reporter sources or team injury reports. Do not guess or fabricate a starter.
-
-Reference `nhl-goalie-analysis` skill logic for computing xSV% and GSAA if the data supports it.
-
-### Step 3: Key Stats Comparison
-
-Call `get_team_stats` for both teams. Pull and compare:
-
-| Metric | Home Team | Away Team |
-|--------|-----------|-----------|
-| Corsi% | | |
-| Fenwick% | | |
-| Goals For per game | | |
-| Goals Against per game | | |
-| Expected Goals For | | |
-| Expected Goals Against | | |
-| Goal Differential | | |
-| Points Percentage | | |
-
-Flag any metric where the gap between teams exceeds one standard deviation from league average.
-
-### Step 4: Odds Snapshot
-
-Call `get_odds` (10 credits). Pull moneyline, puck line (-1.5/+1.5), and total (Over/Under) across all available books.
-
-Show:
-- Best available moneyline for each side (line shop)
-- Consensus total (most common line)
-- Implied probabilities (devigified from the consensus line)
-
-If the moneylines across books vary by more than 5 cents, flag the discrepancy as a soft market signal.
-
-### Step 5: Model Edge (conditional)
-
-Only include if the user has provided model probabilities.
-
-Compute EV against best available line using `market-vs-model` skill logic:
-```
-ev = (model_prob * decimal_odds) - 1
-```
-
-Show: model probability, implied probability, edge magnitude, 1/4 Kelly stake.
-
-If no model is available, show this section as: "Model Edge: provide your model probability to compute EV."
-
-### Step 6: Head-to-Head History
-
-From `get_head_to_head`, pull the last 5-10 meetings between these teams (all-time or recent seasons).
-
-Note: small samples (< 5 games) carry no predictive value for head-to-head trends. State this explicitly rather than over-interpreting 2-3 games.
-
-## Credit Usage
-
-| Operation | Credits | Notes |
-|-----------|---------|-------|
-| `get_standings` (both teams) | 2 | One query covers both |
-| `get_team_stats` (both teams) | 5 | One query covers both |
-| `get_head_to_head` | 10 | Season series + history |
-| `get_goalie_stats` (both teams) | 5 | One query covers both |
-| `get_odds` | 10 | Tied for most expensive with H2H |
-| `get_schedule` (rest check) | 2 | Optional; skip if user knows dates |
-| **Total per preview** | **~34** | Skip `get_odds` and `get_head_to_head` for 14-credit version |
-
-## Data Source
-
-**PuckAPI (default):** All six endpoints. Data is clean and joined.
-
-**Your own data:** If user provides team/goalie stats as CSV:
-1. Verify columns: team names, record fields (W, L, OTL), SV%, GAA, corsiPct, fenwickPct, goalsForPerGame, goalsAgainstPerGame
-2. For odds: user must provide manually or use `get_odds`
-3. Credits only consumed for the API calls made; own-data sections are free
+Full report: 39 credits (standings 2, schedule 2, team stats 5, goalie stats 5, game probabilities 5, head-to-head 10, odds 10). Without `get_odds` and `get_head_to_head` it is 19. Say the cost before pulling if the user asked for a light version.
 
 ## Anti-patterns
 
-| Rationalization | Why It's Wrong | Do This Instead |
-|----------------|---------------|-----------------|
-| "The goalie starting tonight is X" | Pregame starters are not in the API | State the last confirmed starter and direct user to beat reporter for pregame confirmation |
-| "Team A has won 4 of the last 5 H2H meetings" | 5 H2H games over 2+ seasons is noise, not a trend | Report the data, note the small sample, do not interpret as a meaningful edge |
-| "The odds haven't moved so the sharp money is neutral" | Lack of line movement is not confirmation of neutrality | Report the current lines; absence of movement is absence of signal, not neutrality |
-| "Skip the stats and just give the pick" | A pick without context is gambling, not analysis | Always include the data that supports or contradicts any directional conclusion |
+| Rationalization | Why it is wrong | Do this instead |
+|----------------|----------------|-----------------|
+| "The goalie tonight is X" | Pregame starters are not always in the data | Give the last confirmed starter and say to check team news |
+| "Team A won 4 of the last 5 meetings" as a trend | Five games is noise | Report it with the sample size and say no trend can be read |
+| "The line has not moved, so the market is neutral" | No movement is no information | Report the current line only |
+| "Give the pick" | This skill reports information | Show the data on both sides |
 
 ## Output Format
 
 ```
-## Game Preview: [Away Team] @ [Home Team]
-[Date] | [Arena] | [Time]
-
----
+## Game Preview: [Away] @ [Home]
+[Date] | [Arena] | [Time] | [season] season
 
 ### Matchup Context
-[Away] Record: XX-XX-XX | Pts%: .XXX | Div Rank: X | Last 10: X-X-X
-[Home] Record: XX-XX-XX | Pts%: .XXX | Div Rank: X | Last 10: X-X-X
-Rest: [Away] X days | [Home] X days [BACK-TO-BACK flag if applicable]
-Season Series: [Away] X – [Home] X
-
----
+[Away] Record | Pts% | Div rank | Last 10
+[Home] Record | Pts% | Div rank | Last 10
+Rest: [Away] X days | [Home] X days
 
 ### Goalie Matchup
-[Away] Likely Starter: [Name] | SV%: .XXX | GAA: X.XX | Last 5: .XXX
-[Home] Likely Starter: [Name] | SV%: .XXX | GAA: X.XX | Last 5: .XXX
-Note: Pregame starters unconfirmed -- check beat reporter sources.
+[Away] likely starter: [Name] | SV% | GAA | GSAX
+[Home] likely starter: [Name] | SV% | GAA | GSAX
+Starter not confirmed by the tools: check team news.
 
----
-
-### Key Stats Comparison
-| Metric        | [Away] | [Home] |
-|---------------|--------|--------|
-| Corsi%        | XX.X%  | XX.X%  |
-| Fenwick%      | XX.X%  | XX.X%  |
-| GF/game       | X.XX   | X.XX   |
-| GA/game       | X.XX   | X.XX   |
-| xGF           | X.XX   | X.XX   |
-| xGA           | X.XX   | X.XX   |
-| Goal Diff     | +/-N   | +/-N   |
-
----
+### Key Stats
+| Metric | [Away] | [Home] |
 
 ### Odds Snapshot
-Moneyline: [Away] [+/-XXX] | [Home] [+/-XXX] (best available)
-Puck Line: [Away] +1.5 [odds] | [Home] -1.5 [odds]
-Total: O/U X.X [odds]
-Implied (devigified): [Away] XX.X% | [Home] XX.X%
+Moneyline, puck line, total
+Market fair probability: [Away] XX.X% | [Home] XX.X%
 
----
+### Model vs Market Gap
+Our probability [Away] XX.X% | [Home] XX.X%
+Market fair probability [Away] XX.X% | [Home] XX.X%
+Difference: [Side] +X.X points (how our probability differs from the market's)
 
-### Model Edge
-[If model provided]
-Model: [Away] XX.X% | [Home] XX.X%
-Market: [Away] XX.X% | [Home] XX.X%
-Edge: [Side] +X.X% EV | 1/4 Kelly: X.X% of bankroll
-[If no model]
-Provide your model probability to compute EV.
+### Head-to-Head (last N meetings)
+| Date | Winner | Score |
 
----
-
-### Head-to-Head History (Last N meetings)
-| Date | Winner | Score | Notes |
-|------|--------|-------|-------|
-
----
-
-Built with PuckAPI Skills
+Sources: [list of tool calls]
 ```
 
-## What to Do Next
+## What to do next
 
-| What You Found | Next Action | Skill |
-|----------------|-------------|-------|
-| Want to see the full slate tonight | Full card with edge rankings across all games | `nhl-daily-slate` |
-| Have a model and want to confirm EV | Compute edge, Kelly sizing, significance | `market-vs-model` |
-| Want to dig deeper on the goalie matchup | Leaderboard context, xSV%, workload flags | `nhl-goalie-analysis` |
-| Want shareable visual output | Generate matchup card chart | `visualization` |
-| Want to bet and track performance | Log this bet after placing | `prediction-tracker` |
-| Want deeper team metrics | Full 5v5, special teams, shot quality breakdown | `nhl-team-analysis` |
+| Want | Skill |
+|------|-------|
+| The whole slate | `nhl-daily-slate` |
+| Test a model against the market | `market-vs-model` |
+| Goalie depth | `nhl-goalie-analysis` |
+| Team depth | `nhl-team-analysis` |
+| Log our probability and grade it later | `prediction-tracker` |
+| Chart it | `visualization` |

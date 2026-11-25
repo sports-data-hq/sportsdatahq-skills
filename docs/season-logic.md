@@ -29,15 +29,15 @@ NHL game IDs follow the format: `SSSSTTNNNN`
 
 Example: `2024020001` = first regular season game of 2024-25 season.
 
-## Data Coverage (PuckAPI)
+## Data Coverage (PuckAPI MCP server)
 
 | Data Type | Coverage |
 |-----------|---------|
 | Games | 2010-11 to present (16 completed seasons plus the one in progress, 23,000+ games) |
-| Odds | 2019-20 to present (106,958+ records) |
+| Odds | 2019-20 to present |
 | Players | Current + historical (4,800+ players) |
 | Goalies | Current + historical (1,509+ goalie-seasons) |
 | Standings | Current + historical (494+ records) |
 | Teams | All 32 current NHL teams |
 
-**Note:** Odds data before 2019-20 is not available. Backtests requiring odds are limited to ~5 seasons.
+**Note:** Odds data before 2019-20 is not available. Backtests requiring odds are limited to about 5 seasons, so report the sample size and a per-season breakdown.

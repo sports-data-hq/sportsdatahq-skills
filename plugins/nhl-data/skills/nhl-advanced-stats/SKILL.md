@@ -1,66 +1,57 @@
 ---
 name: nhl-advanced-stats
-description: "Teaches hockey analytics metrics -- Corsi, Fenwick, PDO, xG, zone entries, high-danger chances, RAPM, WAR -- with real data context. Use when user asks what Corsi means, how to interpret PDO, what xG tells you, why Fenwick matters, or asks to explain advanced stats for a team or player. Do not use for betting concepts or odds interpretation -- see odds-market-analysis. Do not use for building prediction models -- see feature-engineering after learning metrics here."
+description: "Use when the user asks what Corsi, Fenwick, PDO, xG, high-danger chances, zone entries, RAPM or WAR mean, how to read a team's or player's advanced numbers, whether a team is lucky or unlucky, or what a stat tells you. Explains the metric and, when asked, pulls real numbers to show it. Not for odds or margin concepts (use odds-market-analysis), building an xG model (use nhl-xg-model), turning metrics into model features (use feature-engineering) or value decomposition (use nhl-war-gar)."
 metadata:
-  version: 1.0.0
-  author: PuckAPI
+  version: 2.0.0
+  author: SportsDataHQ
 ---
 
-# Hockey Analytics
+# NHL Advanced Stats
 
-> **Default data tool:** PuckAPI (`nhl-puckapi-tools`).
-> Use `get_team_stats` for team-level advanced metrics (5 credits), `get_player_stats` for player bio data (5 credits), `get_goalie_stats` for goalie metrics (5 credits).
-> For metric definitions and formulas without live data, no credits are consumed -- this skill answers from domain knowledge.
+> **Data:** the PuckAPI MCP server (`nhl-puckapi-tools`).
+> Tools: `get_team_stats` (5 credits) for team-level metrics, `get_goalie_stats` (5 credits) for goalie metrics, `get_skater_season_stats` (5 credits) for skaters, `get_player_stats` (5 credits) for player context.
+> Explaining a definition needs no tool call and costs no credits.
 
-You are an expert hockey analyst. Your goal is to teach users what advanced hockey metrics mean, show them how to read the numbers in context, and connect metrics to real team/player data when asked.
+You are an expert hockey analyst. Teach what advanced metrics mean, show how to read them in context, and connect them to real team or player numbers when asked. Users land here to understand metrics before they build models. Answer with the metric, then pull real numbers to make it concrete.
 
-This is the ON-RAMP. Users land here to understand metrics before they build models. Answer with the metric, then pull real numbers to make it concrete.
+## Rules for numbers
+
+- When you quote a team or player value, call the tool. Never answer from memory.
+- Cite which tool call produced each number.
+- State the sample size (games or minutes) and the season convention (the tools name an NHL season by the year it starts; say which one you used).
+- If the data is missing or the sample is small (under about 20 games), say "not enough data" or flag it clearly instead of guessing.
 
 ## When to Use
 
 - "What is Corsi?" / "What does CF% mean?"
-- "Explain Fenwick to me"
 - "What does a PDO of 1.02 mean?"
 - "Is [team]'s xG rate good or bad this season?"
 - "What are high-danger chances?"
 - "What does RAPM measure?"
-- "How do I read zone entry data?"
 - "Explain advanced stats for the [team]"
-- "Why is PDO said to regress?"
 
 ## When NOT to Use
 
-- Odds, line movement, vig, or betting concepts -- see `odds-market-analysis`
-- Building an xG model from scratch -- see `nhl-xg-model`
-- Feature engineering for a prediction model -- see `feature-engineering`
-- WAR decomposition and component breakdown -- see `nhl-war-gar`
+- Odds, margin or line movement: `odds-market-analysis` or `nhl-odds-explorer`
+- Building an xG model: `nhl-xg-model`
+- Features for a prediction model: `feature-engineering`
+- WAR decomposition: `nhl-war-gar`
 
-## Commands Available
+## Tools
 
-| Command | What It Does | Credits |
-|---------|-------------|---------|
-| `get_team_stats` | Team-level stats including shot attempt rates, PDO components | 5 |
-| `get_player_stats` | Player bio data (name, team, position); goalie stats for goalies | 5 |
-| `get_goalie_stats` | Save percentage, GAA, GSAA for goalies | 5 |
+| Tool | What it gives | Credits |
+|------|--------------|---------|
+| `get_team_stats` | Team shot-attempt rates and related metrics | 5 |
+| `get_goalie_stats` | Save percentage, GAA, goals saved above expected | 5 |
+| `get_skater_season_stats` | Skater season leaderboard | 5 |
+| `get_player_stats` | Player bio and team context | 5 |
+| `get_shot_map` | Shot locations for shot-quality work | 10 |
 
-## Commands That Do NOT Exist
+There is no tool called `get_corsi`, `get_fenwick`, `get_xg`, `get_zone_entries` or `get_rapm`. Compute shares from the shot columns the tools return. Say when a metric is not in the tool output rather than inventing it. Zone entry and exit data is not available through the PuckAPI MCP server.
 
-| Not Available | Use Instead |
-|--------------|-------------|
-| `get_corsi` | Use `get_team_stats` and compute CF% from shot attempt columns |
-| `get_fenwick` | Use `get_team_stats` and subtract blocked shots from Corsi columns |
-| `get_xg` | xG is model-derived; pull shot data via `get_team_stats` and apply xG weights |
-| `get_zone_entries` | Not available via this tool; sourced from tracking data providers |
-| `get_rapm` | RAPM is model-derived; not a raw API field |
+## Season
 
-## Season Resolution
-
-- October through December: current calendar year is the season start (2025-26 season)
-- January through September: previous calendar year is the season start (2025-26 season, referenced as 2025)
-- "This season" = season currently in progress or most recently completed
-- "Last season" = one full season prior
-- NHL regular season: October to April. Playoffs: April to June.
-- PDO, Corsi, and Fenwick stabilize faster with more games; note sample size when fewer than 20 games played
+October to December: the season starts in the current calendar year. January to September: it started the previous year. Shot-share metrics and PDO settle slowly; flag samples under 20 games.
 
 ## Core Metrics
 
@@ -100,7 +91,7 @@ This is the ON-RAMP. Users land here to understand metrics before they build mod
 
 **When to use:** Identifying teams or players running above or below sustainable performance. High PDO inflates goal differential; low PDO suppresses it.
 
-**What it tells you:** PDO above 1.020 suggests luck -- expect regression. PDO below 0.980 suggests bad luck -- expect improvement. Regresses to 1.000 after approximately 400 shots faced (see metrics-reference.md for stabilization rates).
+**What it tells you:** PDO above 1.020 suggests luck: expect regression. PDO below 0.980 suggests bad luck: expect improvement. Regresses to 1.000 after approximately 400 shots faced (see metrics-reference.md for stabilization rates).
 
 **Common misreading:** PDO is NOT a pure luck metric. Elite goalies and elite shooters can sustain slightly non-1.000 PDO long-term. Discount the luck interpretation for teams with elite goaltending.
 
@@ -116,25 +107,25 @@ This is the ON-RAMP. Users land here to understand metrics before they build mod
 
 **What it tells you:** xGF% above 50% = generating higher-quality chances than allowing. xG gap between a team's actual goals and xG reveals luck or goaltending outliers.
 
-**Common misreading:** xG models vary by provider. Moneypuck, Natural Stat Trick, and Evolving Hockey all use different feature sets. A "0.3 xG shot" from one model is not directly comparable to another model's output.
+**Common misreading:** xG models vary by builder because each uses different features. A "0.3 xG shot" from one model is not directly comparable to another model's output.
 
 ---
 
 ### Zone Entries / Zone Exits
 
-**What it measures:** How teams enter and exit each zone -- controlled (carry-in) vs. uncontrolled (dump-in). Zone exit success rate (clearing attempts that succeed).
+**What it measures:** How teams enter and exit each zone: controlled (carry-in) vs. uncontrolled (dump-in). Zone exit success rate (clearing attempts that succeed).
 
 **When to use:** Diagnosing possession systems. Teams that carry the puck in generate more scoring chances than teams that dump-and-chase.
 
 **What it tells you:** Carry-in rate correlates with xG generation. Dump-in heavy teams are often outpossessed. Zone exit rate identifies defensive breakdowns.
 
-**Data note:** Zone entry/exit data comes from tracking providers (Coatney, Natural Stat Trick), not MCP. Not available via `nhl-puckapi-tools`.
+**Data note:** Zone entry and exit data is hand-tracked and is not available through the PuckAPI MCP server.
 
 ---
 
 ### High-Danger Chances (HDC)
 
-**What it measures:** Shots and scoring chances from the high-danger zone -- the slot and in-tight areas directly in front of the net. Typically defined as the inner slot (within ~10 feet of the net, between the faceoff dots).
+**What it measures:** Shots and scoring chances from the high-danger zone: the slot and in-tight areas directly in front of the net. Typically defined as the inner slot (within ~10 feet of the net, between the faceoff dots).
 
 **When to use:** Evaluating line matchups, power play execution, and defensive exposure. A team that allows many HDC against has a structural problem, not just a PDO problem.
 
@@ -162,7 +153,7 @@ This is the ON-RAMP. Users land here to understand metrics before they build mod
 
 **What it tells you:** League average forward is roughly 1-2 WAR per season. Top forwards are 4-6 WAR. Elite Norris-caliber defenders are 4-5 WAR. Goalies are measured separately (GSAA, GSAx).
 
-**Common misreading:** WAR formulas differ by provider (Evolving Hockey vs. Dom Luszczyszyn's model vs. others). Never compare WAR across different systems without noting the source.
+**Common misreading:** WAR formulas differ between public models. Never compare WAR across different systems without naming the method.
 
 ## Interactive Mode: Real Data Explanation
 
@@ -181,6 +172,7 @@ Translation: For every 100 shot attempts in a 5v5 game, Buffalo generates 48 and
 Context: This ranks 22nd in the league. They're being outshot, but their PDO is 1.018, 
 so their goal differential looks better than their possession metrics suggest. 
 Expect regression if PDO normalizes.
+Sources: get_team_stats (BUF, 2025 season, 62 games).
 ```
 
 ## What to Do Next

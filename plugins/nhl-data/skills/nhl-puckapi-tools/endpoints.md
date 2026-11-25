@@ -1,6 +1,6 @@
-# PuckAPI -- Full Endpoint Reference
+# PuckAPI MCP Server: Full Endpoint Reference
 
-> Level 3 reference. Load this file when you need exact parameter names, accepted values, or return field details. Do not load for every request -- SKILL.md covers the common cases.
+> Level 3 reference. Load this file when you need exact parameter names, accepted values, or return field details. Do not load for every request: SKILL.md covers the common cases.
 
 ---
 
@@ -16,17 +16,17 @@ Get NHL games filtered by date range, team, season, or game state.
 |-----------|------|----------|-------------|
 | `date_from` | string | No | Start date, ISO 8601 (`YYYY-MM-DD`) |
 | `date_to` | string | No | End date, ISO 8601 (`YYYY-MM-DD`) |
-| `team` | string | No | Team abbreviation -- matches home OR away (case-insensitive) |
+| `team` | string | No | Team abbreviation: matches home OR away (case-insensitive) |
 | `season` | string | No | Season ID, 8 digits (e.g. `20252026`) |
 | `game_state` | enum | No | `FUT` `LIVE` `FINAL` `OFF` |
 | `game_type` | enum | No | `regular` `playoff` `preseason` |
 | `limit` | integer | No | 1-500. Default: 100 |
 
 **game_state values:**
-- `FUT` -- scheduled, not started
-- `LIVE` -- in progress
-- `FINAL` -- completed (official result)
-- `OFF` -- official (post-game stats confirmed)
+- `FUT`: scheduled, not started
+- `LIVE`: in progress
+- `FINAL`: completed (official result)
+- `OFF`: official (post-game stats confirmed)
 
 **Return fields:**
 
@@ -103,9 +103,8 @@ Full details for one game: team info, all available odds, and goalie starts.
 
 | Field | Description |
 |-------|-------------|
-| `bookmaker` | Bookmaker key (e.g. `draftkings`, `fanduel`, `betmgm`) |
+| `bookmaker` | Bookmaker key (lowercase, as returned) |
 | `snapshotType` | `opening` `current` `closing` |
-| `source` | Data source identifier |
 | `mlHome` | Home moneyline (American odds, e.g. -130) |
 | `mlAway` | Away moneyline |
 | `mlHomeProb` | Implied probability, home (decimal, 0-1) |
@@ -131,7 +130,7 @@ Full details for one game: team info, all available odds, and goalie starts.
 | `homeGoalieToi` | Home goalie time on ice |
 | `awayGoalieToi` | Away goalie time on ice |
 
-**Credit note:** Calling `get_game_detail` costs 10 credits (flat, regardless of whether odds data is present). This is the same cost as `get_odds` -- the difference is `get_game_detail` also returns team info and goalie starts in a single call.
+**Credit note:** Calling `get_game_detail` costs 10 credits (flat, regardless of whether odds data is present). This is the same cost as `get_odds`: the difference is `get_game_detail` also returns team info and goalie starts in a single call.
 
 ---
 
@@ -162,7 +161,7 @@ Matchup history between two specific teams.
 
 **Notes:**
 - Only returns completed games (`gameState` = `FINAL` or `OFF`)
-- `team1` and `team2` must be different -- passing the same abbreviation returns an error
+- `team1` and `team2` must be different: passing the same abbreviation returns an error
 - Record counts wins for each team across the returned game sample (not all-time unless no limit is set)
 
 ---
@@ -276,7 +275,7 @@ Find players by name across the full 4,898-player database.
 
 | Field | Description |
 |-------|-------------|
-| `id` | NHL player ID (integer -- use this for `get_player_stats`) |
+| `id` | NHL player ID (integer: use this for `get_player_stats`) |
 | `name` | Full name |
 | `firstName` | First name |
 | `lastName` | Last name |
@@ -290,7 +289,7 @@ Find players by name across the full 4,898-player database.
 
 **Notes:**
 - Partial match works on full name field (`name` column). "Connor" matches "Connor McDavid."
-- For retired players, set `active=false` explicitly -- default excludes them
+- For retired players, set `active=false` explicitly: default excludes them
 - Position `G` returns goalies; use `get_goalie_stats` for performance leaderboards
 
 ---
@@ -329,7 +328,7 @@ Bio and stats for one player by NHL player ID.
 
 ### `get_goalie_stats`
 
-Goalie performance leaderboard. Filters and sorts across 1,509 goalie-season records.
+Goalie performance leaderboard. Filters and sorts goalie-season records.
 
 **Parameters:**
 
@@ -359,7 +358,7 @@ Goalie performance leaderboard. Filters and sorts across 1,509 goalie-season rec
 | `shutouts` | Shutout count |
 | `highDangerSavePct` | Save % on shots inside the slot (~25% of all shots) |
 | `rollingSavePct` | Save % over the last 10 appearances |
-| `trend` | `up` `down` `stable` -- recent form against the season |
+| `trend` | `up` `down` `stable`: recent form against the season |
 | `restDays` | Days since the previous appearance |
 | `snapshotDate` | Date this record was captured |
 
@@ -370,7 +369,7 @@ Goalie performance leaderboard. Filters and sorts across 1,509 goalie-season rec
 - `wins`: descending
 
 **GSAX is computed, not sourced.** Every shot the goalie faced is scored for
-quality -- distance, angle, shot type, strength, and whether it was a rebound --
+quality: distance, angle, shot type, strength, and whether it was a rebound --
 and summed into `expectedGoalsAgainst`. GSAX is that minus the goals actually
 allowed, so positive means the goalie saved more than an average goalie would
 have on the same shots. Roughly +20 over a season is an excellent year; the
@@ -381,7 +380,7 @@ goalie is compared with his own season's peers rather than with a different
 scoring era. Goalie expected goals cover **every strength**; the team-level
 Corsi/Fenwick/xG on `get_standings` and `get_team_stats` are **5v5 only**, so a
 team's xGA is about a quarter smaller than the sum of its goalies'. Both are
-right -- they answer different questions. Do not difference them.
+right: they answer different questions. Do not difference them.
 
 **Known limitation:** the model slightly over-rates the most dangerous chances
 (predicts ~20.5% where the real rate is ~17.5% on the top tenth of shots), so a
@@ -390,18 +389,18 @@ small gaps between two goalies as noise.
 
 ---
 
-## Odds Tools
+## Odds Tools (first two documented here; see the next section for the rest)
 
 ### `get_odds`
 
-Betting odds for a specific game across available bookmakers.
+Odds for a specific game across available bookmakers (prices as data about the market).
 
 **Parameters:**
 
 | Parameter | Type | Required | Description |
 |-----------|------|----------|-------------|
 | `game_id` | string | Yes | NHL game ID |
-| `bookmaker` | string | No | Bookmaker key, lowercase (e.g. `draftkings` `fanduel` `betmgm` `pointsbet` `caesars`) |
+| `bookmaker` | string | No | Bookmaker key, lowercase, as returned in earlier results |
 | `snapshot_type` | enum | No | `opening` `current` `closing`. Default: all types returned |
 
 **Return structure:**
@@ -414,7 +413,7 @@ Betting odds for a specific game across available bookmakers.
   game_date: "2026-01-15",
   odds: [
     {
-      bookmaker, snapshotType, source,
+      bookmaker, snapshotType,
       mlHome, mlAway, mlHomeProb, mlAwayProb,
       spreadHome, spreadHomeOdds, spreadAway, spreadAwayOdds,
       total, totalOverOdds, totalUnderOdds,
@@ -427,10 +426,10 @@ Betting odds for a specific game across available bookmakers.
 
 **Coverage:**
 - Data: 2019-20 season through 2025-26 season (106,958 records total)
-- Pre-2019 games return `odds: []` -- not an error
+- Pre-2019 games return `odds: []`: not an error
 - Bookmaker keys vary by season; not all books present in every season
 
-**Common bookmaker keys:** `draftkings` `fanduel` `betmgm` `pointsbet` `caesars` `bet365` `barstool` `pinnacle`
+Odds are information about the market: show prices and implied or fair probabilities as data, and do not compute stakes, payouts or profit.
 
 ---
 
@@ -453,11 +452,11 @@ Odds snapshots for a game ordered chronologically by bookmaker, showing how line
   home_team: "BUF",
   away_team: "TOR",
   movement: {
-    "draftkings": [
+    "<book_a>": [
       { bookmaker, snapshotType, mlHome, mlAway, spreadHome, total, capturedAt },
       ...ordered chronologically
     ],
-    "fanduel": [ ... ],
+    "<book_b>": [ ... ],
     ...
   }
 }
@@ -467,7 +466,7 @@ Odds snapshots for a game ordered chronologically by bookmaker, showing how line
 - Snapshots ordered ascending by `capturedAt` within each bookmaker
 - Fields per snapshot: `bookmaker` `snapshotType` `mlHome` `mlAway` `spreadHome` `total` `capturedAt`
 - Does not include probability fields (use `get_odds` for implied probabilities)
-- Same coverage restriction as `get_odds` (2020-2026 NHL seasons)
+- Same coverage restriction as `get_odds` (odds history starts after game data does)
 
 ---
 
@@ -479,8 +478,8 @@ NHL game IDs follow an 8-10 digit format:
 - Last 4 digits: sequential game number
 
 **Examples:**
-- `2025020887` -- 2025-26 regular season, game #887
-- `2025030211` -- 2025-26 playoffs, series/game encoded in last 4 digits
+- `2025020887`: 2025-26 regular season, game #887
+- `2025030211`: 2025-26 playoffs, series/game encoded in last 4 digits
 
 ---
 
@@ -488,7 +487,7 @@ NHL game IDs follow an 8-10 digit format:
 
 All 32 active teams with standard abbreviations:
 
-**Eastern Conference -- Atlantic Division**
+**Eastern Conference: Atlantic Division**
 | Abbrev | Team |
 |--------|------|
 | BOS | Boston Bruins |
@@ -500,7 +499,7 @@ All 32 active teams with standard abbreviations:
 | TBL | Tampa Bay Lightning |
 | TOR | Toronto Maple Leafs |
 
-**Eastern Conference -- Metropolitan Division**
+**Eastern Conference: Metropolitan Division**
 | Abbrev | Team |
 |--------|------|
 | CAR | Carolina Hurricanes |
@@ -512,7 +511,7 @@ All 32 active teams with standard abbreviations:
 | PIT | Pittsburgh Penguins |
 | WSH | Washington Capitals |
 
-**Western Conference -- Central Division**
+**Western Conference: Central Division**
 | Abbrev | Team |
 |--------|------|
 | ARI | Utah Hockey Club (note: legacy ARI, now UTA in some systems) |
@@ -524,7 +523,7 @@ All 32 active teams with standard abbreviations:
 | STL | St. Louis Blues |
 | WPG | Winnipeg Jets |
 
-**Western Conference -- Pacific Division**
+**Western Conference: Pacific Division**
 | Abbrev | Team |
 |--------|------|
 | ANA | Anaheim Ducks |
@@ -541,20 +540,48 @@ All 32 active teams with standard abbreviations:
 
 ---
 
+## Other Tools
+
+The server exposes 28 tools in total. The sections above give full parameters for the first 15. The tools below take their parameters from their own tool schemas; read the schema before calling and do not guess parameter names.
+
+| Tool | What it returns | Credits |
+|------|-----------------|---------|
+| `get_predictions` | Model win probability for each game on today's slate | 5 |
+| `get_game_probabilities` | Market implied and fair (no-margin) probability for a game, averaged across books | 5 |
+| `get_skater_season_stats` | Skater season leaderboard (points, goals, assists, +/-, shots) | 5 |
+| `get_player_game_log` | Game-by-game stat lines for one player | 5 |
+| `get_plays` | Events for a game, player or season | 10 |
+| `get_shot_map` | Shot locations to plot or model | 10 |
+| `get_shifts` | Who was on the ice, shift by shift | 10 |
+| `get_situation_time` | Exact 5v5 / power-play / shorthanded time per team, per game | 10 |
+| `get_player_props` | Player prop lines by sportsbook | 10 |
+| `get_prop_history` | How a player did against his prop line, game by game | 10 |
+| `get_prop_movement` | How a player prop line moved before a game | 10 |
+| `get_market_odds` | Period and regulation-result lines as history, opening and closing by sportsbook | 10 |
+| `get_alt_lines` | Alternate puck lines and totals, every point on each book's ladder | 10 |
+| `get_prop_probabilities` | Market implied and fair probability for a game's player props | 10 |
+| `get_prop_backtest` | How often a kind of prop hit against the market, with sample size, interval and by-season breakdown | 25 |
+| `get_prop_projections` | Model projections for tonight's players with over probabilities (paid plans only; a free-plan call is refused and charged nothing) | 25 |
+
+Coverage also includes the PWHL, OHL, WHL, QMJHL, ECHL, AHL and USHL for tools whose schema lists a `league` option.
+
+---
+
 ## Data Coverage Summary
 
-| Dataset | Coverage | Records |
-|---------|----------|---------|
-| Play-by-play | 2010-11 onward, every event with coordinates | 6,882,653 |
-| Games | 2010-11 onward | 23,495 |
-| Odds | 2019-20 onward (2019-20 itself is sparse, ~9% of games) | 107,058 |
-| Players | Active + historical | 4,898 |
-| Goalie stats | Season snapshots, with GSAX and high-danger save% | 1,509 goalie-seasons |
-| Skater stats | Season totals | 1,803 skater-seasons |
-| Goalie starts | Derived from play-by-play, with time on ice | 21,994 games |
-| Standings | Season snapshots, with Corsi/Fenwick/xG at 5v5 | 494 |
-| Teams | 34 total (32 active) | 34 |
+| Dataset | Coverage |
+|---------|----------|
+| Play-by-play | 2010-11 onward, events with coordinates |
+| Games | 2010-11 onward |
+| Odds | Starts after game data does; earlier games return empty odds arrays |
+| Players | Active and historical |
+| Goalie stats | Season snapshots, with GSAX and high-danger save% |
+| Skater stats | Season totals |
+| Goalie starts | Derived from play-by-play, with time on ice |
+| Standings | Season snapshots, with Corsi/Fenwick/xG at 5v5 |
+| Teams | 32 active plus historical franchises |
 
 There is nothing before 2010-11. Querying an earlier season returns an empty
-result, not an error, so check what came back rather than assuming a gap in
-the API.
+result, not an error, so check what came back rather than assuming a gap.
+
+Odds and props are pre-game only. You may store the data, train models and backtest; you may not redistribute the data or odds as a raw feed.
