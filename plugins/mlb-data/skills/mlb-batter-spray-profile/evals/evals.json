@@ -1,0 +1,54 @@
+{
+  "skill": "mlb-batter-spray-profile",
+  "tasks": [
+    {
+      "prompt": "Give me Aaron Judge's spray profile for 2025",
+      "expect": [
+        "search_players then get_spray_chart with season and season_type",
+        "balls in play stated beside each share",
+        "no exit velocity or launch angle claims"
+      ]
+    },
+    {
+      "prompt": "Does Kyle Schwarber hit more fly balls than last year?",
+      "expect": [
+        "get_spray_chart for both seasons",
+        "shift reported with balls in play",
+        "not called a skill change from one season"
+      ]
+    },
+    {
+      "prompt": "Does Ohtani pull the ball?",
+      "expect": [
+        "uses left, center, right unless handedness is returned",
+        "regular versus postseason stated"
+      ]
+    }
+  ],
+  "triggers": {
+    "should": [
+      "spray chart for Judge",
+      "does he pull the ball",
+      "how often does he hit fly balls to left",
+      "is he a ground ball hitter",
+      "where does Ohtani hit line drives",
+      "batted ball profile for Soto",
+      "does Betts go the other way",
+      "how many ground balls does Freeman hit",
+      "where do his hits land",
+      "balls in play by field for Alonso"
+    ],
+    "should_not": [
+      "preview the Yankees game",
+      "which hitters are due to regress",
+      "did Skubal's fastball velocity drop",
+      "start sit advice for next week",
+      "home run prop prices for tonight",
+      "exit velocity leaders",
+      "who has the best batting average",
+      "NFL spray of passes",
+      "shot chart for Curry",
+      "pitcher whiff rate by pitch"
+    ]
+  }
+}

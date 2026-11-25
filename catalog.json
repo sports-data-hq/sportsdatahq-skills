@@ -2,6 +2,14 @@
  "generated_from": "plugins/*/skills/*/SKILL.md",
  "skills": [
   {
+   "name": "cricket-batter-vs-bowler",
+   "plugin": "cricket-data",
+   "description": "Use when the user asks how a cricket batter has fared against a particular bowler: 'Kohli against Starc', 'has Bumrah got Warner out', 'how does he play spin', 'Head against Bumrah in T20s', 'batter versus bowler record', 'who dismissed him most'. Reports balls, runs, dismissals and strike rate for the pair, and says plainly when the sample is too small. Not for a match preview (see cricket-match-preview), a phase breakdown (see cricket-phase-analysis) or ground effects (see cricket-venue-effects).",
+   "reads_live_data": true,
+   "writes": false,
+   "moves_money": false
+  },
+  {
    "name": "cricket-chase-win-probability",
    "plugin": "cricket-data",
    "description": "Use when the user wants the win probability of a cricket run chase or how it swung: 'what are the chances of this chase', 'win probability at the 15th over', 'how did the match turn', 'was the chase ever in doubt', 'the biggest swing of the innings', 'what does the model give the chasing side'. Reports our win probability through the second innings (get_win_probability), the swings between overs, the required rate, and compares it with the market's view as information. Not for a pre-match preview (see cricket-match-preview), phase stats (see cricket-phase-analysis) or ground effects (see cricket-venue-effects).",
@@ -42,6 +50,22 @@
    "moves_money": false
   },
   {
+   "name": "golf-finish-simulation",
+   "plugin": "golf-data",
+   "description": "Use when the user wants finish probabilities for a golf tournament from our ratings: 'who is most likely to win the Masters', 'simulate the tournament', 'chance he finishes top 10', 'odds of making the cut by rating', 'how likely is a first-time winner', 'run the field'. Runs a Monte Carlo simulation in code from BirdieAPI strokes-versus-field ratings and round-to-round spread, with the method and simulation error stated. Not for a field preview (see golf-tournament-preview), one player's strokes gained (see golf-strokes-vs-field) or course form (see golf-course-history).",
+   "reads_live_data": true,
+   "writes": false,
+   "moves_money": false
+  },
+  {
+   "name": "golf-leaderboard-story",
+   "plugin": "golf-data",
+   "description": "Use when the user wants the story of a finished or in-progress golf tournament: 'what happened at the Open', 'how did he win', 'who made the move on Sunday', 'recap the PGA Championship', 'where did he lose the tournament', 'why did the leader fall back'. Builds a round-by-round and hole-by-hole account from the leaderboard and scorecards, with strokes versus the field. Not for finish probabilities (see golf-finish-simulation), a field preview (see golf-tournament-preview) or one player's form over time (see golf-strokes-vs-field).",
+   "reads_live_data": true,
+   "writes": false,
+   "moves_money": false
+  },
+  {
    "name": "golf-strokes-vs-field",
    "plugin": "golf-data",
    "description": "Use when the user wants to know how a golfer is really playing or how golfers compare: 'who is playing best', 'strokes gained for Scheffler', 'is he good on par 5s', 'rank the field by scoring versus the field', 'is his form real', 'how does he score on par 3s'. Reports strokes versus the field per round (raw and field-strength adjusted), by hole type on the PGA Tour, with rounds counted. Not for a tournament preview (see golf-tournament-preview), a player's record at one course (see golf-course-history) or modeling (see model-building).",
@@ -53,6 +77,14 @@
    "name": "golf-tournament-preview",
    "plugin": "golf-data",
    "description": "Use when the user wants a preview of a golf tournament or a player's chances: 'preview this week's PGA Tour event', 'who's playing best going into the Masters', 'course history at Augusta for Scheffler', 'field strength this week', 'LPGA preview'. Produces a report: what's on, the strongest players by our strokes-versus-field rating, course or event history for the names that matter, and winner prices for the four men's majors. Not for a finished tournament's leaderboard (call get_leaderboard) or modeling (see model-building).",
+   "reads_live_data": true,
+   "writes": false,
+   "moves_money": false
+  },
+  {
+   "name": "mlb-batter-spray-profile",
+   "plugin": "mlb-data",
+   "description": "Use when the user wants to know where an MLB batter hits the ball: 'spray chart for Judge', 'does he pull the ball', 'how often does he hit fly balls to left', 'is he a ground ball hitter', 'where does Ohtani hit line drives', 'batted ball profile'. Reports balls in play by trajectory and by field (left, center, right) with hit rates and counts, for a season or the postseason. Not for a game preview (see mlb-game-preview), luck-versus-skill screens (see mlb-regression-candidates) or a pitcher's pitch changes (see mlb-pitcher-skill-change).",
    "reads_live_data": true,
    "writes": false,
    "moves_money": false
@@ -90,6 +122,14 @@
    "moves_money": false
   },
   {
+   "name": "mlb-win-prob-swings",
+   "plugin": "mlb-data",
+   "description": "Use when the user wants to know what decided an MLB game: 'what was the biggest swing in the game', 'when did the Dodgers win it', 'turning point of last night', 'biggest plays of the World Series', 'win probability chart for that game', 'who was the hero'. Orders a game's plate appearances by change in our home win probability and run value, with the base-out state. Not for a game preview (see mlb-game-preview), a pitcher's pitch trends (see mlb-pitcher-skill-change) or luck screens (see mlb-regression-candidates).",
+   "reads_live_data": true,
+   "writes": false,
+   "moves_money": false
+  },
+  {
    "name": "ufc-elo-baseline",
    "plugin": "mma-data",
    "description": "Use when the user wants a ratings-only baseline for a UFC fight: 'what does Elo say about this fight', 'baseline probability for Jones vs Aspinall', 'how strong is each fighter by rating', 'who is the highest rated lightweight', 'did the rating see that upset coming', 'rating gap between the two'. Converts the pre-fight rating gap into an expected win probability, compares it with the market as information and shows the rating history. Refuses to use in-fight stats from the fight being predicted (leakage). Not for a full fight preview (see ufc-fight-preview), a fighter's profile (see ufc-fighter-profile) or model building (see model-building).",
@@ -109,6 +149,14 @@
    "name": "ufc-fighter-profile",
    "plugin": "mma-data",
    "description": "Use when the user wants to know who a UFC fighter is in numbers: 'profile of Islam Makhachev', 'how does Topuria fight', 'what is his record by method', 'strikes landed per minute for Pereira', 'is he a finisher', 'recent opposition for Chandler', 'does he wrestle'. Reports bio, record by method, career rates per 15 minutes with fight time counted, recent fights and rating history. Not for a specific fight's preview (see ufc-fight-preview), a ratings baseline (see ufc-elo-baseline) or stat leaderboards (call get_leaders).",
+   "reads_live_data": true,
+   "writes": false,
+   "moves_money": false
+  },
+  {
+   "name": "ufc-finish-profile",
+   "plugin": "mma-data",
+   "description": "Use when the user wants to know how a UFC fighter wins and loses: 'does he finish fights', 'KO or submission', 'how often does she go to decision', 'is he chinny', 'finish rate for Makhachev', 'who finishes the most at lightweight'. Breaks a fighter's UFC wins and losses by method and round, with finish rate, rounds, and how that compares with the weight class. Not for a fight preview (see ufc-fight-preview), the Elo baseline (see ufc-elo-baseline) or a general fighter profile (see ufc-fighter-profile).",
    "reads_live_data": true,
    "writes": false,
    "moves_money": false
@@ -250,6 +298,14 @@
    "moves_money": false
   },
   {
+   "name": "nhl-goalie-gsax-report",
+   "plugin": "nhl-data",
+   "description": "Use when the user wants goalie results measured against shot quality: 'is he a good goalie or just well defended', 'who has the best GSAX', 'goalie leaderboard by goals saved above expected', 'is his save percentage sustainable', 'high-danger save percentage for Shesterkin', 'is the goalie slumping'. Reads GSAX, expected goals against, high-danger save percentage and the rolling form fields from the goalie leaderboard, with games counted. Not for a game preview (see nhl-game-preview), general goalie evaluation and starts (see nhl-goalie-analysis) or building an xG model (see nhl-xg-model).",
+   "reads_live_data": true,
+   "writes": false,
+   "moves_money": false
+  },
+  {
    "name": "nhl-odds-explorer",
    "plugin": "nhl-data",
    "description": "Use when the user asks for NHL odds, what the lines are, how books compare, the margin (vig) in a market, how a line has moved, steam or sharp movement, or what the market probability is. Compares prices across books, converts to implied and fair (no-margin) probability, and reads line movement. Odds are information only: no stakes and no wagering advice. Not for devigging theory or closing-line quality (use odds-market-analysis), comparing a model with the market (use market-vs-model) or game results (use nhl-game-lookup).",
@@ -330,6 +386,14 @@
    "moves_money": false
   },
   {
+   "name": "nhl-xg-report",
+   "plugin": "nhl-data",
+   "description": "Use when the user wants the expected-goals story of an NHL team or game: 'did they deserve to win that game', 'are the Oilers getting good chances', 'team xG for and against', 'who is getting lucky', 'shot quality in last night's game', 'is their record real'. Reports 5v5 expected goals for and against from team stats, and a game's shot volume and locations from the shot map and plays, saying what is and is not an xG figure. Not for a game preview (see nhl-game-preview), goalie results against shot quality (see nhl-goalie-gsax-report) or building a model (see nhl-xg-model).",
+   "reads_live_data": true,
+   "writes": false,
+   "moves_money": false
+  },
+  {
    "name": "soccer-match-preview",
    "plugin": "soccer-data",
    "description": "Use when the user wants a preview of one soccer (football) match in any covered league: 'preview Arsenal vs Chelsea', 'break down the Clasico', 'what should I know about the Inter match', 'MLS preview LAFC vs Galaxy', 'Champions League preview'. Produces a one-page report: table position and form, our club Elo, xG for and against, lineups when out, the three-way line and what it implies. Not for one match's shot-by-shot xG story (see soccer-xg-breakdown) or modeling (see model-building).",
@@ -341,6 +405,14 @@
    "name": "soccer-season-simulation",
    "plugin": "soccer-data",
    "description": "Use when the user wants simulated odds for how a league season finishes: 'who wins the league', 'chance of finishing top four', 'relegation odds', 'simulate the rest of the season', 'how likely is Arsenal to win the title', 'what are Spurs' chances of Europe'. Runs a Monte Carlo of the remaining fixtures from our club Elo ratings, the current table and a stated draw and home-advantage assumption, and reports finishing-position probabilities with the method. Not for one match (see soccer-match-preview), shot quality (see soccer-xg-breakdown) or a club's style (see soccer-team-style-profile).",
+   "reads_live_data": true,
+   "writes": false,
+   "moves_money": false
+  },
+  {
+   "name": "soccer-set-pieces",
+   "plugin": "soccer-data",
+   "description": "Use when the user wants set-piece numbers in soccer: 'how many goals do Arsenal score from corners', 'who takes the set pieces', 'are they good at defending corners', 'penalty record this season', 'free kick goals', 'set piece dependence'. Pulls set-piece events from match event data, counts them and what came from them, and says when the events are not held for a league or season. Not for a match preview (see soccer-match-preview), shot quality by location (see soccer-xg-breakdown) or playing style (see soccer-team-style-profile).",
    "reads_live_data": true,
    "writes": false,
    "moves_money": false
@@ -485,6 +557,14 @@
    "name": "tennis-match-preview",
    "plugin": "tennis-data",
    "description": "Use when the user wants a tennis match preview or matchup analysis for any ATP or WTA singles match: 'preview Sinner vs Alcaraz', 'break down tonight's tennis match', 'US Open quarterfinal preview', 'Wimbledon semifinal breakdown', 'how do they match up on grass', 'who wins Swiatek vs Gauff on clay', 'tennis matchup analysis'. Produces a one-page report: our surface Elo and pregame win probability, surface records, form, head to head with its caveat, and the market's prices. Not for rankings lists or full draws (call the tools directly) or modeling (see model-building).",
+   "reads_live_data": true,
+   "writes": false,
+   "moves_money": false
+  },
+  {
+   "name": "tennis-surface-form",
+   "plugin": "tennis-data",
+   "description": "Use when the user wants to know how a tennis player does on each surface: 'is he better on clay', 'Alcaraz grass record', 'surface splits for Sinner', 'how does she do on hard courts', 'is he a clay courter', 'who is strongest on grass right now'. Compares record, sets and tiebreaks and our Elo by surface and by season, with matches counted. Not for a match preview (see tennis-match-preview), two players' history (see tennis-head-to-head) or a draw simulation (see tennis-tournament-simulation).",
    "reads_live_data": true,
    "writes": false,
    "moves_money": false
