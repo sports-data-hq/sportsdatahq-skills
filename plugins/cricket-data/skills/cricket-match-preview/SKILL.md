@@ -1,6 +1,6 @@
 ---
 name: cricket-match-preview
-description: "Use when the user wants a preview of a cricket match in any format: 'preview India vs Australia ODI', 'IPL preview MI vs CSK', 'who's favored in the Big Bash tonight', 'how does this ground play', 'T20 World Cup match preview'. Produces a one-page report: team ratings in the format and our pregame win probability (T20 and international ODI), venue profile (par scores, toss and batting-first record), recent results, key players' form, and the market's prices. Not for ball-by-ball replays (call get_deliveries) or modeling (see model-building)."
+description: "Use when the user wants a cricket match preview in any format, or how a ground plays before a match: 'preview India vs Australia ODI', 'IPL preview MI vs CSK', 'PSL match breakdown', 'who's favored in the Big Bash tonight', 'how does this ground play', 'T20 World Cup match preview'. Produces a one-page report: format ratings and our pregame win probability (T20 and international ODI), venue profile, recent results, key players' form and the market's prices. Not for ball-by-ball replays (call get_deliveries) or modeling (see model-building)."
 metadata:
   version: 2.0.0
   author: SportsDataHQ
@@ -11,6 +11,7 @@ metadata:
 A one-page preview of one match from live YorkerAPI calls, in any format (Test, ODI, T20 and franchise leagues).
 
 ## Before you start
+- For anything across games, seasons or players, apply the sports-data-preflight checks first (ids from search, the season convention, one league, enough data).
 - Tools come from the YorkerAPI MCP server (`https://mcp.yorkerapi.com/mcp`). Call them; never recall a score.
 - Seasons are a year (2024) or a split season (2024/25). Competitions by key (ipl, bbl, psl, blast, hundred, test, odi, t20i...): `list_competitions` (1 cr).
 - Our pregame win probability is served for T20 and international ODIs only (Tests and first-class have draws; domestic one-day ratings are too weak). Ratings are per format.

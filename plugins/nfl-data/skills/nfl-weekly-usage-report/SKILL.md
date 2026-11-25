@@ -11,6 +11,7 @@ metadata:
 Fantasy managers repeat the same weekly ritual: who is playing, how much, and who inherits the work when someone is out. Usage (snaps, routes, targets, carries, red-zone touches) predicts fantasy points better than last week's points. This skill builds that report from EndzoneAPI.
 
 ## Before you start
+- For anything across games, seasons or players, apply the sports-data-preflight checks first (ids from search, the season convention, one league, enough data).
 - Tools come from the EndzoneAPI MCP server. `season` is the year the season starts; `week` is the NFL week.
 - Player ids are GSIS ids from `search_players`; snap counts may use a separate id, which `search_players` also returns.
 

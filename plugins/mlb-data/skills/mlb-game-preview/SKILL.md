@@ -1,6 +1,6 @@
 ---
 name: mlb-game-preview
-description: "Use when the user wants a preview of one MLB or college baseball game: 'preview Yankees vs Red Sox', 'break down tonight's Dodgers game', 'how does this pitcher match up', 'what's the run line and total', 'who's hot for the Mets series'. Produces a one-page report: records and run differential, team offense and run prevention, our Elo ratings, the starters' arsenals when known, the line and what it implies. Not for regression screens or pitcher skill changes (other mlb- skills) or model building (see model-building)."
+description: "Use when the user wants an MLB game preview or a college baseball game breakdown: 'MLB game preview', 'preview Yankees vs Red Sox', 'break down tonight's Dodgers game', 'what's the line for the Astros game', 'how does Skubal match up tonight', 'who has the edge in pitching tonight', 'series preview'. Produces a one-page report: records and run differential, offense and run prevention, our Elo, the starters' arsenals when known, the line and what it implies. Not for regression screens (other mlb- skills) or model building (see model-building)."
 metadata:
   version: 2.0.0
   author: SportsDataHQ
@@ -11,6 +11,7 @@ metadata:
 A one-page preview of a single game from live FastballAPI calls. Baseball means MLB unless the user names college baseball (`league: "ncaabase"`).
 
 ## Before you start
+- For anything across games, seasons or players, apply the sports-data-preflight checks first (ids from search, the season convention, one league, enough data).
 - Tools come from the FastballAPI MCP server (`https://mcp.fastballapi.com/mcp`). Call them; never recall a number.
 - `season` is the calendar year. Teams accept abbreviations (`list_teams`, 1 cr).
 - Probable starters are not in the schedule. If the user names them, profile them; otherwise say the starters are not confirmed in the data.

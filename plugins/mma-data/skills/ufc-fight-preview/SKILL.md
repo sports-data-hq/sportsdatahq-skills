@@ -1,6 +1,6 @@
 ---
 name: ufc-fight-preview
-description: "Use when the user wants a preview of a UFC (or PFL, Bellator) fight or card: 'preview Jones vs Aspinall', 'break down the main event', 'who wins this fight', 'striking vs wrestling matchup', 'how do they finish fights'. Produces a one-page report: records by method, per-15-minute striking and grappling rates for and against, our Elo, physical profile, recent opposition, and the moneylines. Not for career stat leaderboards (call get_leaders) or modeling (see model-building)."
+description: "Use when the user wants a UFC, PFL or Bellator fight preview or matchup breakdown: 'preview Jones vs Aspinall', 'break down the main event', 'who wins this UFC fight', 'striker vs wrestler, who has the edge', 'how does he finish fights', 'is the favorite justified in this fight', 'fight night card preview'. Produces a one-page report: records by method, striking and grappling rates for and against, our Elo, recent opposition and the moneylines. Not for career stat leaderboards (call get_leaders) or modeling (see model-building)."
 metadata:
   version: 2.0.0
   author: SportsDataHQ
@@ -11,6 +11,7 @@ metadata:
 A one-page preview of one fight from live FighterAPI calls. The UFC is the default; pass `league` for PFL or Bellator.
 
 ## Before you start
+- For anything across games, seasons or players, apply the sports-data-preflight checks first (ids from search, the season convention, one league, enough data).
 - Tools come from the FighterAPI MCP server (`https://mcp.fighterapi.com/mcp`). Call them; never recall a record.
 - Rates are per 15 minutes of fight time; accuracy and defense are fractions. Round-by-round stats exist for UFC cards (not Contender Series).
 - Our ratings are an Elo from the promotion's own results; they do not see fights outside it.

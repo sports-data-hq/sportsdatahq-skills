@@ -11,6 +11,7 @@ metadata:
 Prop lines are the market's estimate of a player's night. This skill lays them out and checks them against what the player did, with minutes as the main context. It never recommends a side, a stake or a bet.
 
 ## Before you start
+- For anything across games, seasons or players, apply the sports-data-preflight checks first (ids from search, the season convention, one league, enough data).
 - Tools come from the DunkAPI MCP server. Lines move all day; always call, never recall.
 - Markets: `player_points`, `player_rebounds`, `player_assists`, `player_threes`, `player_blocks`, `player_steals`, combos (`player_points_rebounds_assists` and others) and double/triple doubles; see the tool's `market` list.
 - Player ids from `search_players(name)` (1 cr).

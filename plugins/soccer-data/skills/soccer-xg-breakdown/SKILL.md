@@ -1,6 +1,6 @@
 ---
 name: soccer-xg-breakdown
-description: "Use when the user wants the expected-goals story of a soccer match or a club's or player's shots: 'xG breakdown of Arsenal Chelsea', 'did City deserve to win', 'shot map for Saka this season', 'who created the best chances', 'is Haaland over-performing his xG'. Shows shots with location, outcome and our xG, the xG race, big chances, and finishing over or under expected with sample size. Not for pre-match previews (see soccer-match-preview)."
+description: "Use when the user wants the expected-goals story of a soccer match, club or player: 'xG breakdown of Arsenal Chelsea', 'did City deserve to win', 'who created the best chances', 'Liverpool shots conceded this season', 'shot map for Saka', 'is Haaland over-performing his xG'. Shows shots with location, outcome and our xG, the xG race, big chances, and finishing over or under expected with sample size. Not for pre-match previews (see soccer-match-preview)."
 metadata:
   version: 2.0.0
   author: SportsDataHQ
@@ -11,6 +11,7 @@ metadata:
 Expected goals tells you who made the better chances, not who won. This skill turns StrikerAPI's located shots into the story of a match, or a club's or player's finishing over a season.
 
 ## Before you start
+- For anything across games, seasons or players, apply the sports-data-preflight checks first (ids from search, the season convention, one league, enough data).
 - Tools come from the StrikerAPI MCP server. Our xG is a location model: the league's goal rate for shots from the same distance and angle, header or not; penalties at the league's conversion rate. It does not see defenders or the pass. Say so once.
 - Located shots exist from 2012-13 in the big leagues (partial that season for some); check coverage before a long history.
 - Pitch frame: x is distance from the goal line as a share of half the pitch (penalty spot about 0.23), y across (0.5 = centre).

@@ -1,6 +1,6 @@
 ---
 name: nba-minutes-usage-redistribution
-description: "Use when an NBA or WNBA player is out or limited and the user asks who benefits: 'Embiid is out, who gets the minutes', 'how does usage change without Luka', 'who starts if Tatum sits', 'fantasy pickup with the injury', 'how did the Knicks play without Brunson'. Measures what happened in games the player missed (minutes, shots, usage per teammate) against games he played, with sample sizes. Not for prop lines (see nba-player-props-research) or a game preview (see nba-game-preview)."
+description: "Use when an NBA or WNBA player is out or limited and the user asks who benefits: 'Embiid is out, who gets the minutes', 'who starts if Tatum sits', 'how did the Knicks do without Brunson', 'usage bump with the starter out', 'how does usage change without Luka', 'fantasy pickup with the injury'. Compares minutes, shots and usage per teammate in games the player missed against games he played, with sample sizes. Not for prop lines (see nba-player-props-research) or a game preview (see nba-game-preview)."
 metadata:
   version: 2.0.0
   author: SportsDataHQ
@@ -11,6 +11,7 @@ metadata:
 When a player sits, his minutes and shots go somewhere. The best evidence is what actually happened in the games he already missed this season. This skill builds that comparison.
 
 ## Before you start
+- For anything across games, seasons or players, apply the sports-data-preflight checks first (ids from search, the season convention, one league, enough data).
 - Tools come from the DunkAPI MCP server. `season` is the year the season ends (2026 = 2025-26).
 - Player ids from `search_players(name)` (1 cr).
 

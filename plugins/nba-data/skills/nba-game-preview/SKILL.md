@@ -11,6 +11,7 @@ metadata:
 A one-page preview of a single game from live DunkAPI calls. Basketball means the NBA unless the user names the WNBA (`league: "wnba"`), men's or women's college (`ncaam`, `ncaaw`) or the NBL.
 
 ## Before you start
+- For anything across games, seasons or players, apply the sports-data-preflight checks first (ids from search, the season convention, one league, enough data).
 - Tools come from the DunkAPI MCP server (`https://mcp.dunkapi.com/mcp`). Call them; never fill in a number from memory.
 - `season` is the year the season ends (2026 = 2025-26). WNBA seasons are calendar years.
 - Teams accept abbreviations; `list_teams` (1 cr) if unsure.

@@ -11,6 +11,7 @@ metadata:
 A shareable one-page preview of a single game, built from live EndzoneAPI calls. Football means the NFL unless the user names college (`league: "ncaaf"`) or FCS.
 
 ## Before you start
+- For anything across games, seasons or players, apply the sports-data-preflight checks first (ids from search, the season convention, one league, enough data).
 - Tools come from the EndzoneAPI MCP server (`https://mcp.endzoneapi.com/mcp`). Call them; never fill in a number from memory.
 - `season` is the year the regular season starts (2025 = the 2025-26 season). Game ids look like `2025_12_BUF_KC` (season, week, away, home).
 - Team codes are standard abbreviations (LA for the Rams, WAS, LV, LAC, JAX). Use `list_teams` if unsure.

@@ -11,6 +11,7 @@ metadata:
 Prop lines are information about what the market expects a player to do. This skill shows that information clearly and checks it against what the player actually did. It never recommends a side, a stake or a bet.
 
 ## Before you start
+- For anything across games, seasons or players, apply the sports-data-preflight checks first (ids from search, the season convention, one league, enough data).
 - Tools come from the EndzoneAPI MCP server. Call them; never quote a line from memory (lines move hourly).
 - Prop history starts with the 2023 season. Player ids are GSIS ids (`00-0033873`); get them from `search_players`.
 - Markets: `player_pass_yds`, `player_pass_tds`, `player_rush_yds`, `player_reception_yds`, `player_receptions`, anytime TD and more (see the tool's `market` list).

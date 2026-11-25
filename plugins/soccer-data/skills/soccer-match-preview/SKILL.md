@@ -11,6 +11,7 @@ metadata:
 A one-page preview of one match from live StrikerAPI calls. The default league is the Premier League; pass `league` for others (mls, laliga, seriea, bundesliga, ligue1, ucl, championship, nwsl, ligamx, uel, uecl, eredivisie, primeira, scotland, brazil, argentina).
 
 ## Before you start
+- For anything across games, seasons or players, apply the sports-data-preflight checks first (ids from search, the season convention, one league, enough data).
 - Tools come from the StrikerAPI MCP server (`https://mcp.strikerapi.com/mcp`). Call them; never recall a number.
 - `season` is the year the season starts (2025 = 2025-26); MLS, NWSL, Liga MX, Brazil and Argentina use calendar years.
 - Clubs accept abbreviations or names (`list_teams`, 1 cr).

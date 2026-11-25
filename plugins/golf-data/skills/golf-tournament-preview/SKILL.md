@@ -11,6 +11,7 @@ metadata:
 A tournament preview from live BirdieAPI calls. The PGA Tour is the default; pass `league` for lpga, liv, dpwt or kornferry.
 
 ## Before you start
+- For anything across games, seasons or players, apply the sports-data-preflight checks first (ids from search, the season convention, one league, enough data).
 - Tools come from the BirdieAPI MCP server (`https://mcp.birdieapi.com/mcp`). Call them; never recall a ranking or result.
 - Strokes versus the field (vs_field) = the field's average score that round minus the player's: positive is better. Our rating is that number decay-weighted over recent rounds; 2.0 means two strokes a round better than an average player in the same fields.
 - Winner prices exist only for the four men's majors. Other events: say no prices are held.

@@ -1,6 +1,6 @@
 ---
 name: tennis-match-preview
-description: "Use when the user wants a preview of one ATP or WTA singles match: 'preview Sinner vs Alcaraz', 'who wins Swiatek vs Gauff on clay', 'break down tonight's match', 'how do they match up on grass', 'head to head and form'. Produces a one-page report: our overall and surface Elo with the pregame win probability, surface records, recent form, the head to head with its caveat, and the market's prices. Not for full tournament draws (use get_tournament directly) or modeling (see model-building)."
+description: "Use when the user wants a tennis match preview or matchup analysis for any ATP or WTA singles match: 'preview Sinner vs Alcaraz', 'break down tonight's tennis match', 'US Open quarterfinal preview', 'Wimbledon semifinal breakdown', 'how do they match up on grass', 'who wins Swiatek vs Gauff on clay', 'tennis matchup analysis'. Produces a one-page report: our surface Elo and pregame win probability, surface records, form, head to head with its caveat, and the market's prices. Not for rankings lists or full draws (call the tools directly) or modeling (see model-building)."
 metadata:
   version: 2.0.0
   author: SportsDataHQ
@@ -11,6 +11,7 @@ metadata:
 A one-page preview of one singles match from live AcesAPI calls. The ATP is the default; pass `league: "wta"` for women's matches.
 
 ## Before you start
+- For anything across games, seasons or players, apply the sports-data-preflight checks first (ids from search, the season convention, one league, enough data).
 - Tools come from the AcesAPI MCP server (`https://mcp.acesapi.com/mcp`). Call them; never recall a ranking or record.
 - There are no serve or return statistics in the data (no aces, holds, breaks). Do not invent them; analyse from results, ratings and games won.
 - Season is the calendar year. Player ids from `search_players(name)` (1 cr); search the right tour.
