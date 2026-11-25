@@ -1,0 +1,54 @@
+{
+  "skill": "tennis-surface-form",
+  "tasks": [
+    {
+      "prompt": "Is Carlos Alcaraz better on clay or hard courts?",
+      "expect": [
+        "get_surface_splits with career and by_season",
+        "matches counted per surface",
+        "surface Elo shown beside records"
+      ]
+    },
+    {
+      "prompt": "Who is the strongest WTA player on clay right now?",
+      "expect": [
+        "get_ratings with surface clay and league wta",
+        "ratings described as ours, not a ranking",
+        "active_since window stated"
+      ]
+    },
+    {
+      "prompt": "How does a player with 9 grass matches do on grass?",
+      "expect": [
+        "flags 9 matches as thin",
+        "no specialist label"
+      ]
+    }
+  ],
+  "triggers": {
+    "should": [
+      "is he better on clay",
+      "Alcaraz grass record",
+      "surface splits for Sinner",
+      "how does she do on hard courts",
+      "is he a clay courter",
+      "who is strongest on grass right now",
+      "Djokovic record on each surface",
+      "does Swiatek dominate clay more than hard",
+      "best hard court player by rating",
+      "Medvedev clay results"
+    ],
+    "should_not": [
+      "preview Sinner vs Alcaraz",
+      "head to head Djokovic Nadal",
+      "simulate Wimbledon",
+      "tennis match odds for today",
+      "who is ranked number one",
+      "aces per match for Isner",
+      "build a tennis Elo model",
+      "surface of the Australian Open",
+      "is the clay court at Roland Garros slow",
+      "golf course history for Augusta"
+    ]
+  }
+}

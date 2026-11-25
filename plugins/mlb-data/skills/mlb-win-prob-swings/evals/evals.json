@@ -1,0 +1,54 @@
+{
+  "skill": "mlb-win-prob-swings",
+  "tasks": [
+    {
+      "prompt": "What was the turning point of the Yankees game last night?",
+      "expect": [
+        "get_games then get_plate_appearances with the game_id",
+        "swings computed from consecutive win probability values and said to be computed",
+        "top swings with inning, outs and runners as returned"
+      ]
+    },
+    {
+      "prompt": "Biggest plays of Game 7 of the 2025 World Series",
+      "expect": [
+        "season_type postseason handled",
+        "home-team win probability explained, winner's side shown",
+        "no clutch labels"
+      ]
+    },
+    {
+      "prompt": "Win probability swings in a college baseball game",
+      "expect": [
+        "says college rows carry no win probability",
+        "stops without estimating"
+      ]
+    }
+  ],
+  "triggers": {
+    "should": [
+      "what was the biggest swing in the game",
+      "when did the Dodgers win it",
+      "turning point of last night",
+      "biggest plays of the World Series",
+      "win probability chart for that game",
+      "who was the hero of the Yankees game",
+      "what decided the Mets game",
+      "most important at bat last night",
+      "how did the Cubs come back",
+      "biggest home run by win probability"
+    ],
+    "should_not": [
+      "preview tonight's Mets game",
+      "who is due to regress",
+      "did his fastball velocity drop",
+      "where does Judge hit the ball",
+      "pitching matchups for the week",
+      "moneyline movement for the Dodgers",
+      "MLB standings",
+      "who leads the league in homers",
+      "win probability of the Lakers",
+      "Elo ratings for MLB teams"
+    ]
+  }
+}
