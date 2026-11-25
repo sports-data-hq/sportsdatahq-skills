@@ -1,0 +1,55 @@
+{
+  "skill": "nba-pace-efficiency-matchup",
+  "tasks": [
+    {
+      "prompt": "Celtics vs Knicks pace and efficiency matchup",
+      "expect": [
+        "get_team_stats called for both teams",
+        "pace, ratings and four factors shown with games played",
+        "expected pace labelled a rule of thumb"
+      ]
+    },
+    {
+      "prompt": "Who has the better defence, OKC or Denver?",
+      "expect": [
+        "defensive rating per 100 possessions from get_team_stats",
+        "league placement or sample shown",
+        "no unsupported claims"
+      ]
+    },
+    {
+      "prompt": "Is tonight's Lakers game going to be high scoring?",
+      "expect": [
+        "get_schedule and get_team_stats called",
+        "posted total reported as the market's number",
+        "no pick or lean"
+      ]
+    }
+  ],
+  "triggers": {
+    "should": [
+      "will this be a fast game",
+      "Celtics vs Knicks pace matchup",
+      "who has the better net rating",
+      "offense versus defense matchup",
+      "four factors comparison",
+      "is this a high-possession game",
+      "how does the pace of the Pacers compare to the Cavs",
+      "which team defends the three better by rate",
+      "efficiency matchup for tonight's game",
+      "WNBA pace comparison Liberty and Aces"
+    ],
+    "should_not": [
+      "preview the Warriors game",
+      "Luka points prop",
+      "who absorbs minutes without Embiid",
+      "shot chart for Curry",
+      "NBA standings",
+      "NFL EPA per play",
+      "NHL possession stats",
+      "build a net rating model",
+      "college basketball tempo",
+      "LeBron career stats"
+    ]
+  }
+}

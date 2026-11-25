@@ -1,0 +1,55 @@
+{
+  "skill": "tennis-tournament-simulation",
+  "tasks": [
+    {
+      "prompt": "Simulate the Wimbledon men's draw",
+      "expect": [
+        "list_tournaments and get_tournament called",
+        "method statement with Elo formula",
+        "round-by-round probabilities with simulation count"
+      ]
+    },
+    {
+      "prompt": "What is Gauff's path at the US Open?",
+      "expect": [
+        "league wta passed",
+        "draw and ratings used",
+        "path difficulty described with numbers"
+      ]
+    },
+    {
+      "prompt": "Simulate a tournament whose draw is not out yet",
+      "expect": [
+        "says the draw is not published",
+        "does not invent a bracket",
+        "offers ratings only"
+      ]
+    }
+  ],
+  "triggers": {
+    "should": [
+      "who wins Wimbledon",
+      "simulate the US Open draw",
+      "chance Sinner reaches the final",
+      "how tough is Alcaraz's quarter",
+      "odds of an upset in the first round",
+      "WTA 1000 draw simulation",
+      "title probabilities for the French Open",
+      "who has the easiest draw",
+      "run the bracket 10,000 times",
+      "what are Djokovic's chances in Melbourne"
+    ],
+    "should_not": [
+      "Sinner vs Alcaraz head to head",
+      "preview the semifinal",
+      "who won the Australian Open",
+      "current ATP rankings",
+      "best surface for Swiatek",
+      "simulate the NBA playoffs",
+      "golf tournament preview",
+      "build a tennis model",
+      "what is the schedule today",
+      "Wimbledon odds from the books"
+    ]
+  }
+}

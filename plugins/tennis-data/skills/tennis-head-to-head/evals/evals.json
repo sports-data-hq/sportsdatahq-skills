@@ -1,0 +1,55 @@
+{
+  "skill": "tennis-head-to-head",
+  "tasks": [
+    {
+      "prompt": "Sinner vs Alcaraz head to head",
+      "expect": [
+        "get_head_to_head called",
+        "record by surface with meetings counted",
+        "ratings shown beside it with the caveat"
+      ]
+    },
+    {
+      "prompt": "Does Medvedev's record against Zverev matter for this match?",
+      "expect": [
+        "classifies the record (too few, close, lopsided)",
+        "ratings and rankings given",
+        "no prediction from the record alone"
+      ]
+    },
+    {
+      "prompt": "Swiatek vs Gauff on clay",
+      "expect": [
+        "league wta passed",
+        "surface record and ratings reported",
+        "small-sample warning when meetings are few"
+      ]
+    }
+  ],
+  "triggers": {
+    "should": [
+      "Sinner vs Alcaraz head to head",
+      "who leads the rivalry",
+      "how many times have they played",
+      "has he ever beaten him on clay",
+      "do they split on grass",
+      "is the head to head meaningful here",
+      "every meeting between Swiatek and Gauff",
+      "finals record between Djokovic and Nadal",
+      "last time they played",
+      "what is the h2h between Zverev and Medvedev"
+    ],
+    "should_not": [
+      "preview Sinner vs Alcaraz tonight",
+      "simulate the US Open draw",
+      "ATP rankings this week",
+      "how likely is he to win the tournament",
+      "tennis odds for the match",
+      "golf head to head",
+      "NFL head to head Chiefs Bills",
+      "build a tennis Elo model",
+      "surface record for Swiatek only",
+      "who won the last Wimbledon"
+    ]
+  }
+}
