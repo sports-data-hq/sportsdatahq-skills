@@ -1,6 +1,6 @@
 ---
 name: mlb-batter-spray-profile
-description: "Use when the user wants to know where an MLB batter hits the ball: 'spray chart for Judge', 'does he pull the ball', 'how often does he hit fly balls to left', 'is he a ground ball hitter', 'where does Ohtani hit line drives', 'batted ball profile'. Reports balls in play by trajectory and by field (left, center, right) with hit rates and counts, for a season or the postseason. Not for a game preview (see mlb-game-preview), luck-versus-skill screens (see mlb-regression-candidates) or a pitcher's pitch changes (see mlb-pitcher-skill-change)."
+description: "Use when the user asks where or how an MLB hitter hits the ball, in fan or analyst wording: 'Tatis spray chart', 'does Seager go oppo', 'is he a pull hitter', 'too many ground balls?', 'fly ball guy?', 'where do his hits go', 'line drive rate for Freeman', 'batted ball mix'. Use this whenever a named hitter and batted-ball direction or type come up. Load it for short fragments and follow-ups too, even with no name given, instead of answering from memory or going straight to the raw tools. Reports balls in play by trajectory and by field (left, center, right) with hit rates and counts, for a season or the postseason. Not for a game preview (see mlb-game-preview), luck screens (see mlb-regression-candidates), a pitcher's pitch mix (see mlb-pitcher-skill-change), exit velocity leaders or prop prices."
 metadata:
   version: 2.0.0
   author: SportsDataHQ

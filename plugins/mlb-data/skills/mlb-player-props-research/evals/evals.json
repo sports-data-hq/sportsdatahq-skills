@@ -1,0 +1,55 @@
+{
+ "skill": "mlb-player-props-research",
+ "tasks": [
+  {
+   "prompt": "What's Skenes's strikeout line tonight and how has he done against it?",
+   "expect": [
+    "get_player_props for strikeouts",
+    "get_prop_history with hit rate and n",
+    "pitch count split",
+    "no pick"
+   ]
+  },
+  {
+   "prompt": "How often does Judge go over his total bases?",
+   "expect": [
+    "get_prop_history called",
+    "split by lineup spot or PA",
+    "sample size stated"
+   ]
+  },
+  {
+   "prompt": "Is the over a lock for Ohtani's hits?",
+   "expect": [
+    "declines to call a side",
+    "shows record as information"
+   ]
+  }
+ ],
+ "triggers": {
+  "should": [
+   "Skenes K line tonight",
+   "how often does Judge clear his total bases",
+   "compare hits lines across books for Soto",
+   "did Cole's strikeout prop move",
+   "home run price for Ohtani",
+   "outs recorded line for Webb",
+   "Freeman RBI prop history",
+   "is Skubal's K line higher than usual",
+   "batter hits over rate for Witt",
+   "strikeout prop for the Dodgers starter"
+  ],
+  "should_not": [
+   "preview Yankees vs Red Sox",
+   "has Skenes changed his pitch mix",
+   "who's due to regress this year",
+   "NFL passing yards prop",
+   "what's Ohtani's spray chart",
+   "explain implied probability",
+   "biggest win probability swings last night",
+   "fantasy streamers this week",
+   "should I bet the over on Judge",
+   "MLB standings"
+  ]
+ }
+}
