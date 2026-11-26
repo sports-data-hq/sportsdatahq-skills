@@ -50,18 +50,18 @@ Just one skill: `npx skills add sports-data-hq/sportsdatahq-skills --skill nfl-g
 
 ## Skills
 
-**Shared:** `sports-data-preflight` (ids, season conventions, duplicates, enough data), `market-vs-model` (the market's no-margin probability beside a model's, as information), `odds-market-analysis`, `prediction-tracker`, `model-building`, `feature-engineering`, `backtesting`, `walk-forward-validation`, `probability-calibration`, `elo-engineering`, `visualization`, `data-pipeline`, `nl-to-query`, `sports-skill-router`.
+**Shared:** `sports-data-preflight` (ids, season conventions, duplicates, enough data), `market-vs-model` (the market's no-margin probability beside a model's, as information), `odds-market-analysis`, `prediction-tracker`, `model-building`, `feature-engineering`, `backtesting`, `walk-forward-validation`, `probability-calibration`, `elo-engineering`, `visualization`, `data-pipeline`.
 
 | Sport | Skills |
 |---|---|
-| Hockey | `nhl-game-preview`, `nhl-player-props-research`, `nhl-goalie-analysis`, `nhl-daily-slate`, `nhl-advanced-stats`, `nhl-xg-model`, `nhl-war-gar`, `nhl-team-analysis`, `nhl-player-scouting`, `nhl-playoff-simulation`, `nhl-totals-model`, `nhl-game-lookup`, `nhl-odds-explorer`, `nhl-puckapi-tools`, `nhl-research-workflow`, `nhl-goalie-gsax-report`, `nhl-xg-report` |
+| Hockey | `nhl-game-preview`, `nhl-player-props-research`, `nhl-daily-slate`, `nhl-advanced-stats`, `nhl-xg-model`, `nhl-war-gar`, `nhl-player-scouting`, `nhl-playoff-simulation`, `nhl-totals-model`, `nhl-odds-explorer`, `nhl-puckapi-tools`, `nhl-research-workflow`, `nhl-goalie-gsax-report`, `nhl-xg-report` |
 | Football | `nfl-game-preview`, `nfl-player-props-research`, `nfl-weekly-usage-report`, `nfl-fourth-down-review`, `nfl-epa-leaderboards`, `nfl-qb-efficiency`, `nfl-injury-impact` |
 | Basketball | `nba-game-preview`, `nba-player-props-research`, `nba-minutes-usage-redistribution`, `nba-shot-quality`, `nba-pace-efficiency-matchup` |
 | Baseball | `mlb-game-preview`, `mlb-regression-candidates`, `mlb-pitcher-skill-change`, `mlb-streaming-planner`, `mlb-batter-spray-profile`, `mlb-win-prob-swings` |
 | Soccer | `soccer-match-preview`, `soccer-xg-breakdown`, `soccer-season-simulation`, `soccer-team-style-profile`, `soccer-set-pieces` |
 | Tennis | `tennis-match-preview`, `tennis-head-to-head`, `tennis-tournament-simulation`, `tennis-surface-form` |
 | Golf | `golf-tournament-preview`, `golf-strokes-vs-field`, `golf-course-history`, `golf-finish-simulation`, `golf-leaderboard-story` |
-| UFC | `ufc-fight-preview`, `ufc-elo-baseline`, `ufc-fighter-profile`, `ufc-finish-profile` |
+| UFC | `ufc-fight-preview`, `ufc-elo-baseline`, `ufc-fighter-profile` |
 | Cricket | `cricket-match-preview`, `cricket-phase-analysis`, `cricket-chase-win-probability`, `cricket-venue-effects`, `cricket-batter-vs-bowler` |
 
 More are on the way for every sport: fourth-down and EPA work, xG and GSAx reports, regression screens, simulations. `catalog.json` lists every skill with its plugin and flags (all read-only; none move money).
