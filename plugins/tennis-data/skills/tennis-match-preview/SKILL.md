@@ -36,8 +36,14 @@ What to watch: 2-3 bullets from the numbers
 Data: get_schedule, get_ratings, get_surface_splits, get_player_matches, get_head_to_head | <tour>, <season>
 ```
 
+## When there's no match
+
+If the two players aren't drawn to meet, don't stop to ask. Preview the matchup as it would play on the surface of the next event both are entered in (or the surface asked about): head to head, surface Elo and recent form, labelled hypothetical. If a match between them is scheduled, use that.
+
 ## Rules
 - Say "our model" for the probability and "the market" for prices; never blend them.
 - Retirements count as results but are not rated; walkovers count nowhere. Mention them when they distort a record.
 - Odds are information only: no pick, stake or bet.
+- Complete before writing: every step in the default path is called for both sides before the preview is written. If a call fails or returns nothing, say which section is missing rather than writing around it.
+- Sequences (last 5, recent form, a run of results) are quoted in the order the tool returns them, with dates; never retell them from memory. Lists in the answer must match the tool rows.
 - Out of credits: if a call is refused for credits, pass on the API's message as it comes (it says when free credits refill and how to add more), and stop; don't retry or switch tools to get around it.
