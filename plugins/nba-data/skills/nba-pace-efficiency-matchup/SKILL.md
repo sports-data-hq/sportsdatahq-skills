@@ -2,7 +2,7 @@
 name: nba-pace-efficiency-matchup
 description: "Use when the user asks about tempo or how two NBA or WNBA teams' styles match up, in fan or analyst wording: 'is this going to be a track meet', 'pace of Pacers vs Thunder', 'whose offense beats whose defense', 'net rating edge', 'four factors for this game', 'slow grind or shootout', 'does the total fit the pace'. Use this whenever tempo, pace or team efficiency is compared. Load it for short fragments and follow-ups too, even with no name given, instead of answering from memory or going straight to the raw tools. Lines up pace, offensive and defensive rating per 100 possessions and the four factors for both teams, plus our ratings and the posted total as market information. Not for a full game preview (see nba-game-preview), player lines (see nba-player-props-research), minutes when a player sits (see nba-minutes-usage-redistribution) or shot locations (see nba-shot-quality)."
 metadata:
-  version: 2.0.0
+  version: 2.1.0
   author: SportsDataHQ
 ---
 

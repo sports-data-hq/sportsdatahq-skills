@@ -1,0 +1,56 @@
+{
+  "skill": "mlb-fantasy-waivers",
+  "tasks": [
+    {
+      "prompt": "Best hitters on the wire right now? I need a shortstop",
+      "expect": [
+        "get_leaders then game logs",
+        "PA per game with n",
+        "availability unchecked",
+        "sample-size flags"
+      ]
+    },
+    {
+      "prompt": "Is Brice Turang's hot streak real or should I sell?",
+      "expect": [
+        "last 14 days vs season line with PA",
+        "plate appearances per game trend",
+        "no regression claim without sample"
+      ]
+    },
+    {
+      "prompt": "Who should I drop, my bench has Isaac Paredes and Jake Burger",
+      "expect": [
+        "same playing-time test applied",
+        "role evidence from the logs",
+        "no handedness claims"
+      ]
+    }
+  ],
+  "triggers": {
+    "should": [
+      "best hitters on my wire",
+      "who is getting everyday at-bats now",
+      "call-up worth adding",
+      "is his hot streak real",
+      "who should I drop from my bench",
+      "platoon bat I can pick up",
+      "who is hitting leadoff now",
+      "a catcher to add",
+      "shortstop pickup",
+      "waiver add for my injured outfielder"
+    ],
+    "should_not": [
+      "who do I stream Tuesday",
+      "two-start pitchers this week",
+      "build my DraftKings MLB lineup",
+      "who is due to regress",
+      "has this pitcher's slider changed",
+      "Ohtani hits prop line",
+      "MLB playoff odds",
+      "preview Dodgers Padres",
+      "MLB standings",
+      "trade my Soto for his Judge"
+    ]
+  }
+}

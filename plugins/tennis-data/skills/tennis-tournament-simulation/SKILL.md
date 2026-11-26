@@ -2,7 +2,7 @@
 name: tennis-tournament-simulation
 description: "Use when the user wants title or round chances for a tennis tournament from the draw, in fan or analyst wording: 'who wins the French Open', 'Sinner's chance to win Wimbledon', 'how deep is Gauff's section', 'who is in the toughest quarter', 'chance of an early upset', 'will a top seed go out in round one', 'simulate the Miami draw', 'odds to reach the semis', 'who wins the Slam', 'upset odds in round one', 'chance he goes deep'. Use this whenever a whole tournament or a player's path through it is the subject. Also use it for bare follow-ups with no name given, and load it instead of answering from memory or going straight to the raw tools. Simulates the draw with our surface Elo ratings, states the method and reports round-by-round probabilities. Not for one match (see tennis-match-preview), a head-to-head record (see tennis-head-to-head), a finished tournament's results (call get_tournament) or best surface for a player (see tennis-surface-form)."
 metadata:
-  version: 2.0.0
+  version: 2.1.0
   author: SportsDataHQ
 ---
 

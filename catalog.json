@@ -90,6 +90,22 @@
    "moves_money": false
   },
   {
+   "name": "mlb-dfs-stacks",
+   "plugin": "mlb-data",
+   "description": "Use when someone has an MLB daily fantasy slate: 'build my MLB DraftKings lineup', 'best stacks tonight', 'which team has the highest implied total', 'who do I pair with this pitcher', 'one-off hitters to fill out the stack', 'cheap pitcher plays', '5-3 stack', 'Coors stack', 'salary file for tonight, make a lineup'. Ranks teams by the market's implied run total, projects hitters and starting pitchers from prop medians in fantasy points and builds lineups under the cap from the user's salary file. Also for bare follow-ups with no names: load this skill first, then ask for what is missing, rather than answering from memory. Not for entry fees, contest choice or how much to play, which it will not advise; not for a week of pitching matchups (see mlb-streaming-planner), season-long waivers (see mlb-fantasy-waivers) or prop research.",
+   "reads_live_data": true,
+   "writes": false,
+   "moves_money": false
+  },
+  {
+   "name": "mlb-fantasy-waivers",
+   "plugin": "mlb-data",
+   "description": "Use when a fantasy baseball manager is looking for pickups or deciding on a drop: 'best hitters on the wire', 'who is getting everyday at-bats', 'call-up worth adding', 'is his hot streak real', 'drop candidate', 'platoon bat available', 'who is hitting leadoff now', 'catcher or shortstop to add', 'pitcher to stash'. Ranks players by plate appearances per game over the last two weeks, quality of contact and strikeouts, role and injury status. Also for bare follow-ups with no names: load this skill first, then ask for what is missing, rather than answering from memory. Not for starting-pitcher streaming around a schedule (see mlb-streaming-planner), luck screens (see mlb-regression-candidates), pitch changes (see mlb-pitcher-skill-change), DFS lineups or trades. Cannot see roster percentage.",
+   "reads_live_data": true,
+   "writes": false,
+   "moves_money": false
+  },
+  {
    "name": "mlb-game-preview",
    "plugin": "mlb-data",
    "description": "Use when the user wants an MLB game preview or a college baseball game breakdown: 'MLB game preview', 'preview Yankees vs Red Sox', 'break down tonight's Dodgers game', 'what's the line for the Astros game', 'how does Skubal match up tonight', 'who has the edge in pitching tonight', 'series preview'. Produces a one-page report: records and run differential, offense and run prevention, our Elo, the starters' arsenals when known, the line and what it implies. Not for regression screens (other mlb- skills) or model building (see model-building).",
@@ -178,6 +194,22 @@
    "moves_money": false
   },
   {
+   "name": "nba-dfs-lineup",
+   "plugin": "nba-data",
+   "description": "Use when someone has an NBA daily fantasy slate and wants lineups built: 'build my NBA DraftKings lineup', 'salary file for tonight, make a lineup', 'FanDuel lineup under the cap', 'value plays tonight', 'who is the cheap play with the starter out', 'stars and scrubs build', 'project the slate in fantasy points', 'late swap options'. Builds lineups under the cap from the user's salary file using the market's per-player projection (points, rebounds, assists, threes, steals, blocks medians as fantasy points). Also for bare follow-ups with no names: load this skill first, then ask for what is missing, rather than answering from memory. Not for entry fees, contest choice or how much to play, which it will not advise, and not for weekly streaming (see nba-fantasy-streaming) or prop research (see nba-player-props-research).",
+   "reads_live_data": true,
+   "writes": false,
+   "moves_money": false
+  },
+  {
+   "name": "nba-fantasy-streaming",
+   "plugin": "nba-data",
+   "description": "Use when a fantasy basketball manager is planning a week or a pickup: 'who do I stream tonight', 'which teams play four games this week', 'back-to-backs this week', 'best waiver adds with the injury', 'who gets the minutes now', 'light slate tonight', 'pickup for rebounds and assists', 'fill my open spot', 'streamer for the weekend'. Also for bare follow-ups with no names: load this skill first, then ask for what is missing, rather than answering from memory. Builds the week from games per team, back-to-backs, opponent pace and defense, injuries and each candidate's recent minutes and per-minute production. Not for one team's minutes shift when a named star sits (see nba-minutes-usage-redistribution), DFS salary lineups (see nba-dfs-lineup), trades or prop lines (see nba-player-props-research).",
+   "reads_live_data": true,
+   "writes": false,
+   "moves_money": false
+  },
+  {
    "name": "nba-game-preview",
    "plugin": "nba-data",
    "description": "Use when the user wants a preview of one NBA, WNBA or college basketball game: 'preview Celtics vs Knicks', 'break down tonight's Lakers game', 'who's out for the Nuggets', 'pace and efficiency matchup for this game', 'what's the line on Bucks Heat'. Produces a one-page report: records, ratings, pace and efficiency (offensive, defensive, net rating, four factors), injuries, the line and what it implies. Not for player props (see nba-player-props-research), minutes when a star sits (see nba-minutes-usage-redistribution) or modeling (see model-building).",
@@ -218,9 +250,49 @@
    "moves_money": false
   },
   {
+   "name": "nfl-dfs-lineup",
+   "plugin": "nfl-data",
+   "description": "Use when someone has an NFL daily fantasy slate and wants lineups built: 'build my DraftKings lineup', 'here is the salary file, make a lineup under the cap', 'FanDuel lineup for Sunday', 'optimize with a QB stack', 'cheap flex plays', 'value at RB', 'projections for the main slate', 'one lineup with a bring-back'. Builds lineups under the cap from the user's salary file using the market's per-player projection (prop medians as fantasy points). Also for bare follow-ups with no names: load this skill first, then ask for what is missing, rather than answering from memory. Not for entry fees, contest choice or how much to play, which it will not advise, and not for season-long start/sit (see nfl-fantasy-start-sit) or prop research (see nfl-player-props-research). Needs the salary file pasted.",
+   "reads_live_data": true,
+   "writes": false,
+   "moves_money": false
+  },
+  {
    "name": "nfl-epa-leaderboards",
    "plugin": "nfl-data",
    "description": "Use when the user wants NFL rankings built on expected points added: 'who leads the league in EPA per play', 'best rushing offense by EPA', 'top receivers by receiving EPA', 'which defense is best by EPA allowed', 'EPA leaders on third down', 'rank the teams by efficiency'. Builds a leaderboard with the filters stated, the sample size per row and penalties, kneels and spikes excluded. Not for one quarterback's efficiency profile (see nfl-qb-efficiency), a game preview (see nfl-game-preview) or fourth-down decisions (see nfl-fourth-down-review).",
+   "reads_live_data": true,
+   "writes": false,
+   "moves_money": false
+  },
+  {
+   "name": "nfl-fantasy-draft-board",
+   "plugin": "nfl-data",
+   "description": "Use when someone is preparing a fantasy football draft: 'build me a draft board', 'tiers for running backs', 'who is overrated at his ADP', 'sleepers for this year', 'value over replacement', 'best available at pick 24', 'superflex rankings', 'who falls in my draft', 'Underdog or best ball board'. Builds tiered position rankings from last season's production, usage and depth chart, with value over replacement for the user's league size, and compares them with an ADP list the user pastes. Also for bare follow-ups with no names: load this skill first, then ask for what is missing, rather than answering from memory. Not for in-season waivers (see nfl-fantasy-waivers), weekly start/sit, trades, or DFS salary lineups. Cannot know ADP unless pasted.",
+   "reads_live_data": true,
+   "writes": false,
+   "moves_money": false
+  },
+  {
+   "name": "nfl-fantasy-start-sit",
+   "plugin": "nfl-data",
+   "description": "Use when a fantasy football manager asks who to start: 'start or sit', 'Flex: Chase or Waddle', 'QB1 or streamer this week', 'should I start my RB2', 'who is better this week, X or Y', 'rank my WRs for Sunday', 'is he startable with that injury', 'sit him vs that defense?'. Also for bare follow-ups with no names: load this skill first, then ask for what is missing, rather than answering from memory. Ranks the user's own players for one week from the market's per-player projection (prop medians turned into fantasy points), role and injury status. Asks for the league's scoring if unstated. Not for waiver pickups (see nfl-fantasy-waivers), DFS salary lineups (see nfl-dfs-lineup), trade offers (see nfl-fantasy-trade-value) or prop research (see nfl-player-props-research).",
+   "reads_live_data": true,
+   "writes": false,
+   "moves_money": false
+  },
+  {
+   "name": "nfl-fantasy-trade-value",
+   "plugin": "nfl-data",
+   "description": "Use when a fantasy football manager asks about a trade: 'is this trade fair', 'my Barkley for his Chase', 'should I trade for him', 'who wins this trade', 'sell high on him?', 'buy low candidates', '2 for 1 offer', 'what is he worth rest of season', 'trade deadline moves'. Compares the two sides by rest-of-season points over replacement from the market's projection, usage and the remaining schedule and byes, for the user's scoring and roster. Also for bare follow-ups with no names: load this skill first, then ask for what is missing, rather than answering from memory. Not for start/sit, waivers, draft boards, dynasty pick values or DFS. Does not use trade charts it cannot verify.",
+   "reads_live_data": true,
+   "writes": false,
+   "moves_money": false
+  },
+  {
+   "name": "nfl-fantasy-waivers",
+   "plugin": "nfl-data",
+   "description": "Use when a fantasy football manager is looking for pickups: 'best waiver adds this week', 'who do I grab off the wire', 'handcuff worth stashing', 'breakout WR available', 'who is trending up in snaps', 'replace my injured RB', 'streaming TE', 'is he worth a FAAB bid', 'sleeper RBs with rising usage'. Also for bare follow-ups with no names: load this skill first, then ask for what is missing, rather than answering from memory. Ranks available players by usage trend (snap share, targets, carries, red-zone work) and the depth chart, with the user's roster-percentage list if pasted. Not for start/sit between players already owned (see nfl-fantasy-start-sit), who absorbs one named injured player's role (see nfl-weekly-usage-report), trade offers or DFS lineups. Never advises how much FAAB to spend.",
    "reads_live_data": true,
    "writes": false,
    "moves_money": false
@@ -236,7 +308,7 @@
   {
    "name": "nfl-game-preview",
    "plugin": "nfl-data",
-   "description": "Use when the user wants a preview or breakdown of one NFL or college football game: 'preview Bills vs Chiefs', 'break down Sunday's Eagles game', 'what should I know about the Ravens game', 'who's hurt for the Lions game', 'matchup analysis for TNF'. Produces a one-page report: records and form, efficiency (EPA, success rate), injuries, the line and what it implies, and head-to-head. Not for a whole week's slate of player props (see nfl-player-props-research), fantasy usage (see nfl-weekly-usage-report) or building a model (see model-building).",
+   "description": "Use when the user wants a preview or breakdown of one NFL game: 'preview Bills vs Chiefs', 'break down Sunday's Eagles game', 'what should I know about the Ravens game', 'who's hurt for the Lions game', 'matchup analysis for TNF'. Produces a one-page report: records and form, efficiency (EPA, success rate), injuries, the line and what it implies, and head-to-head. Not for a whole week's slate of player props (see nfl-player-props-research), fantasy usage (see nfl-weekly-usage-report) or building a model (see model-building).",
    "reads_live_data": true,
    "writes": false,
    "moves_money": false
@@ -285,6 +357,22 @@
    "name": "nhl-daily-slate",
    "plugin": "nhl-data",
    "description": "Use when the user asks what is on tonight, wants the full NHL slate, every game today, a daily rundown, or which games the model sees differently from the market. Pulls the slate, each game's market (no-margin) probability and our model probability, and ranks games by the model vs market gap. Odds are information only: no stakes, picks or wagering advice. Not for one game in depth (use nhl-game-preview), a plain schedule or results lookup (use nhl-game-lookup), odds-only comparison (use nhl-odds-explorer) or historical testing (use backtesting).",
+   "reads_live_data": true,
+   "writes": false,
+   "moves_money": false
+  },
+  {
+   "name": "nhl-dfs-lineup",
+   "plugin": "nhl-data",
+   "description": "Use when someone has an NHL daily fantasy slate: 'build my hockey DraftKings lineup', 'salary file for tonight, make a lineup', 'line stack with a power play', 'cheap goalie options', 'which line to stack', 'value defensemen', 'project the slate', 'FanDuel hockey lineup'. Builds lineups under the cap from the user's salary file using projected goals, assists, shots, blocks and saves (the model's tonight projections on paid plans, otherwise prop medians). Also for bare follow-ups with no names: load this skill first, then ask for what is missing, rather than answering from memory. Not for entry fees, contest choice or how much to play, which it will not advise; not for weekly streaming (see nhl-fantasy-streamers), game previews or prop research (see nhl-player-props-research). Needs the salary file pasted.",
+   "reads_live_data": true,
+   "writes": false,
+   "moves_money": false
+  },
+  {
+   "name": "nhl-fantasy-streamers",
+   "plugin": "nhl-data",
+   "description": "Use when a fantasy hockey manager is planning the week or hunting pickups: 'goalie to stream', 'who has four games this week', 'back-to-back goalies', 'power play unit to add', 'defenseman with shots and blocks', 'rest of week waiver adds', 'is his ice time up', 'Monday-Thursday schedule', 'hot goalie worth a stash', 'who gets first-unit power play now'. Ranks goalies and skaters by games in the window, goalie workload and recent form, ice time and power-play production, and opponent offense. Also for bare follow-ups with no names: load this skill first, then ask for what is missing, rather than answering from memory. Not for a single game preview (see nhl-game-preview), a goalie's season quality (see nhl-goalie-analysis), DFS lineups (see nhl-dfs-lineup) or prop prices (see nhl-player-props-research).",
    "reads_live_data": true,
    "writes": false,
    "moves_money": false
@@ -405,6 +493,22 @@
    "name": "nhl-xg-report",
    "plugin": "nhl-data",
    "description": "Use when the user asks whether an NHL team's or game's result matches the chances created, in fan or analyst wording: 'were the Oilers lucky last night', 'who really won that game', 'is the Panthers' record legit', 'are they due to slide', 'got outshot but won?', 'good process bad results', 'where did the shots come from', 'was the win deserved', 'is that record a mirage'. Use this whenever results are compared with shot quality or chances. Also use it for bare follow-ups with no name given, and load it instead of answering from memory or going straight to the raw tools. Reports 5v5 expected goals for and against from team stats, and a game's shot volume and locations from the shot map, saying what is and is not an xG figure. Not for a game preview (see nhl-game-preview), goalies against shot quality (see nhl-goalie-gsax-report), what a stat means (see nhl-advanced-stats) or building a model (see nhl-xg-model).",
+   "reads_live_data": true,
+   "writes": false,
+   "moves_money": false
+  },
+  {
+   "name": "soccer-fpl-captain",
+   "plugin": "soccer-data",
+   "description": "Use when someone plays Fantasy Premier League and picks a captain: 'who do I captain', 'Haaland or Salah armband', 'vice captain', 'captain differential', 'double gameweek captain', 'safe captain pick', 'is it worth captaining him away', 'Triple Captain target', 'rank my top three for the armband'. Ranks the user's shortlist by expected points doubled, from minutes security, our xG rate, the opponent, and anytime-scorer, shots and assist prices where posted. Also for bare follow-ups with no names: load this skill first, then ask for what is missing, rather than answering from memory. Not for transfers (see soccer-fpl-transfers), match previews (see soccer-match-preview) or prop research (see soccer-player-props-research). Ownership must be pasted to call a differential.",
+   "reads_live_data": true,
+   "writes": false,
+   "moves_money": false
+  },
+  {
+   "name": "soccer-fpl-transfers",
+   "plugin": "soccer-data",
+   "description": "Use when someone plays Fantasy Premier League and is planning transfers: 'who do I bring in', 'should I take a hit', 'sell him or hold', 'best forwards for the next five gameweeks', 'fixture run for Arsenal', 'who is nailed on for minutes', 'wildcard draft', 'which defense has the best fixtures', 'free transfer or save it', 'replace my injured midfielder'. Rates the user's squad and candidates by expected points over the next gameweeks from minutes, our xG, fixture strength from team goals for and against, and anytime-scorer prices. Also for bare follow-ups with no names: load this skill first, then ask for what is missing, rather than answering from memory. Not for the captain pick (see soccer-fpl-captain), a match preview (see soccer-match-preview), prop research or other fantasy games. Prices and ownership must be pasted.",
    "reads_live_data": true,
    "writes": false,
    "moves_money": false

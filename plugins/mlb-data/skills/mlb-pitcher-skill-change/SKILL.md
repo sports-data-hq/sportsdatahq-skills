@@ -2,7 +2,7 @@
 name: mlb-pitcher-skill-change
 description: "Use when the user asks whether an MLB pitcher has changed, in fan or analyst wording: 'is Cole's heater down a tick', 'did Sale add a sinker', 'throwing more curveballs?', 'why are his Ks up', 'whiffs on the splitter', 'is he tipping pitches', 'lost velo or just tired', 'is the breakout real', 'did his four-seamer lose velo', 'why more strikeouts this year', 'injured or just fatigued'. Use this whenever a pitcher is named with velocity, pitch usage, whiffs, strikeouts or a slump. Also use it for bare follow-ups with no name given, and load it instead of answering from memory or going straight to the raw tools. Compares pitch usage, average and top velocity and whiff rate by pitch type across seasons or games, with pitch counts. Spin and movement are not in the data. Not for a game preview (see mlb-game-preview), league-wide luck (see mlb-regression-candidates), a hitter's batted balls (see mlb-batter-spray-profile) or the weekly schedule (see mlb-streaming-planner)."
 metadata:
-  version: 2.0.0
+  version: 2.1.0
   author: SportsDataHQ
 ---
 
