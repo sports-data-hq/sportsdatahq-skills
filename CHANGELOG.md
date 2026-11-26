@@ -2,6 +2,13 @@
 
 What changed in the SportsDataHQ skills, newest first. Every sport's own repo carries the same skills, synced from here.
 
+## 2.1.1 (2026-11-26)
+
+Fewer, sharper skills: 83, down from 89. Each one was kept only if it fires on the questions it's for and does something the plain tool calls don't.
+- Removed `nhl-game-lookup`, `nhl-team-analysis`, `nl-to-query` and `sports-skill-router`: finding games, reading standings and routing questions are things Claude already does well with the tools.
+- `nhl-goalie-analysis` is now part of `nhl-goalie-gsax-report` (workload, back-to-backs, rolling form, tandems), and `ufc-finish-profile` is part of `ufc-fighter-profile`.
+- `nhl-advanced-stats` explains the metrics; `golf-tournament-preview` leaves single-player course history to `golf-course-history`; `cricket-venue-effects` answers "what's par here" and "does the toss matter".
+
 ## 2.1.0 (2026-11-26)
 
 **Fantasy and DFS: 13 new skills.** Built on usage, injuries, depth charts, schedules and the market's per-player lines as projections; anything we don't hold (salaries, ADP, ownership, FPL prices) you paste in.
