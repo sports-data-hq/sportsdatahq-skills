@@ -4,7 +4,7 @@
   {
    "name": "cricket-batter-vs-bowler",
    "plugin": "cricket-data",
-   "description": "Use when the user asks how a cricket batter has fared against a particular bowler: 'Kohli against Starc', 'has Bumrah got Warner out', 'how does he play spin', 'Head against Bumrah in T20s', 'batter versus bowler record', 'who dismissed him most'. Reports balls, runs, dismissals and strike rate for the pair, and says plainly when the sample is too small. Not for a match preview (see cricket-match-preview), a phase breakdown (see cricket-phase-analysis) or ground effects (see cricket-venue-effects).",
+   "description": "Use when the user asks how a cricket batter fares against a bowler or a kind of bowling, in fan or analyst wording: 'Root vs Jadeja', 'does Smith handle Archer', 'is he scared of left-arm pace', 'struggles against leg spin?', 'who keeps getting Rohit out', 'his bunny in T20s', 'Babar versus Naseem', 'any good against turners', 'does he fear pace', 'who has dismissed him the most times'. Use this whenever a batter and bowler, or a batter and a bowling type, are mentioned together. Also use it for bare follow-ups with no name given, and load it instead of answering from memory or going straight to the raw tools. Reports balls, runs, dismissals and strike rate for the pair or type, and says plainly when the sample is too small. Not for a match preview (see cricket-match-preview), a phase split (see cricket-phase-analysis), ground effects (see cricket-venue-effects) or chase win probability (see cricket-chase-win-probability).",
    "reads_live_data": true,
    "writes": false,
    "moves_money": false
@@ -28,7 +28,7 @@
   {
    "name": "cricket-phase-analysis",
    "plugin": "cricket-data",
-   "description": "Use when the user wants cricket numbers split by phase of an innings: 'how does he score in the powerplay', 'death-over bowling for Bumrah', 'middle overs strike rate', 'which team scores best in the last five overs', 'phase breakdown of that chase', 'who bowls well at the death in the IPL'. Splits runs, strike rate, economy, dot balls and wickets by powerplay, middle and death overs from ball-by-ball data, with balls counted. Not for a match preview (see cricket-match-preview), the win probability of a chase (see cricket-chase-win-probability) or ground effects (see cricket-venue-effects).",
+   "description": "Use when the user wants cricket numbers split by stage of an innings, in fan or analyst wording: 'how does he go in the powerplay', 'who is good at the death', 'is he a finisher', 'economy in the middle overs', 'best team in the last 5 overs', 'first six overs', 'slog overs', 'who leaks runs at the end', 'how does he bat in the powerplay', 'phase by phase for the innings'. Use this whenever a batter, bowler or team is asked about by innings phase. Also use it for bare follow-ups with no name given, and load it instead of answering from memory or going straight to the raw tools. Splits runs, strike rate, economy, dot balls and wickets by powerplay, middle and death overs from ball-by-ball data, with balls counted. Not for batter against a named bowler (see cricket-batter-vs-bowler), a match preview (see cricket-match-preview), chase win probability (see cricket-chase-win-probability), ground effects (see cricket-venue-effects) or cricket rules.",
    "reads_live_data": true,
    "writes": false,
    "moves_money": false
@@ -36,7 +36,7 @@
   {
    "name": "cricket-venue-effects",
    "plugin": "cricket-data",
-   "description": "Use when the user wants to know how a cricket ground plays or whether the venue changes a match: 'how does Wankhede play', 'par score at Chepauk', 'should teams bat first here', 'is the ground helping spin', 'chasing record at this venue', 'do big scores happen at Dubai', 'toss decisions at this ground'. Reports innings totals, batting-first and chasing results, toss choices and phase scoring for a ground and format, with match counts. Not for a match preview (see cricket-match-preview), a chase's probability curve (see cricket-chase-win-probability) or phase stats for a player (see cricket-phase-analysis).",
+   "description": "Use when the user asks how a cricket ground or pitch plays, in fan or analyst wording: 'what is a good score at Lord's', 'bat or bowl first at Mohali', 'does it turn here', 'seamers' paradise?', 'high scoring ground?', 'do chasers win at Sharjah', 'how do captains call at the toss', 'is Eden Gardens a flat deck', 'should we bat first', 'does the pitch help spinners', 'does it favor the toss winner'. Use this whenever a ground, stadium or pitch is the subject. Also use it for bare follow-ups with no name given, and load it instead of answering from memory or going straight to the raw tools. Reports innings totals, batting-first and chasing results, toss choices and phase scoring for a ground and format, with match counts. Not for a full match preview (see cricket-match-preview), a live chase's probability (see cricket-chase-win-probability), a player's phase stats (see cricket-phase-analysis), weather or capacity.",
    "reads_live_data": true,
    "writes": false,
    "moves_money": false
@@ -44,7 +44,7 @@
   {
    "name": "golf-course-history",
    "plugin": "golf-data",
-   "description": "Use when the user asks how a golfer has done at a course or event before: 'how has Scheffler done at Augusta', 'does he play well at Pebble', 'course history for the Open', 'best record at Riviera', 'does he like this course', 'past finishes at the Players'. Reports finishes and strokes versus the field at the event or course across years, then sets them against current form, because course fit is small and recent form matters more. Not for a tournament preview (see golf-tournament-preview), general scoring form (see golf-strokes-vs-field) or modeling (see model-building).",
+   "description": "Use when the user asks how a golfer has done at a course or event before, in fan or analyst wording: 'Cantlay at Torrey', 'does Schauffele like Riviera', 'is he a course horse', 'any good here?', 'his old finishes at Sawgrass', 'has he ever won at Bay Hill', 'cuts made at Pebble', 'what has he shot here'. Use this whenever a player is paired with a venue or event, or 'this course' is the subject. Load it for short fragments and follow-ups too, even with no name given, instead of answering from memory or going straight to the raw tools. Reports finishes and strokes versus the field at that event or course across years, then sets them against current form, because course fit is small. Not for a tournament preview (see golf-tournament-preview), current form or par-3 and par-5 scoring (see golf-strokes-vs-field), finish odds (see golf-finish-simulation) or one hole's difficulty.",
    "reads_live_data": true,
    "writes": false,
    "moves_money": false
@@ -52,7 +52,7 @@
   {
    "name": "golf-finish-simulation",
    "plugin": "golf-data",
-   "description": "Use when the user wants finish probabilities for a golf tournament from our ratings: 'who is most likely to win the Masters', 'simulate the tournament', 'chance he finishes top 10', 'odds of making the cut by rating', 'how likely is a first-time winner', 'run the field'. Runs a Monte Carlo simulation in code from BirdieAPI strokes-versus-field ratings and round-to-round spread, with the method and simulation error stated. Not for a field preview (see golf-tournament-preview), one player's strokes gained (see golf-strokes-vs-field) or course form (see golf-course-history).",
+   "description": "Use when the user wants golf win or finish chances from a simulation, in fan or analyst wording: 'who is most likely to win this week', 'Cantlay's chance of a top 5', 'odds he makes the cut', 'will a longshot win', 'run the field 10,000 times', 'percent chance to finish top 20', 'simulate the PGA', 'top 10 chances for Schauffele', 'odds a nobody wins', 'probability of a debut winner'. Use this whenever someone wants probabilities for a golf tournament outcome. Also use it for bare follow-ups with no name given, and load it instead of answering from memory or going straight to the raw tools. Runs a Monte Carlo simulation in code from strokes-versus-field ratings and round-to-round spread, with the method and simulation error stated. Not for a field preview (see golf-tournament-preview), a player's form (see golf-strokes-vs-field), course record (see golf-course-history), a played event's recap (see golf-leaderboard-story) or sportsbook prices.",
    "reads_live_data": true,
    "writes": false,
    "moves_money": false
@@ -60,7 +60,7 @@
   {
    "name": "golf-leaderboard-story",
    "plugin": "golf-data",
-   "description": "Use when the user wants the story of a finished or in-progress golf tournament: 'what happened at the Open', 'how did he win', 'who made the move on Sunday', 'recap the PGA Championship', 'where did he lose the tournament', 'why did the leader fall back'. Builds a round-by-round and hole-by-hole account from the leaderboard and scorecards, with strokes versus the field. Not for finish probabilities (see golf-finish-simulation), a field preview (see golf-tournament-preview) or one player's form over time (see golf-strokes-vs-field).",
+   "description": "Use when the user wants the story of a golf tournament that has been played or is under way, in fan or analyst wording: 'what happened at Riviera', 'how did Scottie win', 'who charged on Sunday', 'where did he blow it', 'why did the leader collapse', 'recap the Open', 'back nine breakdown', 'how did he lose a 4 shot lead', 'how did he win it', 'who made a charge on the final day', 'where did it go wrong for him', 'how did the lead slip away'. Use this whenever someone asks how a result came about. Also use it for bare follow-ups with no name given, and load it instead of answering from memory or going straight to the raw tools. Builds a round-by-round and hole-by-hole account from the leaderboard and scorecards, with strokes versus the field. Not for who will win (see golf-finish-simulation), a field preview (see golf-tournament-preview), a player's form over time (see golf-strokes-vs-field) or course history (see golf-course-history).",
    "reads_live_data": true,
    "writes": false,
    "moves_money": false
@@ -68,7 +68,7 @@
   {
    "name": "golf-strokes-vs-field",
    "plugin": "golf-data",
-   "description": "Use when the user wants to know how a golfer is really playing or how golfers compare: 'who is playing best', 'strokes gained for Scheffler', 'is he good on par 5s', 'rank the field by scoring versus the field', 'is his form real', 'how does he score on par 3s'. Reports strokes versus the field per round (raw and field-strength adjusted), by hole type on the PGA Tour, with rounds counted. Not for a tournament preview (see golf-tournament-preview), a player's record at one course (see golf-course-history) or modeling (see model-building).",
+   "description": "Use when the user asks how a golfer is playing or how golfers compare on scoring, in fan or analyst wording: 'is Scottie the best right now', 'is his hot streak real', 'how is he on par 5s', 'par 3 scoring', 'strokes gained for Fleetwood', 'rank these guys', 'who is scoring best this year', 'is he declining'. Use this whenever player form or scoring is the subject. Load it for short fragments and follow-ups too, even with no name given, instead of answering from memory or going straight to the raw tools. Reports strokes versus the field per round (raw and field-strength adjusted), by hole type on the PGA Tour, with rounds counted. It holds overall scoring only, not putting, approach or driving categories, and says so. Not for a tournament preview (see golf-tournament-preview), one course's record (see golf-course-history), finish odds (see golf-finish-simulation) or a recap (see golf-leaderboard-story).",
    "reads_live_data": true,
    "writes": false,
    "moves_money": false
@@ -76,7 +76,7 @@
   {
    "name": "golf-tournament-preview",
    "plugin": "golf-data",
-   "description": "Use when the user wants a preview of a golf tournament or a player's chances: 'preview this week's PGA Tour event', 'who's playing best going into the Masters', 'course history at Augusta for Scheffler', 'field strength this week', 'LPGA preview'. Produces a report: what's on, the strongest players by our strokes-versus-field rating, course or event history for the names that matter, and winner prices for the four men's majors. Not for a finished tournament's leaderboard (call get_leaderboard) or modeling (see model-building).",
+   "description": "Use when the user wants to get ready for a golf event, in fan or analyst wording: 'what's on this week', 'who should I watch at the Memorial', 'Masters primer', 'how strong is the field', 'LIV event preview', 'who are the contenders at the Open', 'DP World Tour preview', 'storylines for the PGA'. Use this whenever an upcoming golf event is the subject. Load it for short fragments and follow-ups too, even with no name given, instead of answering from memory or going straight to the raw tools. Produces a report: what's on, the strongest players by our strokes-versus-field rating, event history for the names that matter, and winner prices for the four men's majors. Not for one player's record at a course (see golf-course-history), simulated finish odds (see golf-finish-simulation), a recap (see golf-leaderboard-story), general form (see golf-strokes-vs-field) or modeling (see model-building).",
    "reads_live_data": true,
    "writes": false,
    "moves_money": false
@@ -84,7 +84,7 @@
   {
    "name": "mlb-batter-spray-profile",
    "plugin": "mlb-data",
-   "description": "Use when the user wants to know where an MLB batter hits the ball: 'spray chart for Judge', 'does he pull the ball', 'how often does he hit fly balls to left', 'is he a ground ball hitter', 'where does Ohtani hit line drives', 'batted ball profile'. Reports balls in play by trajectory and by field (left, center, right) with hit rates and counts, for a season or the postseason. Not for a game preview (see mlb-game-preview), luck-versus-skill screens (see mlb-regression-candidates) or a pitcher's pitch changes (see mlb-pitcher-skill-change).",
+   "description": "Use when the user asks where or how an MLB hitter hits the ball, in fan or analyst wording: 'Tatis spray chart', 'does Seager go oppo', 'is he a pull hitter', 'too many ground balls?', 'fly ball guy?', 'where do his hits go', 'line drive rate for Freeman', 'batted ball mix'. Use this whenever a named hitter and batted-ball direction or type come up. Load it for short fragments and follow-ups too, even with no name given, instead of answering from memory or going straight to the raw tools. Reports balls in play by trajectory and by field (left, center, right) with hit rates and counts, for a season or the postseason. Not for a game preview (see mlb-game-preview), luck screens (see mlb-regression-candidates), a pitcher's pitch mix (see mlb-pitcher-skill-change), exit velocity leaders or prop prices.",
    "reads_live_data": true,
    "writes": false,
    "moves_money": false
@@ -100,7 +100,15 @@
   {
    "name": "mlb-pitcher-skill-change",
    "plugin": "mlb-data",
-   "description": "Use when the user wants to know if an MLB pitcher has actually changed: 'did his fastball velocity drop', 'new pitch for Skubal', 'is he throwing the slider more', 'why is his strikeout rate up', 'whiff rate on his changeup', 'is he hurt or just tired'. Compares pitch usage, average and top velocity and whiff rate by pitch type across seasons or games, with pitch counts. Not for a game preview (see mlb-game-preview), a list of lucky or unlucky results (see mlb-regression-candidates) or the weekly schedule (see mlb-streaming-planner).",
+   "description": "Use when the user asks whether an MLB pitcher has changed, in fan or analyst wording: 'is Cole's heater down a tick', 'did Sale add a sinker', 'throwing more curveballs?', 'why are his Ks up', 'whiffs on the splitter', 'is he tipping pitches', 'lost velo or just tired', 'is the breakout real', 'did his four-seamer lose velo', 'why more strikeouts this year', 'injured or just fatigued'. Use this whenever a pitcher is named with velocity, pitch usage, whiffs, strikeouts or a slump. Also use it for bare follow-ups with no name given, and load it instead of answering from memory or going straight to the raw tools. Compares pitch usage, average and top velocity and whiff rate by pitch type across seasons or games, with pitch counts. Spin and movement are not in the data. Not for a game preview (see mlb-game-preview), league-wide luck (see mlb-regression-candidates), a hitter's batted balls (see mlb-batter-spray-profile) or the weekly schedule (see mlb-streaming-planner).",
+   "reads_live_data": true,
+   "writes": false,
+   "moves_money": false
+  },
+  {
+   "name": "mlb-player-props-research",
+   "plugin": "mlb-data",
+   "description": "Use when the user asks about MLB player prop lines as information: 'Skenes strikeout line tonight', 'how often does Judge go over his total bases', 'compare hits lines across books', 'did his K prop move', 'what's the home run price for Ohtani', 'is the outs recorded line high for this starter'. Shows lines by sportsbook, the player's record against his line with sample size, the pitcher's or batter's recent workload and matchup context, and line movement. Covers strikeouts, outs, hits, home runs, total bases and RBI. Never says which side to take. Not for game previews (see mlb-game-preview), pitch-mix changes (see mlb-pitcher-skill-change) or general odds math (see odds-market-analysis).",
    "reads_live_data": true,
    "writes": false,
    "moves_money": false
@@ -108,7 +116,7 @@
   {
    "name": "mlb-regression-candidates",
    "plugin": "mlb-data",
-   "description": "Use when the user wants to know whose MLB season numbers are likely to move back toward normal: 'who is getting lucky', 'regression candidates', 'is his average sustainable', 'who is overperforming his strikeout rate', 'sell-high hitters', 'whose ERA is out of line with the peripherals'. Compares results against steadier rates (BABIP computed from plate appearances, strikeout and walk rates, home runs per plate appearance) with sample sizes. Not for a pitcher's pitch-level changes (see mlb-pitcher-skill-change), game previews (see mlb-game-preview) or the weekly schedule (see mlb-streaming-planner).",
+   "description": "Use when the user asks whether MLB numbers are real, lucky or due to change, in fan or analyst wording: 'is his hot start fake', 'will .340 hold', 'buy low guys', 'who is due to come back down', 'overperforming his BABIP', 'is that ERA a mirage', 'sell high now?', 'fluky first month'. Use this whenever results are being questioned against underlying rates. Load it for short fragments and follow-ups too, even with no name given, instead of answering from memory or going straight to the raw tools. Compares results against steadier rates (BABIP computed from plate appearances, strikeout and walk rates, home runs per plate appearance) with sample sizes. Not for a pitcher's pitch-level changes (see mlb-pitcher-skill-change), game previews (see mlb-game-preview), where a hitter hits it (see mlb-batter-spray-profile) or the weekly schedule (see mlb-streaming-planner).",
    "reads_live_data": true,
    "writes": false,
    "moves_money": false
@@ -116,7 +124,7 @@
   {
    "name": "mlb-streaming-planner",
    "plugin": "mlb-data",
-   "description": "Use when the user wants to plan a baseball week around schedules: 'who has the most games this week', 'who should I stream', 'which teams play at home this week', 'easy offences to pitch against', 'two-start week planning', 'which bullpen games are coming'. Builds a week view from the schedule, opponents' offence and run prevention, recent form of named players, injuries and the market's total. Not for lucky or unlucky results (see mlb-regression-candidates), a pitcher's pitch changes (see mlb-pitcher-skill-change) or one game's preview (see mlb-game-preview).",
+   "description": "Use when the user is planning an MLB or fantasy baseball week around the schedule, in fan or analyst wording: 'who do I stream Tuesday', 'best pickups this week', 'two-start pitchers', 'teams with 7 games', 'soft matchups for my SP', 'who plays at Coors', 'worst offenses to face', 'any bullpen days', 'most games this week', 'who to stream', 'which clubs are home all week', 'best matchups for my pitchers'. Use this whenever a week of games, streaming or pickups is the subject. Also use it for bare follow-ups with no name given, and load it instead of answering from memory or going straight to the raw tools. Builds a week view from the schedule, opponents' offence and run prevention, recent form of named players, injuries and the market's total. Not for luck screens (see mlb-regression-candidates), a pitcher's pitch changes (see mlb-pitcher-skill-change), one game's preview (see mlb-game-preview) or prop prices.",
    "reads_live_data": true,
    "writes": false,
    "moves_money": false
@@ -124,7 +132,15 @@
   {
    "name": "mlb-win-prob-swings",
    "plugin": "mlb-data",
-   "description": "Use when the user wants to know what decided an MLB game: 'what was the biggest swing in the game', 'when did the Dodgers win it', 'turning point of last night', 'biggest plays of the World Series', 'win probability chart for that game', 'who was the hero'. Orders a game's plate appearances by change in our home win probability and run value, with the base-out state. Not for a game preview (see mlb-game-preview), a pitcher's pitch trends (see mlb-pitcher-skill-change) or luck screens (see mlb-regression-candidates).",
+   "description": "Use when the user wants to know what decided a played MLB game, in fan or analyst wording: 'what flipped last night's game', 'the big moment in Game 7', 'key at-bat of the night', 'who was the hero', 'how did they come back', 'biggest play of the series', 'show me the win probability graph', 'when was it over', 'the biggest momentum shift', 'win probability graph of the game', 'when did they actually win it', 'the play that changed it'. Use this whenever a finished game's turning points are the subject. Also use it for bare follow-ups with no name given, and load it instead of answering from memory or going straight to the raw tools. Orders a game's plate appearances by change in our home win probability and run value, with the base-out state. Not for a game preview (see mlb-game-preview), pitch trends (see mlb-pitcher-skill-change), luck screens (see mlb-regression-candidates), batted-ball profiles (see mlb-batter-spray-profile) or line movement.",
+   "reads_live_data": true,
+   "writes": false,
+   "moves_money": false
+  },
+  {
+   "name": "ufc-card-preview",
+   "plugin": "mma-data",
+   "description": "Use when the user wants a whole UFC card at a glance rather than one fight: 'preview UFC 325', 'break down this weekend's card', 'who's favoured on the main card', 'which fights on Saturday are closest', 'give me the card with records and ratings', 'what's the main event and co-main look like'. Lists every bout with both fighters' records, our Elo, the market's no-margin probability and how close each fight is, then flags the biggest gaps between rating and market as information. Never says who to bet on. Not for one fight in depth (see ufc-fight-preview), one fighter's history (see ufc-fighter-profile) or how fighters finish (see ufc-finish-profile).",
    "reads_live_data": true,
    "writes": false,
    "moves_money": false
@@ -132,7 +148,7 @@
   {
    "name": "ufc-elo-baseline",
    "plugin": "mma-data",
-   "description": "Use when the user wants a ratings-only baseline for a UFC fight: 'what does Elo say about this fight', 'baseline probability for Jones vs Aspinall', 'how strong is each fighter by rating', 'who is the highest rated lightweight', 'did the rating see that upset coming', 'rating gap between the two'. Converts the pre-fight rating gap into an expected win probability, compares it with the market as information and shows the rating history. Refuses to use in-fight stats from the fight being predicted (leakage). Not for a full fight preview (see ufc-fight-preview), a fighter's profile (see ufc-fighter-profile) or model building (see model-building).",
+   "description": "Use when the user wants the rating-based view of UFC fighters, in fan or analyst wording: 'what do the ratings say about Pereira vs Hill', 'who is rated higher', 'Elo gap', 'is he rated top at 155', 'did the numbers see that upset', 'rating baseline for the co-main', 'how far apart are they on paper'. Use this whenever ratings or Elo are mentioned for fighters. Load it for short fragments and follow-ups too, even with no name given, instead of answering from memory or going straight to the raw tools. Converts the pre-fight rating gap into an expected win probability, compares it with the market as information and shows rating history. Refuses to use in-fight stats from the fight being predicted (leakage). Not for a full fight preview (see ufc-fight-preview), a fighter profile (see ufc-fighter-profile), finishing (see ufc-finish-profile) or model building (see model-building).",
    "reads_live_data": true,
    "writes": false,
    "moves_money": false
@@ -140,7 +156,7 @@
   {
    "name": "ufc-fight-preview",
    "plugin": "mma-data",
-   "description": "Use when the user wants a UFC, PFL or Bellator fight preview or matchup breakdown: 'preview Jones vs Aspinall', 'break down the main event', 'who wins this UFC fight', 'striker vs wrestler, who has the edge', 'how does he finish fights', 'is the favorite justified in this fight', 'fight night card preview'. Produces a one-page report: records by method, striking and grappling rates for and against, our Elo, recent opposition and the moneylines. Not for career stat leaderboards (call get_leaders) or modeling (see model-building).",
+   "description": "Use when the user wants to know how a UFC, PFL or Bellator fight or card shapes up, in fan or analyst wording: 'Pimblett vs Gaethje', 'who wins Saturday', 'main event breakdown', 'UFC 300 preview', 'striker or grappler, who has the edge', 'is the favorite live', 'fight night preview', 'how does Makhachev match up with Tsarukyan', 'who takes this one', 'who is the pick on fight night', 'UFC preview, no boxing'. Use this whenever two fighters are named together or a card or bout is the subject. Also use it for bare follow-ups with no name given, and load it instead of answering from memory or going straight to the raw tools. Produces a one-page report: records by method, striking and grappling rates for and against, our Elo, recent opposition and the moneylines. Not for one fighter's profile (see ufc-fighter-profile), finishing (see ufc-finish-profile), a ratings-only baseline (see ufc-elo-baseline), stat leaders (call get_leaders) or modeling.",
    "reads_live_data": true,
    "writes": false,
    "moves_money": false
@@ -148,7 +164,7 @@
   {
    "name": "ufc-fighter-profile",
    "plugin": "mma-data",
-   "description": "Use when the user wants to know who a UFC fighter is in numbers: 'profile of Islam Makhachev', 'how does Topuria fight', 'what is his record by method', 'strikes landed per minute for Pereira', 'is he a finisher', 'recent opposition for Chandler', 'does he wrestle'. Reports bio, record by method, career rates per 15 minutes with fight time counted, recent fights and rating history. Not for a specific fight's preview (see ufc-fight-preview), a ratings baseline (see ufc-elo-baseline) or stat leaderboards (call get_leaders).",
+   "description": "Use when the user asks who a UFC fighter is or how he or she fights, in fan or analyst wording: 'tell me about Pantoja', 'scouting report on Chimaev', 'what is Poirier's record', 'how many significant strikes does he land', 'does he wrestle a lot', 'who has he fought lately', 'fighter stats for Gaethje'. Use this whenever a single fighter is named with a request for numbers or a rundown. Load it for short fragments and follow-ups too, even with no name given, instead of answering from memory or going straight to the raw tools. Reports bio, record by method, career rates per 15 minutes with fight time counted, recent fights and rating history. Not for a specific fight's preview (see ufc-fight-preview), a ratings baseline (see ufc-elo-baseline), a finishing breakdown by method and round (see ufc-finish-profile) or stat leaderboards (call get_leaders).",
    "reads_live_data": true,
    "writes": false,
    "moves_money": false
@@ -156,7 +172,7 @@
   {
    "name": "ufc-finish-profile",
    "plugin": "mma-data",
-   "description": "Use when the user wants to know how a UFC fighter wins and loses: 'does he finish fights', 'KO or submission', 'how often does she go to decision', 'is he chinny', 'finish rate for Makhachev', 'who finishes the most at lightweight'. Breaks a fighter's UFC wins and losses by method and round, with finish rate, rounds, and how that compares with the weight class. Not for a fight preview (see ufc-fight-preview), the Elo baseline (see ufc-elo-baseline) or a general fighter profile (see ufc-fighter-profile).",
+   "description": "Use when the user asks how a UFC fighter wins or loses, in fan or analyst wording: 'is he a knockout artist', 'does she submit people', 'goes to decision a lot?', 'can he take a punch', 'has he been finished', 'fades in round 3?', 'finishing rate at 170', 'who ends fights early', 'is he a stopper or a point fighter', 'how often does she go the distance', 'who has the most stoppages in the division'. Use this whenever a fighter's finishes, stoppages, decisions or durability are the subject. Also use it for bare follow-ups with no name given, and load it instead of answering from memory or going straight to the raw tools. Breaks a fighter's UFC wins and losses by method and round, with finish rate, rounds, and how that compares with the weight class. Not for a fight preview (see ufc-fight-preview), the Elo baseline (see ufc-elo-baseline) or a general profile with striking and grappling rates (see ufc-fighter-profile).",
    "reads_live_data": true,
    "writes": false,
    "moves_money": false
@@ -180,7 +196,7 @@
   {
    "name": "nba-pace-efficiency-matchup",
    "plugin": "nba-data",
-   "description": "Use when the user wants to compare two NBA or WNBA teams on pace and efficiency: 'will this be a fast game', 'Celtics vs Knicks pace matchup', 'who has the better net rating', 'offense versus defense matchup', 'four factors comparison', 'is this a high-possession game'. Lines up pace, offensive and defensive rating per 100 possessions and the four factors for both teams, plus our ratings and the posted total as market information. Not for a full game preview (see nba-game-preview), player lines (see nba-player-props-research) or shot locations (see nba-shot-quality).",
+   "description": "Use when the user asks about tempo or how two NBA or WNBA teams' styles match up, in fan or analyst wording: 'is this going to be a track meet', 'pace of Pacers vs Thunder', 'whose offense beats whose defense', 'net rating edge', 'four factors for this game', 'slow grind or shootout', 'does the total fit the pace'. Use this whenever tempo, pace or team efficiency is compared. Load it for short fragments and follow-ups too, even with no name given, instead of answering from memory or going straight to the raw tools. Lines up pace, offensive and defensive rating per 100 possessions and the four factors for both teams, plus our ratings and the posted total as market information. Not for a full game preview (see nba-game-preview), player lines (see nba-player-props-research), minutes when a player sits (see nba-minutes-usage-redistribution) or shot locations (see nba-shot-quality).",
    "reads_live_data": true,
    "writes": false,
    "moves_money": false
@@ -188,7 +204,7 @@
   {
    "name": "nba-player-props-research",
    "plugin": "nba-data",
-   "description": "Use when the user asks about NBA or WNBA player prop lines as information: 'what's Luka's points line', 'how often does Jokic go over his rebounds', 'compare threes lines across books', 'how did his line move', 'what does the market imply for his PRA'. Shows lines by sportsbook, the player's record against his line with sample size and minutes context, movement and no-margin probability. Never says which side to take. Not for game previews (see nba-game-preview) or who absorbs minutes when a player sits (see nba-minutes-usage-redistribution).",
+   "description": "Use when the user asks about NBA or WNBA player prop lines or how a player did against his line, in fan or analyst wording: 'Sengun rebounds line', 'Curry threes over?', 'what is Tatum's PRA', 'Brunson assists number', 'who has the best line on Ant', 'has he cleared 25 lately', 'did his points line move', 'prop history for Wemby'. Use this whenever a player is mentioned with a stat line. Load it for short fragments and follow-ups too, even with no name given, instead of answering from memory or going straight to the raw tools. Shows lines by sportsbook, the player's record against his line with sample size and minutes context, movement and no-margin probability. Never says which side to take. Not for game previews (see nba-game-preview), minutes when a player sits (see nba-minutes-usage-redistribution), football props (see nfl-player-props-research) or building a model.",
    "reads_live_data": true,
    "writes": false,
    "moves_money": false
@@ -228,7 +244,7 @@
   {
    "name": "nfl-injury-impact",
    "plugin": "nfl-data",
-   "description": "Use when the user wants to know what an NFL injury changes: 'how much does losing the left tackle matter', 'what happens to the offense without their QB', 'who plays if the RB1 is out', 'is the Bills defense worse without Milano', 'injury report effect on the Chiefs', 'how did the team do when he missed games'. Combines the injury report, depth chart, snap counts and with-and-without splits from play-by-play, with sample sizes. Not for fantasy waiver advice (see nfl-weekly-usage-report), prop lines (see nfl-player-props-research) or a full game preview (see nfl-game-preview).",
+   "description": "Use when the user asks what an NFL injury or absence changes for a team, in fan or analyst wording: 'how bad is losing their LT', 'Chiefs without Kelce', 'does the D fall off with no Micah', 'who steps in at center', 'how do they play when he sits', 'is the injury report a big deal', 'record without their QB'. Use this whenever a missing player and a team's results or lineup are discussed. Load it for short fragments and follow-ups too, even with no name given, instead of answering from memory or going straight to the raw tools. Combines the injury report, depth chart, snap counts and with-and-without splits from play-by-play, with sample sizes. Not for fantasy waiver or usage (see nfl-weekly-usage-report), prop lines (see nfl-player-props-research), a game preview (see nfl-game-preview) or other sports' injuries.",
    "reads_live_data": true,
    "writes": false,
    "moves_money": false
@@ -236,7 +252,7 @@
   {
    "name": "nfl-player-props-research",
    "plugin": "nfl-data",
-   "description": "Use when the user asks about NFL player prop lines as information: 'what's Josh Allen's passing yards line', 'how often has Saquon gone over his rushing line', 'compare receiving yards lines across books', 'how did his line move', 'what does the market imply for his TD'. Shows lines by sportsbook, a player's record against his line with sample size, line movement and no-margin probability. Never says which side to take. Not for game-level previews (see nfl-game-preview) or fantasy start/sit (see nfl-weekly-usage-report).",
+   "description": "Use when the user asks about NFL player prop lines or how a player did against his line, in fan or analyst wording: 'Mahomes passing yards number', 'Henry rushing over?', 'Nacua receptions line', 'who has the best price on Lamb', 'did his yards line move', 'how often does he cash anytime TD', 'prop history for Chase'. Use this whenever a player is mentioned with a stat line. Load it for short fragments and follow-ups too, even with no name given, instead of answering from memory or going straight to the raw tools. Shows lines by sportsbook, a player's record against his line with sample size, line movement and no-margin probability. Never says which side to take. Not for game spreads and totals, game previews (see nfl-game-preview), fantasy start or sit (see nfl-weekly-usage-report) or basketball props (see nba-player-props-research).",
    "reads_live_data": true,
    "writes": false,
    "moves_money": false
@@ -252,7 +268,7 @@
   {
    "name": "nfl-weekly-usage-report",
    "plugin": "nfl-data",
-   "description": "Use when the user has weekly NFL fantasy or usage questions: 'who gets more work with the WR1 out', 'snap share trends for the Bengals backfield', 'target share leaders this week', 'who is the waiver add after the injury', 'compare usage for my two flex options'. Builds a usage report from snaps, targets, carries, red-zone work and injuries, and names who absorbs a vacated role. Not for player prop lines (see nfl-player-props-research) or a single game preview (see nfl-game-preview).",
+   "description": "Use when the user has weekly NFL fantasy or usage questions, in fan or analyst wording: 'who do I start at flex', 'RB2 or WR3 this week', 'who replaces Kupp', 'is his snap share rising', 'handcuff to grab', 'target hog on the Bengals', 'best waiver pickups', 'backfield split', 'who eats the targets if the top WR is out', 'which of my flex guys sees more volume', 'next man up if he sits'. Use this whenever fantasy lineups, waivers, snaps, targets or carries are the subject. Also use it for bare follow-ups with no name given, and load it instead of answering from memory or going straight to the raw tools. Builds a usage report from snaps, targets, carries, red-zone work and injuries, and names who absorbs a vacated role. Not for how an injury changes a whole team (see nfl-injury-impact), player prop lines (see nfl-player-props-research) or a game preview (see nfl-game-preview).",
    "reads_live_data": true,
    "writes": false,
    "moves_money": false
@@ -260,7 +276,7 @@
   {
    "name": "nhl-advanced-stats",
    "plugin": "nhl-data",
-   "description": "Use when the user asks what Corsi, Fenwick, PDO, xG, high-danger chances, zone entries, RAPM or WAR mean, how to read a team's or player's advanced numbers, whether a team is lucky or unlucky, or what a stat tells you. Explains the metric and, when asked, pulls real numbers to show it. Not for odds or margin concepts (use odds-market-analysis), building an xG model (use nhl-xg-model), turning metrics into model features (use feature-engineering) or value decomposition (use nhl-war-gar).",
+   "description": "Use when the user asks what a hockey advanced stat means or whether it is skill or luck, in fan or analyst wording: 'what is PDO', 'explain Corsi', 'what does high danger mean', 'is shooting percentage luck', 'do bounces even out', 'is a team just getting lucky bounces', 'how do I read RAPM', 'what does zone entry data tell you', 'why does everyone say Fenwick'. Use this whenever a metric name, regression to the mean or how to interpret a number comes up. Load it for short fragments and follow-ups too, instead of answering from memory or going straight to the raw tools. Explains the metric, its limits and what it tells you, and pulls real numbers with sample sizes when asked. Not for checking one team's or game's results against its chances (see nhl-xg-report), building an xG model (see nhl-xg-model), odds terms (see odds-market-analysis) or value decomposition (see nhl-war-gar).",
    "reads_live_data": true,
    "writes": false,
    "moves_money": false
@@ -284,7 +300,7 @@
   {
    "name": "nhl-game-preview",
    "plugin": "nhl-data",
-   "description": "Use when the user asks for a preview of one NHL game, a matchup breakdown, a pre-game report, 'Sabres vs Leafs tonight', who is in goal, or how two teams compare. Builds one report: records and rest, goalie matchup, key stats, odds snapshot with market (no-margin) probability, how our probability differs from the market's, and head-to-head. Odds are information only, no wagering advice. Not for the whole slate (use nhl-daily-slate), odds only (use nhl-odds-explorer), deep goalie work (use nhl-goalie-analysis), deep team work (use nhl-team-analysis) or model building (use model-building).",
+   "description": "Use when the user wants to know how one NHL game shapes up, in fan or analyst wording: 'Sabres vs Leafs tonight', 'who wins Oilers Stars', 'breakdown of the Rangers game', 'who is in goal', 'how do these two teams compare', 'what should I know about tonight's game', 'preview the Panthers game', 'is the favorite live'. Use this whenever two NHL teams are named together for one game. Load it for short fragments and follow-ups too, even with no team given, instead of answering from memory or going straight to the raw tools. Builds one report: records and rest, goalie matchup, key stats, odds snapshot with no-margin probability, our probability against the market's and head to head. Odds are information only. Not for the whole slate (see nhl-daily-slate), odds only (see nhl-odds-explorer), past results (see nhl-game-lookup) or modeling.",
    "reads_live_data": true,
    "writes": false,
    "moves_money": false
@@ -300,7 +316,7 @@
   {
    "name": "nhl-goalie-gsax-report",
    "plugin": "nhl-data",
-   "description": "Use when the user wants goalie results measured against shot quality: 'is he a good goalie or just well defended', 'who has the best GSAX', 'goalie leaderboard by goals saved above expected', 'is his save percentage sustainable', 'high-danger save percentage for Shesterkin', 'is the goalie slumping'. Reads GSAX, expected goals against, high-danger save percentage and the rolling form fields from the goalie leaderboard, with games counted. Not for a game preview (see nhl-game-preview), general goalie evaluation and starts (see nhl-goalie-analysis) or building an xG model (see nhl-xg-model).",
+   "description": "Use when the user asks whether an NHL goalie's results are real or just the team in front of him, in fan or analyst wording: 'is Hellebuyck actually elite', 'is his .925 sustainable', 'goalie stealing games?', 'who is the best by GSAx', 'which goalie is getting bailed out', 'high-danger saves for Vasilevskiy', 'is he cold or just unlucky', 'goalie rankings by shot quality'. Use this whenever goalie performance is judged against shot quality. Load it for short fragments and follow-ups too, even with no name given, instead of answering from memory or going straight to the raw tools. Reads GSAX, expected goals against, high-danger save percentage and the rolling form fields from the goalie leaderboard, with games counted. Not for who starts tonight, rest or back-to-backs, a general goalie lookup (see nhl-goalie-analysis), a game preview (see nhl-game-preview), goalie props or building an xG model (see nhl-xg-model).",
    "reads_live_data": true,
    "writes": false,
    "moves_money": false
@@ -308,7 +324,7 @@
   {
    "name": "nhl-odds-explorer",
    "plugin": "nhl-data",
-   "description": "Use when the user asks for NHL odds, what the lines are, how books compare, the margin (vig) in a market, how a line has moved, steam or sharp movement, or what the market probability is. Compares prices across books, converts to implied and fair (no-margin) probability, and reads line movement. Odds are information only: no stakes and no wagering advice. Not for devigging theory or closing-line quality (use odds-market-analysis), comparing a model with the market (use market-vs-model) or game results (use nhl-game-lookup).",
+   "description": "Use when the user asks what the NHL lines or prices are for a game, in fan or analyst wording: 'what are the books saying about Panthers tonight', 'who is the favorite and by how much', 'which book has the best number on the Oilers', 'did the line move today', 'what is the total on Sabres Bruins', 'how big is the juice here', 'alt puck lines', 'first period market'. Use this whenever a hockey game and its price, spread, total or market chance come up. Load it for short fragments and follow-ups too, instead of answering from memory or going straight to the raw tools. Compares moneylines, puck lines and totals across books with implied and no-margin probability and line movement. Odds are information only, no stakes or picks. Not for odds math in general (see odds-market-analysis), our model against the market (see market-vs-model), player props (see nhl-player-props-research) or results.",
    "reads_live_data": true,
    "writes": false,
    "moves_money": false
@@ -316,7 +332,7 @@
   {
    "name": "nhl-player-props-research",
    "plugin": "nhl-data",
-   "description": "Use when the user asks about NHL player props, a player's shots, points, goals, assists or saves projection, anytime goalscorer probability, how a player did against his prop line, how a prop line moved, or DFS-style projections. Projects a player's stat for one game and shows how our probability differs from the market's for that line. Odds are information only: no stakes, picks or wagering advice. Not for team results models (use model-building), scouting without projections (use nhl-player-scouting), a plain look at current lines (use nhl-odds-explorer) or game totals (use nhl-totals-model).",
+   "description": "Use when the user asks about an NHL player's prop line or stat for a game, in fan or analyst wording: 'MacKinnon shots line', 'will Draisaitl score tonight', 'Kucherov points number', 'does he go over his assists line', 'how has his points line moved', 'how often does he cash the over', 'saves total for Shesterkin', 'anytime goal chances for Ovi', 'who is likely to score tonight'. Use this whenever a hockey player is mentioned with a line, over or under, or shots, goals, assists, points or saves for a game. Load it for short fragments and follow-ups too, even with no name given, instead of answering from memory or going straight to the raw tools. Shows lines by sportsbook, the player's record against his line with sample size, movement, our projection and the no-margin market probability. Never says which side to take. Not for game totals (see nhl-totals-model), game odds (see nhl-odds-explorer), scouting (see nhl-player-scouting) or building a model.",
    "reads_live_data": true,
    "writes": false,
    "moves_money": false
@@ -332,7 +348,7 @@
   {
    "name": "nhl-playoff-simulation",
    "plugin": "nhl-data",
-   "description": "Use when the user asks about playoff odds, a team's chances to make the playoffs, who wins the division, Stanley Cup probability, how likely a team is to win the Cup, a season simulation or a bracket simulation. Runs a Monte Carlo season and playoff simulator on PuckAPI standings and schedule. Not for one game's win probability (use model-building or nhl-game-preview). Not for team stats without a simulation (use nhl-team-analysis). Not for player questions (use nhl-player-scouting).",
+   "description": "Use when the user asks about NHL playoff, seeding or Cup chances, in fan or analyst wording: 'will the Wings make the playoffs', 'Cup odds for Colorado', 'who finishes first in the division', 'how likely is a wild card spot', 'can they catch Boston', 'simulate the rest of the season', 'run the season ten thousand times', 'bracket simulation', 'who lifts the Cup'. Use this whenever a team's path, seed, division finish or title chance is the subject. Load it for short fragments and follow-ups too, instead of answering from memory or going straight to the raw tools. Runs a Monte Carlo season and playoff simulation on standings and schedule and reports probabilities with the number of simulations. Not for one game's win probability (see nhl-game-preview), current standings with no simulation (see nhl-team-analysis) or players (see nhl-player-scouting).",
    "reads_live_data": true,
    "writes": false,
    "moves_money": false
@@ -340,7 +356,7 @@
   {
    "name": "nhl-puckapi-tools",
    "plugin": "nhl-data",
-   "description": "Use when any hockey skill needs data, or when the user asks which PuckAPI tool to call for games, schedules, standings, team or player stats, goalies, shots, shifts, odds, line movement or player props. Routes requests to the right tool of the PuckAPI MCP server and tracks credit cost. Not for analysis or modeling (use nhl-advanced-stats, model-building or market-vs-model). Not for recommending wagers: prices are shown as information only.",
+   "description": "Use when any hockey skill needs data, or when the user asks which PuckAPI tool or endpoint to call, in developer wording: 'which tool gives me shifts', 'do you have a tool for power play time', 'where do I get standings data', 'how do I pull odds history', 'what does get_game_detail return', 'how many credits does this cost', 'cheapest way to get goalie stats', 'can the API do player props', 'what can this API do'. Use this whenever the question is about which tool exists, its inputs, outputs or credit costs. Routes a request to the right tool of the PuckAPI MCP server and tracks credit cost. Not for answering hockey questions with numbers (see the matching nhl skill), modeling (see model-building) or recommending wagers: prices are information only.",
    "reads_live_data": true,
    "writes": false,
    "moves_money": false
@@ -364,7 +380,7 @@
   {
    "name": "nhl-totals-model",
    "plugin": "nhl-data",
-   "description": "Use when the user asks to model NHL game totals, predict total goals, how many goals a game will have, over/under probability, scoring pace, or whether a goalie matchup changes scoring. Builds a calibrated total-goals distribution from the PuckAPI MCP server and compares it to the market total as a probability gap. Not for who wins or the puck line (use model-building). Not for player goal or point props (use nhl-player-props-research). Not for just viewing current lines (use nhl-odds-explorer).",
+   "description": "Use when the user asks how many goals an NHL game will have, in fan or analyst wording: 'will tonight go over 6', 'total goals for Stars Avs', 'is this a low-scoring matchup', 'does the goalie matchup change scoring', 'do tired teams score more', 'chance it ends 5-4 or higher', 'scoring pace for the Bruins', 'model the over under'. Use this whenever a game's total goals or scoring level is the subject. Load it for short fragments and follow-ups too, instead of answering from memory or going straight to the raw tools. Builds a calibrated total-goals distribution and shows the gap to the market total as a probability, with sample sizes. Odds are information only. Not for who wins or the puck line (see model-building), player props (see nhl-player-props-research), current prices only (see nhl-odds-explorer) or explaining what a total is.",
    "reads_live_data": true,
    "writes": false,
    "moves_money": false
@@ -372,7 +388,7 @@
   {
    "name": "nhl-war-gar",
    "plugin": "nhl-data",
-   "description": "Use when the user asks about WAR, GAR, RAPM, wins above replacement, how valuable a player really is, whether a contract is good value, or wants a player card with component breakdown. Builds RAPM ridge regression on shift data from the PuckAPI MCP server (get_shifts, get_plays). Not for simple stat lookups (use nhl-player-scouting). Not for goalies, who use GSAx (use nhl-goalie-analysis). Not for team standings or form (use nhl-team-analysis). Not for game prediction (use model-building).",
+   "description": "Use when the user asks how valuable an NHL skater really is, in fan or analyst wording: 'who is the most valuable skater', 'McDavid WAR', 'is he underrated by the box score', 'what is his impact without his linemates', 'value over a replacement winger', 'is his contract worth it', 'who drives results with or without his partner', 'RAPM for Hamilton'. Use this whenever a skater's true impact, WAR, GAR or value over replacement is the subject. Load it for short fragments and follow-ups too, instead of answering from memory or going straight to the raw tools. Builds RAPM from shifts and plays and gives a player card with component breakdown and sample sizes. Not for plain stat lookups (see nhl-player-scouting), goalies (see nhl-goalie-analysis), team form (see nhl-team-analysis) or game prediction (see model-building).",
    "reads_live_data": true,
    "writes": false,
    "moves_money": false
@@ -380,7 +396,7 @@
   {
    "name": "nhl-xg-model",
    "plugin": "nhl-data",
-   "description": "Use when the user asks to build an expected goals (xG) model, score shot quality, compute xGF% or xGA, detect rebounds or rush shots, or model the chance a shot becomes a goal. Trains XGBoost or LightGBM on shot events and locations from the PuckAPI MCP server (get_shot_map, get_plays). Not for using xG values that already exist (use nhl-team-analysis or nhl-advanced-stats). Not for game win models (use model-building). Not for goalie evaluation (use nhl-goalie-analysis).",
+   "description": "Use when the user wants to build or train their own hockey shot-quality model, in fan or analyst wording: 'train an xG model', 'score the quality of every shot', 'LightGBM on shot outcomes', 'how do I model shot danger from coordinates', 'make my own xGF%', 'detect rebounds and rush shots', 'chance a wrist shot from the slot scores', 'fit goal probability on shot events'. Use this whenever the task is fitting a model to shots rather than reading existing numbers. Load it for short fragments and follow-ups too, instead of going straight to the raw tools. Trains XGBoost or LightGBM on shot events and locations with a time-ordered split, and reports log loss and calibration. Not for existing xG numbers (see nhl-advanced-stats or nhl-xg-report), game win models (see model-building) or goalie evaluation (see nhl-goalie-analysis).",
    "reads_live_data": true,
    "writes": false,
    "moves_money": false
@@ -388,7 +404,7 @@
   {
    "name": "nhl-xg-report",
    "plugin": "nhl-data",
-   "description": "Use when the user wants the expected-goals story of an NHL team or game: 'did they deserve to win that game', 'are the Oilers getting good chances', 'team xG for and against', 'who is getting lucky', 'shot quality in last night's game', 'is their record real'. Reports 5v5 expected goals for and against from team stats, and a game's shot volume and locations from the shot map and plays, saying what is and is not an xG figure. Not for a game preview (see nhl-game-preview), goalie results against shot quality (see nhl-goalie-gsax-report) or building a model (see nhl-xg-model).",
+   "description": "Use when the user asks whether an NHL team's or game's result matches the chances created, in fan or analyst wording: 'were the Oilers lucky last night', 'who really won that game', 'is the Panthers' record legit', 'are they due to slide', 'got outshot but won?', 'good process bad results', 'where did the shots come from', 'was the win deserved', 'is that record a mirage'. Use this whenever results are compared with shot quality or chances. Also use it for bare follow-ups with no name given, and load it instead of answering from memory or going straight to the raw tools. Reports 5v5 expected goals for and against from team stats, and a game's shot volume and locations from the shot map, saying what is and is not an xG figure. Not for a game preview (see nhl-game-preview), goalies against shot quality (see nhl-goalie-gsax-report), what a stat means (see nhl-advanced-stats) or building a model (see nhl-xg-model).",
    "reads_live_data": true,
    "writes": false,
    "moves_money": false
@@ -402,9 +418,17 @@
    "moves_money": false
   },
   {
+   "name": "soccer-player-props-research",
+   "plugin": "soccer-data",
+   "description": "Use when the user asks about soccer player prop prices as information: 'Haaland anytime scorer odds', 'how often does Saka score when he's priced like this', 'Palmer shots on target line', 'who's most likely to score in Arsenal Chelsea according to the market', 'did the price move on Salah', 'is Isak worth looking at for first goalscorer'. Shows prices by sportsbook, the market's no-margin probability, the player's record against similar lines with minutes, and how the price moved. Covers anytime, first and last goalscorer, shots, shots on target, assists and cards where the league holds them. Never says which side to take. Not for match previews (see soccer-match-preview), expected goals stories (see soccer-xg-breakdown) or general odds math (see odds-market-analysis).",
+   "reads_live_data": true,
+   "writes": false,
+   "moves_money": false
+  },
+  {
    "name": "soccer-season-simulation",
    "plugin": "soccer-data",
-   "description": "Use when the user wants simulated odds for how a league season finishes: 'who wins the league', 'chance of finishing top four', 'relegation odds', 'simulate the rest of the season', 'how likely is Arsenal to win the title', 'what are Spurs' chances of Europe'. Runs a Monte Carlo of the remaining fixtures from our club Elo ratings, the current table and a stated draw and home-advantage assumption, and reports finishing-position probabilities with the method. Not for one match (see soccer-match-preview), shot quality (see soccer-xg-breakdown) or a club's style (see soccer-team-style-profile).",
+   "description": "Use when the user wants odds for how a soccer league season finishes, in fan or analyst wording: 'who wins the Premier League', 'will Spurs make top 4', 'Champions League spots', 'who goes down', 'can Newcastle still catch Arsenal', 'projected final table', 'title race odds', 'simulate the run-in'. Use this whenever a final position, title, qualification or relegation chance is the subject. Load it for short fragments and follow-ups too, even with no name given, instead of answering from memory or going straight to the raw tools. Runs a Monte Carlo of the remaining fixtures from our club Elo ratings, the current table and a stated draw and home-advantage assumption, and reports finishing-position probabilities with the method. Not for one match (see soccer-match-preview), shot quality (see soccer-xg-breakdown), a club's style (see soccer-team-style-profile) or the plain table.",
    "reads_live_data": true,
    "writes": false,
    "moves_money": false
@@ -420,7 +444,7 @@
   {
    "name": "soccer-team-style-profile",
    "plugin": "soccer-data",
-   "description": "Use when the user wants to know how a soccer club plays: 'what is Brighton's style', 'how does Arsenal build up', 'do they press high', 'who counter-attacks', 'compare Liverpool and City styles', 'does this team take shots from distance', 'is it a possession team'. Profiles possession, shot volume and quality, set pieces, discipline and where shots come from, for and against, relative to the league, with the formulas stated. Not for one match's xG story (see soccer-xg-breakdown), match previews (see soccer-match-preview) or finishing positions (see soccer-season-simulation).",
+   "description": "Use when the user asks how a soccer club plays, in fan or analyst wording: 'how do Brighton play', 'do they press high', 'do they sit deep', 'who counter-attacks', 'long ball or short passing', 'does this team shoot from distance', 'tactical identity', 'Barca vs Real styles', 'attacking or defensive side'. Use this whenever a club's style, tactics or identity is the subject, even for one club with no opponent. Also use it for bare follow-ups with no name given, and load it instead of answering from memory or going straight to the raw tools. Profiles possession, shot volume and quality, set pieces, discipline and where shots come from, for and against, relative to the league; says plainly that pressing and passing-pattern data are not held. Not for one match's xG story (see soccer-xg-breakdown), match previews (see soccer-match-preview), finishing positions (see soccer-season-simulation) or set pieces alone (see soccer-set-pieces).",
    "reads_live_data": true,
    "writes": false,
    "moves_money": false
@@ -428,7 +452,7 @@
   {
    "name": "soccer-xg-breakdown",
    "plugin": "soccer-data",
-   "description": "Use when the user wants the expected-goals story of a soccer match, club or player: 'xG breakdown of Arsenal Chelsea', 'did City deserve to win', 'who created the best chances', 'Liverpool shots conceded this season', 'shot map for Saka', 'is Haaland over-performing his xG'. Shows shots with location, outcome and our xG, the xG race, big chances, and finishing over or under expected with sample size. Not for pre-match previews (see soccer-match-preview).",
+   "description": "Use when the user asks whether a soccer result, club or player matches the chances created, in fan or analyst wording: 'were Spurs unlucky', 'did they deserve the win', 'who had the better chances', 'xG race for the derby', 'is Salah overperforming', 'big chances missed', 'shots against Liverpool', 'xG story of last night'. Use this whenever results are compared with shot quality. Load it for short fragments and follow-ups too, even with no name given, instead of answering from memory or going straight to the raw tools. Shows shots with location, outcome and our xG, big chances, and finishing over or under expected with sample size. Not for pre-match previews (see soccer-match-preview), a club's style (see soccer-team-style-profile), title odds (see soccer-season-simulation), hockey expected goals (see nhl-xg-report) or building an xG model.",
    "reads_live_data": true,
    "writes": false,
    "moves_money": false
@@ -436,7 +460,7 @@
   {
    "name": "backtesting",
    "plugin": "sports-analytics-core",
-   "description": "Use when the user asks to backtest a model, check whether a model really works historically, test it on past seasons, get confidence intervals, see if accuracy is fading, or compare the model to the market's closing probabilities. Walk-forward only; refuses in-sample testing. Reports sample size, an interval and a per-season breakdown. Not for tracking live predictions (use prediction-tracker), not for how our probability differs from the market today (use market-vs-model), not for training (use model-building), not for fold mechanics alone (use walk-forward-validation).",
+   "description": "Use when the user asks whether a sports model or system would have worked in the past, for any sport, in plain wording: 'does my model actually work', 'test it on the last three seasons', 'did it beat the closing line', 'is it still as accurate as it used to be', 'what is the confidence interval on my hit rate', 'how would this have done in 2023', 'run it against past odds', 'is this edge real or luck'. Use this whenever historical performance, sample size or an interval is the question. Load it for short fragments and follow-ups too, instead of answering from memory or going straight to the raw tools. Walk-forward only; refuses in-sample testing; reports sample size, an interval and a per-season breakdown. Not for logging live predictions (see prediction-tracker), today's market gap (see market-vs-model), training (see model-building) or fold design alone (see walk-forward-validation).",
    "reads_live_data": false,
    "writes": false,
    "moves_money": false
@@ -468,7 +492,7 @@
   {
    "name": "market-vs-model",
    "plugin": "sports-analytics-core",
-   "description": "Use when the user asks how our probability differs from the market's, whether the model disagrees with the odds, who the market likes more than the model does, or whether the model beats the closing line. Covers model vs market gap, fair (no-margin) probability, closing-line comparison as a measure of model quality, and how large a sample must be before a gap means anything. Odds are information only: no stake sizing, no wagering advice. Not for raw odds lookup (use odds-market-analysis, or nhl-odds-explorer for hockey), not for checking model accuracy over history (use backtesting), not for calibrating probabilities (use probability-calibration).",
+   "description": "Use when the user compares their own model's numbers with the betting market, for any sport, in plain wording: 'where do we disagree with the market', 'who does the book like more than my model', 'does my model have an edge on the close', 'rank tonight's games by the gap', 'our price vs fair price', 'is the market higher on them than my numbers', 'how big a gap is real', 'gap between us and closing lines'. Use this whenever a model probability sits next to a market probability. Load it for short fragments and follow-ups too, instead of answering from memory or going straight to the raw tools. Covers the model vs no-margin market gap, closing-line comparison and how large a sample must be before a gap means anything. Odds are information only: no stakes, no picks. Not for odds math (see odds-market-analysis), raw price lookups, historical accuracy (see backtesting) or calibration (see probability-calibration).",
    "reads_live_data": true,
    "writes": false,
    "moves_money": false
@@ -476,7 +500,7 @@
   {
    "name": "model-building",
    "plugin": "sports-analytics-core",
-   "description": "Use when the user wants to build a prediction model for game or match outcomes, train a classifier, choose between logistic regression, random forest or XGBoost, tune hyperparameters, see which features matter or combine models. Always walk-forward; refuses k-fold. Works for any sport. Not for building features (use feature-engineering), not for checking probability quality (use probability-calibration), not for fold design alone (use walk-forward-validation), not for expected goals models (use nhl-xg-model), not for comparing output with market probabilities (use market-vs-model).",
+   "description": "Use when the user wants to build or choose a model that predicts sports outcomes, for any sport, in plain wording: 'predict who wins', 'which algorithm should I use', 'logistic regression or XGBoost', 'tune my model', 'train a classifier on fights', 'which features matter', 'can I blend two models', 'random forest for the NHL', 'my model is stuck at 55 percent'. Use this whenever a game or match prediction model is being built, picked or improved. Load it for short fragments and follow-ups too, instead of answering from memory or going straight to the raw tools. Always walk-forward; refuses k-fold. Not for building input features (see feature-engineering), checking probabilities (see probability-calibration), fold design alone (see walk-forward-validation), hockey shot models (see nhl-xg-model) or market comparison (see market-vs-model).",
    "reads_live_data": false,
    "writes": false,
    "moves_money": false
@@ -492,7 +516,7 @@
   {
    "name": "odds-market-analysis",
    "plugin": "sports-analytics-core",
-   "description": "Use when the user asks what odds mean as a probability, how to convert American, decimal or fractional odds, what the bookmaker margin (vig, juice, overround) is, how to remove it (devig, no-vig line, Shin, power, multiplicative), how a line moved, or how a closing line compares with our model. Odds are treated as information about the market, never as an instruction to wager. Not for browsing current prices (use nhl-odds-explorer for hockey), not for comparing our model with the market (use market-vs-model), not for calibrating model output (use probability-calibration).",
+   "description": "Use when the user asks what betting odds mean as numbers, for any sport, in plain wording: 'what does +250 mean as a chance', 'convert 2.30 to a percent', 'how do I take the juice out of this line', 'what is the hold on this market', 'overround on a three-way line', 'no-vig price for -300/+250', 'why are two-way markets less juicy', 'my number vs the closing line', 'how did the spread move'. Use this whenever the question is about odds math, the bookmaker margin, devigging methods or line movement as a concept. Load it for short fragments and follow-ups too, instead of answering from memory. Odds are information about the market, never an instruction to wager. Not for fetching today's prices (see your sport's odds skill), our model against the market (see market-vs-model), calibration (see probability-calibration) or bet sizing, which is never done.",
    "reads_live_data": true,
    "writes": false,
    "moves_money": false
@@ -500,7 +524,7 @@
   {
    "name": "prediction-tracker",
    "plugin": "sports-analytics-core",
-   "description": "Use when the user wants to log model predictions and grade them later, asks how accurate the model has been so far, whether accuracy is slipping, or whether it is beating the closing line, for example 'track my predictions', 'how's the model doing', 'is it still any good', 'log tonight's probabilities'. Logs probability, outcome, Brier score, log loss, calibration and closing-line comparison, with sample size and intervals. Not for placing or sizing wagers (never done here), not for historical tests before going live (use backtesting or walk-forward-validation), not for fixing calibration (use probability-calibration), not for retraining (use model-building).",
+   "description": "Use when the user wants to log model predictions and grade them as games finish, for any sport, in plain wording: 'track my predictions', 'log tonight's probabilities', 'how's the model doing so far', 'is it still any good', 'is accuracy slipping', 'am I beating the close', 'grade last week's picks', 'keep a record of what the model said'. Use this whenever predictions are saved before games and scored after. Load it for short fragments and follow-ups too, instead of answering from memory or going straight to the raw tools. Logs probability, outcome, Brier score, log loss, calibration and closing-line comparison with sample sizes and intervals. Not for placing or sizing wagers (never done), tests on past seasons (see backtesting), fixing calibration (see probability-calibration) or retraining (see model-building).",
    "reads_live_data": false,
    "writes": false,
    "moves_money": false
@@ -508,7 +532,15 @@
   {
    "name": "probability-calibration",
    "plugin": "sports-analytics-core",
-   "description": "Use when the user asks whether model probabilities can be trusted, if 63% really means 63%, for a reliability diagram or calibration plot, Brier score, log loss, Platt scaling or isotonic regression, or whether calibration is drifting. Verifies and corrects predicted probabilities against outcomes, with sample size and intervals. Not for odds math or removing the margin (use odds-market-analysis), not for training a model (use model-building), not for comparing with the market (use market-vs-model), not for historical accuracy tests alone (use backtesting).",
+   "description": "Use when the user asks about the quality of a model's probabilities, for any sport, in plain wording: 'what's my Brier score', 'log loss of my predictions', 'reliability plot for my model', 'is 63 percent really 63 percent', 'is it overconfident', 'Platt or isotonic', 'are my probabilities off at the extremes', 'did calibration drift', 'fix my probabilities'. Use this whenever a Brier score, log loss, reliability diagram or calibration fix is asked for, even on a one-off set of predictions. Load it for short fragments and follow-ups too, instead of answering from memory or going straight to the raw tools. Verifies and fixes predicted probabilities against results with sample sizes and intervals. Not for logging predictions as they happen and grading them over time (see prediction-tracker), odds math (see odds-market-analysis), training (see model-building) or market comparison (see market-vs-model).",
+   "reads_live_data": false,
+   "writes": false,
+   "moves_money": false
+  },
+  {
+   "name": "season-pack-offline",
+   "plugin": "sports-analytics-core",
+   "description": "Use when no SportsDataHQ MCP tools are available in this session (no get_standings, get_leaders or similar tools listed) and the user asks about a sport's last completed season, or says they have no key or want to try before signing up: 'I don't have a key, can you still look at last season', 'try it without signing up', 'is there a free sample of the data'. Answers from the free season pack (last completed season as CSV: games, standings, player season totals and our ratings) and names the season. If the sport's MCP tools are listed, never use this; use the sport's own skills. Not for the current season, today's games, odds, props or play-by-play: those need the live API and a free key.",
    "reads_live_data": false,
    "writes": false,
    "moves_money": false
@@ -516,7 +548,7 @@
   {
    "name": "sports-data-preflight",
    "plugin": "sports-analytics-core",
-   "description": "Use before any analysis that joins, compares or aggregates sports data across games, players, seasons or leagues: resolving a player or team to its id, checking which season a date belongs to, confirming a league is the right one (NHL vs PWHL, MLB vs college baseball, Premier League vs Championship), spotting duplicates, and deciding whether there is enough data to answer. Use when the user says 'compare', 'over the last N games', 'this season', 'career', 'trend', or names a player whose id you do not have yet. Not for a single lookup (call the tool directly) or for modeling itself (see model-building).",
+   "description": "Use when a sports number looks wrong or the data may not line up, in plain wording: 'why don't these numbers match', 'is this the right season', 'I joined two tables and lost rows', 'duplicate players in my data', 'two players share a name, which one', 'is this the NHL or the minors', 'my totals are off by a few games', 'does this date belong to last season', 'is this enough games to say anything'. Use this whenever ids, season convention, league, joins, duplicates or sample size could be the problem, and before comparing players across seasons or careers, for any sport. Checks ids, season convention, league, duplicates and sample size, and says not enough data when it is. Not for a plain single lookup (call the tool directly), explaining a stat or building a model (see model-building).",
    "reads_live_data": true,
    "writes": false,
    "moves_money": false
@@ -548,7 +580,7 @@
   {
    "name": "tennis-head-to-head",
    "plugin": "tennis-data",
-   "description": "Use when the user asks about two tennis players' history against each other: 'Sinner vs Alcaraz head to head', 'who leads the rivalry', 'how has he done against lefties', 'do they split on clay', 'has he ever beaten him', 'is the head to head meaningful here'. Shows the record, by surface and round, every meeting's score, and sets it against current ratings and rankings with the caveat that ratings usually beat head-to-head. Not for a full match preview (see tennis-match-preview), a draw simulation (see tennis-tournament-simulation) or rankings lists (call get_rankings).",
+   "description": "Use when the user asks about two tennis players' record against each other, in fan or analyst wording: 'Federer vs Murray record', 'who has the edge in the rivalry', 'how often have they met', 'has Gauff ever beaten Swiatek', 'their record on hard', 'do they split sets', 'lifetime head to head', 'does he own him'. Use this whenever two players and their past meetings come up. Load it for short fragments and follow-ups too, even with no name given, instead of answering from memory or going straight to the raw tools. Shows the record, by surface and round, every meeting's score, and sets it against current ratings and rankings with the caveat that ratings usually beat head-to-head. Not for a full match preview or prediction (see tennis-match-preview), a draw simulation (see tennis-tournament-simulation), one player's surface record (see tennis-surface-form) or rankings lists (call get_rankings).",
    "reads_live_data": true,
    "writes": false,
    "moves_money": false
@@ -556,7 +588,7 @@
   {
    "name": "tennis-match-preview",
    "plugin": "tennis-data",
-   "description": "Use when the user wants a tennis match preview or matchup analysis for any ATP or WTA singles match: 'preview Sinner vs Alcaraz', 'break down tonight's tennis match', 'US Open quarterfinal preview', 'Wimbledon semifinal breakdown', 'how do they match up on grass', 'who wins Swiatek vs Gauff on clay', 'tennis matchup analysis'. Produces a one-page report: our surface Elo and pregame win probability, surface records, form, head to head with its caveat, and the market's prices. Not for rankings lists or full draws (call the tools directly) or modeling (see model-building).",
+   "description": "Use when the user asks about a specific tennis match, in fan or analyst wording: 'Sinner vs Zverev tonight', 'break down tonight's match', 'who is favored in the final', 'how do they match up on grass', 'how does Rybakina match up with Sabalenka', 'preview the semi', 'will Fritz upset him', 'who wins this one', 'is the underdog live'. Use this whenever two players are named together for an upcoming or live match, even with no tournament given. Also use it for bare follow-ups with no name given, and load it instead of answering from memory or going straight to the raw tools. Produces a one-page report: our surface Elo and pregame win probability, surface records, form, head to head with its caveat and the market's prices. Not for only a head-to-head record (see tennis-head-to-head), one player's surface split (see tennis-surface-form), title chances (see tennis-tournament-simulation), rankings or modeling.",
    "reads_live_data": true,
    "writes": false,
    "moves_money": false
@@ -564,7 +596,7 @@
   {
    "name": "tennis-surface-form",
    "plugin": "tennis-data",
-   "description": "Use when the user wants to know how a tennis player does on each surface: 'is he better on clay', 'Alcaraz grass record', 'surface splits for Sinner', 'how does she do on hard courts', 'is he a clay courter', 'who is strongest on grass right now'. Compares record, sets and tiebreaks and our Elo by surface and by season, with matches counted. Not for a match preview (see tennis-match-preview), two players' history (see tennis-head-to-head) or a draw simulation (see tennis-tournament-simulation).",
+   "description": "Use when the user asks how a tennis player does on each surface, in fan or analyst wording: 'is Ruud a clay specialist', 'Djokovic on grass lately', 'how is she on hard courts', 'best clay player right now', 'is he any good indoors', 'surface record for Medvedev', 'grass court form', 'does he live on clay', 'her record on hardcourt', 'which surface suits him'. Use this whenever one player or a surface is the subject and no opponent is named. Also use it for bare follow-ups with no name given, and load it instead of answering from memory or going straight to the raw tools. Compares record, sets and tiebreaks and our Elo by surface and by season, with matches counted. Not for a match preview (see tennis-match-preview), two players' history (see tennis-head-to-head), a draw simulation (see tennis-tournament-simulation) or serve statistics such as aces, which are not held.",
    "reads_live_data": true,
    "writes": false,
    "moves_money": false
@@ -572,7 +604,7 @@
   {
    "name": "tennis-tournament-simulation",
    "plugin": "tennis-data",
-   "description": "Use when the user wants title chances for a tennis tournament from the draw: 'who wins Wimbledon', 'simulate the US Open draw', 'chance Sinner reaches the final', 'how tough is Alcaraz's quarter', 'odds of an upset in the first round', 'WTA 1000 draw simulation'. Simulates the draw with our surface Elo ratings, states the method and reports round-by-round probabilities. Not for one match (see tennis-match-preview), a head-to-head record (see tennis-head-to-head) or a finished tournament's results (call get_tournament).",
+   "description": "Use when the user wants title or round chances for a tennis tournament from the draw, in fan or analyst wording: 'who wins the French Open', 'Sinner's chance to win Wimbledon', 'how deep is Gauff's section', 'who is in the toughest quarter', 'chance of an early upset', 'will a top seed go out in round one', 'simulate the Miami draw', 'odds to reach the semis', 'who wins the Slam', 'upset odds in round one', 'chance he goes deep'. Use this whenever a whole tournament or a player's path through it is the subject. Also use it for bare follow-ups with no name given, and load it instead of answering from memory or going straight to the raw tools. Simulates the draw with our surface Elo ratings, states the method and reports round-by-round probabilities. Not for one match (see tennis-match-preview), a head-to-head record (see tennis-head-to-head), a finished tournament's results (call get_tournament) or best surface for a player (see tennis-surface-form).",
    "reads_live_data": true,
    "writes": false,
    "moves_money": false
