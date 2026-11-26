@@ -1,14 +1,14 @@
 ---
 name: nba-game-preview
-description: "Use when the user wants a preview of one NBA, WNBA or college basketball game: 'preview Celtics vs Knicks', 'break down tonight's Lakers game', 'who's out for the Nuggets', 'pace and efficiency matchup for this game', 'what's the line on Bucks Heat'. Produces a one-page report: records, ratings, pace and efficiency (offensive, defensive, net rating, four factors), injuries, the line and what it implies. Not for player props (see nba-player-props-research), minutes when a star sits (see nba-minutes-usage-redistribution) or modeling (see model-building)."
+description: "Use when the user wants a preview of one NBA or WNBA game: 'preview Celtics vs Knicks', 'break down tonight's Lakers game', 'who's out for the Nuggets', 'pace and efficiency matchup for this game', 'what's the line on Bucks Heat'. College games have their own skill (see ncaam-game-preview). Produces a one-page report: records, ratings, pace and efficiency (offensive, defensive, net rating, four factors), injuries, the line and what it implies. Not for college basketball (see ncaam-game-preview), player props (see nba-player-props-research), minutes when a star sits (see nba-minutes-usage-redistribution) or modeling (see model-building)."
 metadata:
-  version: 2.1.0
+  version: 2.2.0
   author: SportsDataHQ
 ---
 
 # NBA game preview
 
-A one-page preview of a single game from live DunkAPI calls. Basketball means the NBA unless the user names the WNBA (`league: "wnba"`), men's or women's college (`ncaam`, `ncaaw`) or the NBL.
+A one-page preview of a single game from live DunkAPI calls. Basketball means the NBA unless the user names the WNBA (`league: "wnba"`) or the NBL. For men's or women's college basketball, use ncaam-game-preview.
 
 ## Before you start
 - For anything across games, seasons or players, apply the sports-data-preflight checks first (ids from search, the season convention, one league, enough data).

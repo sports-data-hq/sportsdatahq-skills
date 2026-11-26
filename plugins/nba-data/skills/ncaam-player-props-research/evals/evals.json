@@ -1,0 +1,55 @@
+{
+  "skill": "ncaam-player-props-research",
+  "tasks": [
+    {
+      "prompt": "What's Cameron Boozer's points line tonight?",
+      "expect": [
+        "search_players with league ncaam",
+        "get_player_props with league ncaam",
+        "no pick, no side"
+      ]
+    },
+    {
+      "prompt": "Has the Kansas guard cleared his assists line lately?",
+      "expect": [
+        "get_prop_history with sample size and window",
+        "minutes split",
+        "says a past hit rate is not a forecast"
+      ]
+    },
+    {
+      "prompt": "Prop lines for the South Carolina women's game",
+      "expect": [
+        "says women's college basketball has no prop market",
+        "does not borrow men's lines",
+        "offers a game preview"
+      ]
+    }
+  ],
+  "triggers": {
+    "should": [
+      "Boozer points line",
+      "how many rebounds is the Kansas center set at",
+      "did the Duke star's points number move",
+      "has he cleared 18 points lately in college",
+      "college prop history for Johni Broome",
+      "who has the best line on the Purdue guard",
+      "NCAA player points over under tonight",
+      "college basketball assists line for the UConn guard",
+      "threes line for the Houston guard",
+      "what does the market imply for the Arizona forward's rebounds"
+    ],
+    "should_not": [
+      "preview Duke vs UNC",
+      "LeBron points prop history",
+      "WNBA A'ja Wilson rebounds line",
+      "how did the Duke spread move",
+      "NCAA bracket profile for Gonzaga",
+      "college football passing yards prop",
+      "who has the most points in college basketball this season",
+      "build a college props model",
+      "NBA game preview",
+      "NFL player prop history for Mahomes"
+    ]
+  }
+}

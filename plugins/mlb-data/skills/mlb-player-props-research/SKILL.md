@@ -2,7 +2,7 @@
 name: mlb-player-props-research
 description: "Use when the user asks about MLB player prop lines as information: 'Skenes strikeout line tonight', 'how often does Judge go over his total bases', 'compare hits lines across books', 'did his K prop move', 'what's the home run price for Ohtani', 'is the outs recorded line high for this starter'. Shows lines by sportsbook, the player's record against his line with sample size, the pitcher's or batter's recent workload and matchup context, and line movement. Covers strikeouts, outs, hits, home runs, total bases and RBI. Never says which side to take. Not for game previews (see mlb-game-preview), pitch-mix changes (see mlb-pitcher-skill-change) or general odds math (see odds-market-analysis)."
 metadata:
-  version: 2.1.0
+  version: 2.2.0
   author: SportsDataHQ
 ---
 

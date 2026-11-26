@@ -2,7 +2,7 @@
 name: mlb-win-prob-swings
 description: "Use when the user wants to know what decided a played MLB game, in fan or analyst wording: 'what flipped last night's game', 'the big moment in Game 7', 'key at-bat of the night', 'who was the hero', 'how did they come back', 'biggest play of the series', 'show me the win probability graph', 'when was it over', 'the biggest momentum shift', 'win probability graph of the game', 'when did they actually win it', 'the play that changed it'. Use this whenever a finished game's turning points are the subject. Also use it for bare follow-ups with no name given, and load it instead of answering from memory or going straight to the raw tools. Orders a game's plate appearances by change in our home win probability and run value, with the base-out state. Not for a game preview (see mlb-game-preview), pitch trends (see mlb-pitcher-skill-change), luck screens (see mlb-regression-candidates), batted-ball profiles (see mlb-batter-spray-profile) or line movement."
 metadata:
-  version: 2.1.0
+  version: 2.2.0
   author: SportsDataHQ
 ---
 

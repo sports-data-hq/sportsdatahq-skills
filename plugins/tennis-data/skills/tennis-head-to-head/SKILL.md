@@ -2,7 +2,7 @@
 name: tennis-head-to-head
 description: "Use when the user asks about two tennis players' record against each other, in fan or analyst wording: 'Federer vs Murray record', 'who has the edge in the rivalry', 'how often have they met', 'has Gauff ever beaten Swiatek', 'their record on hard', 'do they split sets', 'lifetime head to head', 'does he own him'. Use this whenever two players and their past meetings come up. Load it for short fragments and follow-ups too, even with no name given, instead of answering from memory or going straight to the raw tools. Shows the record, by surface and round, every meeting's score, and sets it against current ratings and rankings with the caveat that ratings usually beat head-to-head. Not for a full match preview or prediction (see tennis-match-preview), a draw simulation (see tennis-tournament-simulation), one player's surface record (see tennis-surface-form) or rankings lists (call get_rankings)."
 metadata:
-  version: 2.1.0
+  version: 2.2.0
   author: SportsDataHQ
 ---
 

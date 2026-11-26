@@ -1,0 +1,55 @@
+{
+  "skill": "nba-line-movement",
+  "tasks": [
+    {
+      "prompt": "How did the Celtics Knicks line move today?",
+      "expect": [
+        "get_line_movement called with the game id",
+        "open to close for spread and total by book with capture times",
+        "no betting advice or sharp money claims"
+      ]
+    },
+    {
+      "prompt": "Show me the alternate spreads for the Nuggets game",
+      "expect": [
+        "get_alt_lines with closing ladder",
+        "points and prices by book",
+        "main line from get_odds"
+      ]
+    },
+    {
+      "prompt": "Did the Duke UNC total drop after the news?",
+      "expect": [
+        "league ncaam passed",
+        "movement described by capture time",
+        "says the data does not show why it moved, and college has no injury data"
+      ]
+    }
+  ],
+  "triggers": {
+    "should": [
+      "how did the Lakers line move",
+      "did the Celtics Knicks total drop",
+      "opening vs closing line for tonight's Warriors game",
+      "which book moved first on the Nuggets spread",
+      "what are the alt spreads for Thunder Mavs",
+      "did the spread shift after the injury news",
+      "line history for tonight's Bucks game",
+      "how did the WNBA Liberty Aces spread move",
+      "did the Duke UNC line move before tip",
+      "show the alternate totals ladder for Heat Knicks"
+    ],
+    "should_not": [
+      "Curry threes line history",
+      "preview Celtics vs Knicks",
+      "who covers tonight",
+      "NBA standings",
+      "NFL line movement for the Bills game",
+      "how do I convert odds to probability",
+      "which side should I bet on the Lakers",
+      "did LeBron's points prop move",
+      "build a spread model for basketball",
+      "MLB run line movement"
+    ]
+  }
+}

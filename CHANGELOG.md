@@ -2,6 +2,14 @@
 
 What changed in the SportsDataHQ skills, newest first. Every sport's own repo carries the same skills, synced from here.
 
+## 2.2.0 (2026-11-26)
+
+Six new skills, 89 in all, and soccer skills that check the squad.
+- College basketball, men's and women's (the basketball tools take `league: "ncaam"` or `"ncaaw"`): `ncaam-game-preview` (Elo, pace and efficiency, four factors, the market line; there is no college injury report, and it says so), `ncaam-bracket-research` (team profiles for tournament questions from ratings, efficiency and results; seeds and brackets are not in the data, and it makes no picks), and `ncaam-player-props-research` (men's only; women's college has no prop market). `nba-game-preview` now covers the NBA and WNBA and sends college games to `ncaam-game-preview`.
+- Line movement: `nba-line-movement`, `nfl-line-movement` and `mlb-line-movement` show how a spread, total or moneyline moved by book from opening to closing, the capture times, key numbers in the NFL, and the alternate-line ladders. They describe the move and never say why or which side to take.
+- `soccer-player-props-research` checks `get_availability` before reading a price: a player marked absent is flagged first. `soccer-xg-breakdown` can list who was missing from the squad. The tool cannot tell injury from suspension or selection, and the skills say so.
+- College football is not here. None of the football tools reach college games, so no `ncaaf` skill was built.
+
 ## 2.1.2 (2026-11-26)
 
 Soccer skills see who is out. StrikerAPI's new `get_availability` tool shows each player's last few matchday squads (started, came on, unused or missing), and marks a player absent after two or more missed squads. The FPL captain and transfer skills drop or flag absent players, and match previews list who is out for both clubs. There is no soccer injury report, so the skills say an absence can mean injury, suspension or selection.
