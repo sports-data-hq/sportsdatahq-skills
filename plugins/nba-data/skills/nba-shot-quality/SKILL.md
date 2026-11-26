@@ -2,7 +2,7 @@
 name: nba-shot-quality
 description: "Use when the user wants to know how good a player's or team's shots are in the NBA or WNBA: 'is Curry's shot selection good', 'how many corner threes does Boston take', 'is he over-performing his shot quality', 'shot chart for Haliburton', 'where does Denver allow shots from', 'expected points per shot'. Reports attempts, makes and expected points per shot by zone, so shooting results can be set against shot location. NBA and WNBA only (college shots carry no expected points). Not for prop lines (see nba-player-props-research), game previews (see nba-game-preview) or pace and efficiency (see nba-pace-efficiency-matchup)."
 metadata:
-  version: 2.0.0
+  version: 2.1.0
   author: SportsDataHQ
 ---
 

@@ -2,7 +2,7 @@
 name: nba-game-preview
 description: "Use when the user wants a preview of one NBA, WNBA or college basketball game: 'preview Celtics vs Knicks', 'break down tonight's Lakers game', 'who's out for the Nuggets', 'pace and efficiency matchup for this game', 'what's the line on Bucks Heat'. Produces a one-page report: records, ratings, pace and efficiency (offensive, defensive, net rating, four factors), injuries, the line and what it implies. Not for player props (see nba-player-props-research), minutes when a star sits (see nba-minutes-usage-redistribution) or modeling (see model-building)."
 metadata:
-  version: 2.0.0
+  version: 2.1.0
   author: SportsDataHQ
 ---
 

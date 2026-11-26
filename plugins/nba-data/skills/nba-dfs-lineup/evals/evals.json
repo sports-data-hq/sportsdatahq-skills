@@ -1,0 +1,56 @@
+{
+  "skill": "nba-dfs-lineup",
+  "tasks": [
+    {
+      "prompt": "Here's tonight's DraftKings NBA salary file, build me a lineup under 50k (file pasted)",
+      "expect": [
+        "roster slots and cap confirmed",
+        "estimate_only before props",
+        "points formula with turnovers from the log",
+        "salary used under the cap"
+      ]
+    },
+    {
+      "prompt": "Who is the best cheap play tonight with the Celtics starter out? salaries pasted",
+      "expect": [
+        "injury check",
+        "minutes evidence with n",
+        "points per $1,000"
+      ]
+    },
+    {
+      "prompt": "Give me a stars and scrubs lineup from this slate file",
+      "expect": [
+        "two or three high-salary anchors with projections",
+        "cheap fillers with minutes evidence",
+        "no contest or entry advice"
+      ]
+    }
+  ],
+  "triggers": {
+    "should": [
+      "build my NBA DraftKings lineup",
+      "here is tonight's salary file, make a lineup",
+      "FanDuel NBA lineup under the cap",
+      "value plays on tonight's slate",
+      "cheap play now that the starter is out",
+      "stars and scrubs build for tonight",
+      "project the slate in fantasy points",
+      "late swap options for my lineup",
+      "optimize this salary file for basketball",
+      "give me three NBA DFS lineups"
+    ],
+    "should_not": [
+      "who should I stream this week in fantasy basketball",
+      "who gets the minutes if Embiid sits",
+      "is Tatum over 27.5 points a good price",
+      "NBA game preview tonight",
+      "how much should I enter in contests",
+      "which contest should I play",
+      "NFL DraftKings lineup",
+      "NBA standings",
+      "explain usage rate",
+      "who are the best bets tonight"
+    ]
+  }
+}

@@ -1,3 +1,65 @@
-{"skill":"tennis-match-preview","tasks":[{"prompt":"Preview Sinner vs Alcaraz","expect":["get_schedule for our probability","surface Elo and surface splits","head-to-head caveat"]},{"prompt":"Swiatek vs Gauff on clay, who wins?","expect":["league wta","our model vs market kept separate","no serve stats invented"]},{"prompt":"Break down tonight's Djokovic match","expect":["recent form with n","Data line","no pick"]}],
-"triggers":{"should":["preview Sinner vs Alcaraz","who wins Swiatek vs Gauff on clay","break down tonight's tennis match","how do they match up on grass","head to head and form Medvedev Zverev","ATP match preview","WTA preview Sabalenka","US Open quarterfinal preview","is Rune favored","tennis matchup analysis"],
-"should_not":["ATP rankings this week","Djokovic career titles","NFL preview","golf tournament preview","build a tennis Elo model","Wimbledon 2024 champion","list tournaments this season","explain tiebreak rules","NBA props","serve speed records"]}}
+{
+  "skill": "tennis-match-preview",
+  "tasks": [
+    {
+      "prompt": "Preview Sinner vs Alcaraz",
+      "expect": [
+        "get_schedule for our probability",
+        "surface Elo and surface splits",
+        "head-to-head caveat"
+      ]
+    },
+    {
+      "prompt": "Swiatek vs Gauff on clay, who wins?",
+      "expect": [
+        "league wta",
+        "our model vs market kept separate",
+        "no serve stats invented"
+      ]
+    },
+    {
+      "prompt": "Break down tonight's Djokovic match",
+      "expect": [
+        "recent form with n",
+        "Data line",
+        "no pick"
+      ]
+    },
+    {
+      "prompt": "Alcaraz vs Sinner on hard courts, who is rested and who is rusty?",
+      "expect": [
+        "days since last match and recent workload",
+        "games won share and tiebreak record as proxies not serve stats",
+        "labelled hypothetical when no match is scheduled",
+        "head to head by surface with caveat",
+        "no pick"
+      ]
+    }
+  ],
+  "triggers": {
+    "should": [
+      "preview Sinner vs Alcaraz",
+      "who wins Swiatek vs Gauff on clay",
+      "break down tonight's tennis match",
+      "how do they match up on grass",
+      "head to head and form Medvedev Zverev",
+      "ATP match preview",
+      "WTA preview Sabalenka",
+      "US Open quarterfinal preview",
+      "is Rune favored",
+      "tennis matchup analysis"
+    ],
+    "should_not": [
+      "ATP rankings this week",
+      "Djokovic career titles",
+      "NFL preview",
+      "golf tournament preview",
+      "build a tennis Elo model",
+      "Wimbledon 2024 champion",
+      "list tournaments this season",
+      "explain tiebreak rules",
+      "NBA props",
+      "serve speed records"
+    ]
+  }
+}

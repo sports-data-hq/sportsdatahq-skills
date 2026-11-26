@@ -74,5 +74,18 @@
   "soccer-player-props-research": "Scorer, shots, assists and card prices by sportsbook, the market's probability and the player's record against them",
   "mlb-player-props-research": "Strikeout, outs, hits, home run and total bases lines by sportsbook, with the record against the line and workload",
   "ufc-card-preview": "A whole card on one page: records, our Elo and the market's probability for every bout",
-  "season-pack-offline": "Answers from the free season pack when no API key or server is set up yet, and names the season"
+  "season-pack-offline": "Answers from the free season pack when no API key or server is set up yet, and names the season",
+  "nfl-fantasy-start-sit": "Rank your players for the week from the market's per-player lines turned into fantasy points, with usage and matchup",
+  "nfl-fantasy-waivers": "Waiver pickups ranked by snap-share trend, touches and depth-chart path, with no bid amounts",
+  "nfl-fantasy-draft-board": "Tiered draft board with value over replacement from last season, against the ADP you paste",
+  "nfl-fantasy-trade-value": "Price both sides of a trade in rest-of-season points above replacement, with games left and byes",
+  "nfl-dfs-lineup": "Build a lineup under the cap from your salary file, from the market's per-player projections",
+  "nba-fantasy-streaming": "Who to stream this week: games per team, back-to-backs and recent minutes",
+  "nba-dfs-lineup": "Build a lineup under the cap from your salary file, with fantasy points from the market's per-player lines",
+  "mlb-dfs-stacks": "Stacks and lineups from your salary file, with implied team totals and hitter and pitcher projections",
+  "mlb-fantasy-waivers": "Waiver pickups by playing time over the last two weeks, then quality, with sample-size flags",
+  "nhl-fantasy-streamers": "Who to stream: games in the window, goalie start share, ice time and power-play role",
+  "nhl-dfs-lineup": "Build a lineup under the cap from your salary file, with line and power-play stacks",
+  "soccer-fpl-transfers": "FPL transfers over the next four gameweeks from minutes, xG per 90 and fixtures, with the hit cost",
+  "soccer-fpl-captain": "FPL captain pick ranked by expected points, with the model's goal chance beside the market's"
 }

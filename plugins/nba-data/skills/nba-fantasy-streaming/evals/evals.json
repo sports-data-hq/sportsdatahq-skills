@@ -1,0 +1,56 @@
+{
+  "skill": "nba-fantasy-streaming",
+  "tasks": [
+    {
+      "prompt": "Who should I stream this week? I need rebounds and assists",
+      "expect": [
+        "get_schedule games per team and back-to-backs",
+        "candidates' last 10 games with n",
+        "weekly value arithmetic",
+        "availability unchecked or checked"
+      ]
+    },
+    {
+      "prompt": "Which teams play four games this week and who on them is worth adding?",
+      "expect": [
+        "games per team table",
+        "minutes and per-game lines",
+        "injury context"
+      ]
+    },
+    {
+      "prompt": "My center is out for the week, best fill-in off waivers?",
+      "expect": [
+        "injuries checked",
+        "rebounds and blocks per minute",
+        "expected minutes assumption stated"
+      ]
+    }
+  ],
+  "triggers": {
+    "should": [
+      "who should I stream tonight",
+      "which teams have four games this week",
+      "back-to-backs this week for my lineup",
+      "best waiver pickup now that he is hurt",
+      "who gets the minutes with the starter out",
+      "light slate tonight, who do I add",
+      "need rebounds and assists, who is available",
+      "fill my open roster spot",
+      "streamer for the weekend games",
+      "any good pickups on teams with four games"
+    ],
+    "should_not": [
+      "build a DraftKings NBA lineup from this salary",
+      "how did the Knicks do without Brunson",
+      "LeBron points prop line",
+      "Warriors vs Lakers preview",
+      "NBA power ratings",
+      "trade my Jokic for Wembanyama",
+      "who won the game last night",
+      "explain true shooting",
+      "fantasy football waivers",
+      "best NBA bets tonight"
+    ]
+  }
+}

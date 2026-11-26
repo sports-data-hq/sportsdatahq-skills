@@ -2,7 +2,7 @@
 name: nba-player-props-research
 description: "Use when the user asks about NBA or WNBA player prop lines or how a player did against his line, in fan or analyst wording: 'Sengun rebounds line', 'Curry threes over?', 'what is Tatum's PRA', 'Brunson assists number', 'who has the best line on Ant', 'has he cleared 25 lately', 'did his points line move', 'prop history for Wemby'. Use this whenever a player is mentioned with a stat line. Load it for short fragments and follow-ups too, even with no name given, instead of answering from memory or going straight to the raw tools. Shows lines by sportsbook, the player's record against his line with sample size and minutes context, movement and no-margin probability. Never says which side to take. Not for game previews (see nba-game-preview), minutes when a player sits (see nba-minutes-usage-redistribution), football props (see nfl-player-props-research) or building a model."
 metadata:
-  version: 2.0.0
+  version: 2.1.0
   author: SportsDataHQ
 ---
 

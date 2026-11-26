@@ -1,0 +1,57 @@
+{
+  "skill": "mlb-dfs-stacks",
+  "tasks": [
+    {
+      "prompt": "Best stacks tonight? Here's the slate salary file for DraftKings",
+      "expect": [
+        "implied team totals derived with the formula",
+        "estimate_only before props",
+        "stack shape stated",
+        "batting order only from the file"
+      ]
+    },
+    {
+      "prompt": "Build me an MLB lineup with a 5-man Dodgers stack, file pasted",
+      "expect": [
+        "5-man stack fixed first",
+        "pitcher not facing the stack",
+        "total salary under the cap",
+        "no contest advice"
+      ]
+    },
+    {
+      "prompt": "Which starting pitchers are the best value tonight? salaries pasted",
+      "expect": [
+        "pitcher points from outs and strikeout medians",
+        "ER from opponent implied runs",
+        "win probability shown separately"
+      ]
+    }
+  ],
+  "triggers": {
+    "should": [
+      "build my MLB DraftKings lineup",
+      "best stacks tonight",
+      "which team has the highest implied total",
+      "who do I pair with this pitcher",
+      "a 5-3 stack for tonight's slate",
+      "cheap pitcher plays on this slate",
+      "salary file for tonight, make a lineup",
+      "who are one-off hitters to fill out a stack",
+      "a Coors stack",
+      "project the MLB slate in fantasy points"
+    ],
+    "should_not": [
+      "who should I stream this week",
+      "waiver pickups in my fantasy baseball league",
+      "has Skenes changed his pitch mix",
+      "Judge home run prop price",
+      "preview Yankees vs Red Sox",
+      "how much to put in a contest",
+      "which contest should I enter",
+      "NBA DFS lineup",
+      "MLB standings",
+      "who is due to regress"
+    ]
+  }
+}
