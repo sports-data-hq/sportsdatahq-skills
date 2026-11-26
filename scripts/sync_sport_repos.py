@@ -18,6 +18,8 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
 CORE = "sports-analytics-core"
+SPORT_DIR = {"nhl-data": "nhl", "nfl-data": "nfl", "nba-data": "nba", "mlb-data": "mlb", "soccer-data": "soccer",
+             "tennis-data": "tennis", "golf-data": "golf", "mma-data": "mma", "cricket-data": "cricket"}
 
 # plugin -> (repo, marketplace name, brand, domain, sport words, repo description lead, topics)
 SPORTS = {
@@ -92,6 +94,8 @@ Codex: `codex plugin marketplace add {repo}`. Any agent that reads skills: `npx 
 {rows}
 
 The analytics skills: {", ".join(f"`{n}`" for n in core)}.
+
+Real answers on live data, with the credits each used: [example answers](https://github.com/sports-data-hq/sportsdatahq-skills/tree/main/docs/examples/{SPORT_DIR[plugin]}).
 
 All nine sports' skills live in [sports-data-hq/sportsdatahq-skills](https://github.com/sports-data-hq/sportsdatahq-skills). The copies here are synced from there, so please open issues and pull requests there.
 
