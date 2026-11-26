@@ -2,6 +2,10 @@
 
 What changed in the SportsDataHQ skills, newest first. Every sport's own repo carries the same skills, synced from here.
 
+## 2.1.2 (2026-11-26)
+
+Soccer skills see who is out. StrikerAPI's new `get_availability` tool shows each player's last few matchday squads (started, came on, unused or missing), and marks a player absent after two or more missed squads. The FPL captain and transfer skills drop or flag absent players, and match previews list who is out for both clubs. There is no soccer injury report, so the skills say an absence can mean injury, suspension or selection.
+
 ## 2.1.1 (2026-11-26)
 
 Fewer, sharper skills: 83, down from 89. Each one was kept only if it fires on the questions it's for and does something the plain tool calls don't.
