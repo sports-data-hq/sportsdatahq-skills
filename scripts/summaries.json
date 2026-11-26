@@ -70,5 +70,9 @@
   "tennis-head-to-head": "Two players' history: results by surface and round, sets and tiebreaks",
   "tennis-match-preview": "One-page preview: form, surface records, Elo by surface, head to head and the market",
   "tennis-surface-form": "Record, sets, tiebreaks and Elo by surface and season",
-  "tennis-tournament-simulation": "Title chances for a tournament from the draw and surface Elo"
+  "tennis-tournament-simulation": "Title chances for a tournament from the draw and surface Elo",
+  "soccer-player-props-research": "Scorer, shots, assists and card prices by sportsbook, the market's probability and the player's record against them",
+  "mlb-player-props-research": "Strikeout, outs, hits, home run and total bases lines by sportsbook, with the record against the line and workload",
+  "ufc-card-preview": "A whole card on one page: records, our Elo and the market's probability for every bout",
+  "season-pack-offline": "Answers from the free season pack when no API key or server is set up yet, and names the season"
 }
