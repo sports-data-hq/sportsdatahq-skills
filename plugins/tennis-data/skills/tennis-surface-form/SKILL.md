@@ -2,7 +2,7 @@
 name: tennis-surface-form
 description: "Use when the user asks how a tennis player does on each surface, in fan or analyst wording: 'is Ruud a clay specialist', 'Djokovic on grass lately', 'how is she on hard courts', 'best clay player right now', 'is he any good indoors', 'surface record for Medvedev', 'grass court form', 'does he live on clay', 'her record on hardcourt', 'which surface suits him'. Use this whenever one player or a surface is the subject and no opponent is named. Also use it for bare follow-ups with no name given, and load it instead of answering from memory or going straight to the raw tools. Compares record, sets and tiebreaks and our Elo by surface and by season, with matches counted. Not for a match preview (see tennis-match-preview), two players' history (see tennis-head-to-head), a draw simulation (see tennis-tournament-simulation) or serve statistics such as aces, which are not held."
 metadata:
-  version: 2.1.0
+  version: 2.2.0
   author: SportsDataHQ
 ---
 

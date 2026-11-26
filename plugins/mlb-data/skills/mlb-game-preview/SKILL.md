@@ -2,7 +2,7 @@
 name: mlb-game-preview
 description: "Use when the user wants an MLB game preview or a college baseball game breakdown: 'MLB game preview', 'preview Yankees vs Red Sox', 'break down tonight's Dodgers game', 'what's the line for the Astros game', 'how does Skubal match up tonight', 'who has the edge in pitching tonight', 'series preview'. Produces a one-page report: records and run differential, offense and run prevention, our Elo, the starters' arsenals when known, the line and what it implies. Not for regression screens (other mlb- skills) or model building (see model-building)."
 metadata:
-  version: 2.1.0
+  version: 2.2.0
   author: SportsDataHQ
 ---
 

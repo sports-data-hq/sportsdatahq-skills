@@ -1,0 +1,55 @@
+{
+  "skill": "mlb-line-movement",
+  "tasks": [
+    {
+      "prompt": "How did the Dodgers moneyline move today?",
+      "expect": [
+        "get_line_movement called with the game id",
+        "open to close moneyline with prices and capture times",
+        "no betting advice"
+      ]
+    },
+    {
+      "prompt": "Did the Yankees Red Sox total change after the starters were announced?",
+      "expect": [
+        "total open to close with times",
+        "starters from get_game lined up by time",
+        "uses coincided with, not caused by"
+      ]
+    },
+    {
+      "prompt": "Show the alternate run lines for the Braves game",
+      "expect": [
+        "get_alt_lines with the run line ladder",
+        "points and prices by book",
+        "main line from get_odds"
+      ]
+    }
+  ],
+  "triggers": {
+    "should": [
+      "how did the Dodgers line move",
+      "did the total drop for Yankees Red Sox",
+      "opening vs closing moneyline for tonight's Astros game",
+      "did the price change when the starter was announced",
+      "which book moved first on the Braves line",
+      "what are the alt run lines for Mets Phillies",
+      "line history for the Cubs game",
+      "did the Giants total move today",
+      "show the alternate totals ladder for Padres Dodgers",
+      "how much did the Orioles moneyline shift"
+    ],
+    "should_not": [
+      "Skenes strikeout prop history",
+      "preview Yankees vs Red Sox",
+      "who covers tonight",
+      "MLB standings",
+      "NBA line movement for the Knicks",
+      "start or sit my pitcher",
+      "which side should I bet on the Mets",
+      "how do I convert odds to probability",
+      "waiver wire pitchers this week",
+      "pitch mix for Cole"
+    ]
+  }
+}

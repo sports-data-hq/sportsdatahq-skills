@@ -1,0 +1,55 @@
+{
+  "skill": "ncaam-bracket-research",
+  "tasks": [
+    {
+      "prompt": "Tell me about the 12 seed in my bracket: Liberty",
+      "expect": [
+        "states that seeds are not in the data and uses the user's seed as given",
+        "get_team_stats and get_ratings with rank",
+        "no pick for the game"
+      ]
+    },
+    {
+      "prompt": "Which women's teams are rated highest going into March?",
+      "expect": [
+        "league ncaaw passed",
+        "get_ratings with rank and games played",
+        "season convention stated"
+      ]
+    },
+    {
+      "prompt": "Compare Houston and Florida before the Elite Eight",
+      "expect": [
+        "net rating, pace and four factors for both",
+        "Elo gap with the 64% per 100 points note",
+        "no winner named"
+      ]
+    }
+  ],
+  "triggers": {
+    "should": [
+      "tell me about the 12 seed in my bracket",
+      "how good is Gonzaga really going into March",
+      "which teams are rated highest going into the tournament",
+      "efficiency profile of the Sweet 16 teams",
+      "compare two first round teams for my bracket",
+      "how did Houston's season go before the Final Four",
+      "ratings for the women's tournament teams",
+      "March Madness team profile for Auburn",
+      "what do the numbers say about the 5 vs 12 matchup",
+      "who has the best net rating in the field"
+    ],
+    "should_not": [
+      "preview tonight's Duke game",
+      "Boozer points prop line",
+      "how did the Duke UNC spread move",
+      "fill out my bracket for me",
+      "which upsets should I pick in my pool",
+      "NBA playoff bracket odds",
+      "college football playoff rankings",
+      "build an NCAA tournament simulation model",
+      "WNBA finals preview",
+      "who won the national championship in 2019"
+    ]
+  }
+}

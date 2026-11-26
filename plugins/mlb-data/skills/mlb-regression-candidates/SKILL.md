@@ -2,7 +2,7 @@
 name: mlb-regression-candidates
 description: "Use when the user asks whether MLB numbers are real, lucky or due to change, in fan or analyst wording: 'is his hot start fake', 'will .340 hold', 'buy low guys', 'who is due to come back down', 'overperforming his BABIP', 'is that ERA a mirage', 'sell high now?', 'fluky first month'. Use this whenever results are being questioned against underlying rates. Load it for short fragments and follow-ups too, even with no name given, instead of answering from memory or going straight to the raw tools. Compares results against steadier rates (BABIP computed from plate appearances, strikeout and walk rates, home runs per plate appearance) with sample sizes. Not for a pitcher's pitch-level changes (see mlb-pitcher-skill-change), game previews (see mlb-game-preview), where a hitter hits it (see mlb-batter-spray-profile) or the weekly schedule (see mlb-streaming-planner)."
 metadata:
-  version: 2.1.0
+  version: 2.2.0
   author: SportsDataHQ
 ---
 

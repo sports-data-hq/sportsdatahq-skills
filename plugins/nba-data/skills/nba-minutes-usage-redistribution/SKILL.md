@@ -2,7 +2,7 @@
 name: nba-minutes-usage-redistribution
 description: "Use when an NBA or WNBA player is out or limited and the user asks who benefits: 'Embiid is out, who gets the minutes', 'who starts if Tatum sits', 'how did the Knicks do without Brunson', 'usage bump with the starter out', 'how does usage change without Luka', 'fantasy pickup with the injury'. Compares minutes, shots and usage per teammate in games the player missed against games he played, with sample sizes. Not for prop lines (see nba-player-props-research) or a game preview (see nba-game-preview)."
 metadata:
-  version: 2.1.0
+  version: 2.2.0
   author: SportsDataHQ
 ---
 

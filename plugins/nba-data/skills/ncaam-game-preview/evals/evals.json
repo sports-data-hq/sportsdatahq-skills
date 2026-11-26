@@ -1,0 +1,55 @@
+{
+  "skill": "ncaam-game-preview",
+  "tasks": [
+    {
+      "prompt": "Preview Duke vs UNC",
+      "expect": [
+        "league ncaam passed on every call",
+        "get_schedule then get_team_stats for both teams",
+        "market probability labelled as the market's"
+      ]
+    },
+    {
+      "prompt": "Break down the South Carolina women's game tonight",
+      "expect": [
+        "league ncaaw passed",
+        "says no injury data for college",
+        "games played shown with the ratings"
+      ]
+    },
+    {
+      "prompt": "Is the Gonzaga game a mismatch? What's the spread?",
+      "expect": [
+        "Elo gap and rank for both",
+        "neutral-site flag checked",
+        "no pick or side"
+      ]
+    }
+  ],
+  "triggers": {
+    "should": [
+      "preview Duke vs UNC",
+      "break down tonight's Kansas game",
+      "what's the line on the Gonzaga game",
+      "women's hoops preview UConn vs Texas",
+      "who has the edge in the Illinois Purdue game",
+      "is tonight's Houston game a mismatch",
+      "college basketball preview Kentucky Tennessee",
+      "how good is Iowa State's team tonight",
+      "ncaaw game breakdown South Carolina vs UCLA",
+      "matchup analysis for the Michigan State game"
+    ],
+    "should_not": [
+      "preview Celtics vs Knicks",
+      "Cooper Flagg points prop history",
+      "who is in the best seeds for the tournament",
+      "how did the spread move on Duke UNC",
+      "NCAA bracket team profiles for the Sweet 16",
+      "WNBA preview Liberty vs Aces",
+      "college football preview Ohio State Michigan",
+      "list the Big Ten teams",
+      "build a college basketball win probability model",
+      "NBA standings"
+    ]
+  }
+}
