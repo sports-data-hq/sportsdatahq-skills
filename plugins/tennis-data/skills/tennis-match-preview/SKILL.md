@@ -40,3 +40,4 @@ Data: get_schedule, get_ratings, get_surface_splits, get_player_matches, get_hea
 - Say "our model" for the probability and "the market" for prices; never blend them.
 - Retirements count as results but are not rated; walkovers count nowhere. Mention them when they distort a record.
 - Odds are information only: no pick, stake or bet.
+- Out of credits: if a call is refused for credits, pass on the API's message as it comes (it says when free credits refill and how to add more), and stop; don't retry or switch tools to get around it.

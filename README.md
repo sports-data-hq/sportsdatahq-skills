@@ -42,6 +42,8 @@ In Claude Code, add the marketplace once, then install the sports you want:
 
 Each sport plugin connects its API's MCP server; you sign in on the first call. Every API gives 500 free credits a month.
 
+**Get a key (free, no card):** sign in when the first tool call asks, or create the account first: [PuckAPI](https://puckapi.com/signup?utm_source=github&utm_medium=skills&utm_campaign=nhl-data), [EndzoneAPI](https://endzoneapi.com/signup?utm_source=github&utm_medium=skills&utm_campaign=nfl-data), [DunkAPI](https://dunkapi.com/signup?utm_source=github&utm_medium=skills&utm_campaign=nba-data), [FastballAPI](https://fastballapi.com/signup?utm_source=github&utm_medium=skills&utm_campaign=mlb-data), [StrikerAPI](https://strikerapi.com/signup?utm_source=github&utm_medium=skills&utm_campaign=soccer-data), [AcesAPI](https://acesapi.com/signup?utm_source=github&utm_medium=skills&utm_campaign=tennis-data), [BirdieAPI](https://birdieapi.com/signup?utm_source=github&utm_medium=skills&utm_campaign=golf-data), [FighterAPI](https://fighterapi.com/signup?utm_source=github&utm_medium=skills&utm_campaign=mma-data), [YorkerAPI](https://yorkerapi.com/signup?utm_source=github&utm_medium=skills&utm_campaign=cricket-data). Working across sports? [One SportsDataHQ key](https://app.sportsdatahq.com/signup?utm_source=github&utm_medium=skills&utm_campaign=core) covers all nine, with 1,000 free credits a month. No key yet? The `season-pack-offline` skill answers from a free season of data first.
+
 Just one skill: `npx skills add sports-data-hq/sportsdatahq-skills --skill nfl-game-preview`.
 
 ## Skills

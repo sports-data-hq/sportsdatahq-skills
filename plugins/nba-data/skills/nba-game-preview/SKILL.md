@@ -41,3 +41,4 @@ Data: get_schedule, get_team_stats, get_ratings, get_injuries, get_game_probabil
 - Every number names its tool; the Data line lists them with the season.
 - Odds are information about the market: no side, no stake, no bet.
 - If a star's status is unknown (not on the report yet), say that rather than assuming he plays.
+- Out of credits: if a call is refused for credits, pass on the API's message as it comes (it says when free credits refill and how to add more), and stop; don't retry or switch tools to get around it.

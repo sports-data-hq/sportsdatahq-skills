@@ -20,7 +20,7 @@ A prop line is the market's estimate of one player's game. This skill lays it ou
 2. **Lines now.** `get_player_props(game_id, market)` (10 cr before first pitch, 20 after), or `player_id` with `from_date` for one player across games. Markets: `pitcher_strikeouts`, `pitcher_outs`, `batter_hits`, `batter_home_runs`, `batter_total_bases`, `batter_rbis`. Lines are held from May 2023.
 3. **Track record.** `get_prop_history(player_id, market)` (10 cr per 25 games covered): closing line, what he recorded and over/under per game, plus the over rate.
 4. **Workload.** `get_player_games(player_id, season)` (5 cr): for pitchers, innings, pitches and strikeouts per start; for batters, plate appearances and batting order spot. Short starts and low lineup spots explain most unders.
-5. **Matchup (pitchers).** `get_pitch_mix(player_id, season)` (5 cr) for arsenal and whiff rate, and the opponent's strikeout rate from `get_team_stats(team, season)` (5 cr).
+5. **Matchup (pitchers).** `get_pitch_mix(pitcher_id, season)` (5 cr) for arsenal and whiff rate, and the opponent's strikeout rate from `get_team_stats(team, season)` (5 cr).
 6. **Movement (optional).** `get_prop_movement` (10 cr).
 
 ## How to report a record
@@ -42,3 +42,4 @@ Data: search_players, get_player_props, get_prop_history, get_player_games, get_
 - Information only: no picks, leans, "value", stakes, payouts or sportsbook links.
 - Every number names its tool; every rate shows n.
 - No line posted, or the starter is not confirmed: say so; don't borrow another game or market.
+- Out of credits: if a call is refused for credits, pass on the API's message as it comes (it says when free credits refill and how to add more), and stop; don't retry or switch tools to get around it.

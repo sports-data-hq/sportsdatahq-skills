@@ -41,3 +41,4 @@ Data: get_schedule, get_standings, get_team_stats, get_ratings, get_pitch_mix | 
 - Early season (under ~20 games) team rates are noisy; say so. Pitcher rates need 30+ innings before they mean much.
 - Every number names its tool; the Data line has the season.
 - Odds are information about the market: no side, stake or bet.
+- Out of credits: if a call is refused for credits, pass on the API's message as it comes (it says when free credits refill and how to add more), and stop; don't retry or switch tools to get around it.

@@ -19,7 +19,7 @@ When a player sits, his minutes and shots go somewhere. The best evidence is wha
 1. **Who's out.** `get_injuries(team)` (2 cr): status and expected return.
 2. **His games.** `get_player_games(player_id, season)` (5 cr): which games he played and missed (team games minus his games).
 3. **The team's games.** `list_games(season, team)` (2 cr): every game id and date, so you can split "with" and "without".
-4. **Teammates' logs.** `get_player_games(teammate_id, season)` (5 cr each) for the 4-6 players most likely affected (same position, the next starters).
+4. **Teammates' logs.** `get_player_games(player_id, season)` (5 cr each), one call per teammate, for the 4-6 players most likely affected (same position, the next starters).
 5. **Shot share (optional).** `get_plays(game_id, shots_only: true)` (10 cr) on a few "without" games for field goal attempts per teammate.
 
 ## Method
@@ -42,3 +42,4 @@ Data: get_injuries, get_player_games, list_games | season <yyyy>
 - Every rate has its game count. Tiny samples are flagged, not dressed up.
 - Name the tool behind each number.
 - Fantasy and usage only: no betting language.
+- Out of credits: if a call is refused for credits, pass on the API's message as it comes (it says when free credits refill and how to add more), and stop; don't retry or switch tools to get around it.
