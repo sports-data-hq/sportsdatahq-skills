@@ -1,7 +1,7 @@
 {
   "name": "mlb-data",
   "displayName": "FastballAPI: baseball skills",
-  "version": "2.1.1",
+  "version": "2.1.2",
   "description": "Baseball analysis skills on FastballAPI: game previews, player and team research, and the community's standard metrics, with every number pulled live from the FastballAPI MCP server.",
   "author": {
     "name": "SportsDataHQ",
