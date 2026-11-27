@@ -2,6 +2,10 @@
 
 What changed in the SportsDataHQ skills, newest first. Every sport's own repo carries the same skills, synced from here.
 
+## 2.2.1 (2026-11-27)
+
+Soccer backtests without look-ahead. StrikerAPI's new `xg_point_in_time` field is the same xG fitted only on a league's earlier seasons. `soccer-xg-breakdown` uses it for backtests and model features, and `feature-engineering` flags model values fitted on all history as leakage.
+
 ## 2.2.0 (2026-11-26)
 
 Six new skills, 89 in all, and soccer skills that check the squad.
