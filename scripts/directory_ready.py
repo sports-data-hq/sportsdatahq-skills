@@ -60,7 +60,9 @@ for plugin in sorted((ROOT / "plugins").iterdir()):
                 "the numbers come from whichever SportsDataHQ sport plugin you also install.\n\n"
                 "Promotion: `season-pack-offline` mentions the free API key at the sport's site when a question needs data "
                 "the offline season pack does not hold, and tells you the pack licence asks for a credit line "
-                "(\"Data: <API name> (<site>)\") if you publish work built on it. No skill writes promotion into your content.")
+                "(\"Data: <API name> (<site>)\") if you publish work built on it. `visualization` adds a small "
+                "\"Built with SportsDataHQ Skills\" footer to the charts it makes (bottom right) and says so; ask it to leave "
+                "the footer off and it will.")
     else:
         data = (f"The skills call the {brand} MCP server at `mcp.{domain}`. Each call sends the tool name and its inputs "
                 f"(teams, players, dates, seasons) with your {brand} API key, and returns data. Nothing from your files or "

@@ -2,6 +2,10 @@
 
 What changed in the SportsDataHQ skills, newest first. Every sport's own repo carries the same skills, synced from here.
 
+## 2.2.5 (2026-11-27)
+
+The `visualization` skill still adds its small "Built with SportsDataHQ Skills" footer, but now says so in its reply and leaves it off when asked. The core plugin's description and README say where the footer goes.
+
 ## 2.2.4 (2026-11-27)
 
 `season-pack-offline` no longer writes the pack's credit line into content you publish; it tells you the pack licence asks for it. The core plugin's README says where the skills mention our own API.
