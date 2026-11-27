@@ -14,7 +14,7 @@ Shot results are noisy; shot locations are steadier. This skill compares what a 
 - For anything across games, seasons or players, apply the sports-data-preflight checks first (ids from search, the season convention, one league, enough data).
 - Tools come from the DunkAPI MCP server (`https://mcp.dunkapi.com/mcp`). Call them; never fill in a number from memory.
 - `season` is named by the year it ends (2025 = 2024-25); WNBA seasons are calendar years. Player ids from `search_players(name)` (1 cr); teams accept abbreviations.
-- `expected_points` is our model's value of a shot from its location and type, fitted on every shot in the league's history. It is served for the NBA and WNBA only (also NBL on this tool); college shots carry locations but no expected points yet, so say that and stop for a college request.
+- `expected_points` is our model's value of a shot from its location and type, fitted on the league's shots from that season and the two either side. For a backtest or a model feature, use `expected_points_point_in_time` (fitted only on earlier seasons, null in a league's first located seasons) and say which one you used. It is served for the NBA and WNBA only (also NBL on this tool); college shots carry locations but no expected points yet, so say that and stop for a college request.
 - Court coordinates are in feet: x 0-50 across the court, y from the basket at (25, 0).
 - `get_shot_chart` takes `player_id`, `team`, `opponent: true` (the shots a team's defence allowed), `game_id`, `season` and `season_type`. Set `include_shots: true` only when you need individual shots to draw a chart.
 
