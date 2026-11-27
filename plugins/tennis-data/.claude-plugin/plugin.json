@@ -1,7 +1,7 @@
 {
   "name": "tennis-data",
   "displayName": "AcesAPI: tennis skills",
-  "version": "2.2.3",
+  "version": "2.2.4",
   "description": "Tennis analysis skills on AcesAPI: game previews, player and team research, and the community's standard metrics, with every number pulled live from the AcesAPI MCP server.",
   "author": {
     "name": "SportsDataHQ",
