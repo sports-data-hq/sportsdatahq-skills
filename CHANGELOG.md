@@ -2,6 +2,10 @@
 
 What changed in the SportsDataHQ skills, newest first. Every sport's own repo carries the same skills, synced from here.
 
+## 2.2.3 (2026-11-27)
+
+Every plugin now carries its own README (its skills, what data it sends and to which server), a LICENSE, an icon and a privacy policy link, so each one can be listed on its own in plugin directories. `scripts/directory_ready.py` regenerates them.
+
 ## 2.2.2 (2026-11-27)
 
 Basketball backtests without look-ahead. DunkAPI's new `expected_points_point_in_time` is the same shot model fitted only on a league's earlier seasons. `nba-shot-quality` uses it for backtests and model features, and the `feature-engineering` leakage audit names it beside soccer's `xg_point_in_time`.
