@@ -2,6 +2,10 @@
 
 What changed in the SportsDataHQ skills, newest first. Every sport's own repo carries the same skills, synced from here.
 
+## 2.2.2 (2026-11-27)
+
+Basketball backtests without look-ahead. DunkAPI's new `expected_points_point_in_time` is the same shot model fitted only on a league's earlier seasons. `nba-shot-quality` uses it for backtests and model features, and the `feature-engineering` leakage audit names it beside soccer's `xg_point_in_time`.
+
 ## 2.2.1 (2026-11-27)
 
 Soccer backtests without look-ahead. StrikerAPI's new `xg_point_in_time` field is the same xG fitted only on a league's earlier seasons. `soccer-xg-breakdown` uses it for backtests and model features, and `feature-engineering` flags model values fitted on all history as leakage.
